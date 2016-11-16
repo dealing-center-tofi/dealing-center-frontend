@@ -344,3 +344,260 @@ Response:
   ]
 }
 ```
+# Order
+
+## Create order
+
+### POST /api/orders/
+
+Parameters:
+- currenct_pair_id (number): Currency pair id.
+- type (number): 1 - Long order, 2 - Short order.
+
+```
+Headers:
+Authorization: ”Token 50ded0eaddc3e2005d31fcb3a0fcd50339242537”
+Body:
+{
+	"currency_pair_id": 1,
+	"type": 1,
+	"initial_amount": 100
+}
+```
+
+Response:
+
+```
+Status: 201
+Body:
+{
+  "id": 10,
+  "user": {
+    "id": 1,
+    "email": "admin@admin.com",
+    "username": "admin",
+    "first_name": "",
+    "last_name": ""
+  },
+  "currency_pair": {
+    "id": 1,
+    "name": "EUR/USD",
+    "base_currency": {
+      "id": 2,
+      "name": "EUR"
+    },
+    "quoted_currency": {
+      "id": 1,
+      "name": "USD"
+    },
+    "last_value": {
+      "bid": 1.4317038319441,
+      "ask": 1.44609281517972,
+      "spread": -0.0143889832356201,
+      "creation_time": "2016-11-15T13:50:16.184274Z"
+    }
+  },
+  "status": 1,
+  "type": 1,
+  "start_time": "2016-11-16T09:07:32.432107Z",
+  "start_value": {
+    "bid": 1.4317038319441,
+    "ask": 1.44609281517972,
+    "spread": -0.0143889832356201,
+    "creation_time": "2016-11-15T13:50:16.184274Z"
+  },
+  "end_time": null,
+  "end_value": null,
+  "amount": 69.1518545354034
+}
+```
+
+## Close order
+
+### POST /api/orders/1/close/
+
+```
+Headers:
+Authorization: ”Token 50ded0eaddc3e2005d31fcb3a0fcd50339242537”
+```
+
+Response:
+
+```
+Status: 200
+Body:
+{
+  "id": 1,
+  "user": {
+    "id": 1,
+    "email": "admin@admin.com",
+    "username": "admin",
+    "first_name": "",
+    "last_name": ""
+  },
+  "currency_pair": {
+    "id": 1,
+    "name": "EUR/USD",
+    "base_currency": {
+      "id": 2,
+      "name": "EUR"
+    },
+    "quoted_currency": {
+      "id": 1,
+      "name": "USD"
+    },
+    "last_value": {
+      "bid": 1.4317038319441,
+      "ask": 1.44609281517972,
+      "spread": -0.0143889832356201,
+      "creation_time": "2016-11-15T13:50:16.184274Z"
+    }
+  },
+  "status": 2,
+  "type": 1,
+  "start_time": "2016-11-16T08:54:19.276055Z",
+  "start_value": {
+    "bid": 1.4317038319441,
+    "ask": 1.44609281517972,
+    "spread": -0.0143889832356201,
+    "creation_time": "2016-11-15T13:50:16.184274Z"
+  },
+  "end_time": "2016-11-16T09:02:01.678146Z",
+  "end_value": {
+    "bid": 1.4317038319441,
+    "ask": 1.44609281517972,
+    "spread": -0.0143889832356201,
+    "creation_time": "2016-11-15T13:50:16.184274Z"
+  },
+  "amount": 69.1518545354034
+}
+```
+
+## Orders list
+
+### GET /api/orders/
+
+```
+Headers:
+Authorization: ”Token 50ded0eaddc3e2005d31fcb3a0fcd50339242537”
+```
+
+Response:
+
+```
+Body:
+{
+  "count": 10,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "user": {
+        "id": 1,
+        "email": "admin@admin.com",
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "currency_pair": {
+        "id": 1,
+        "name": "EUR/USD",
+        "base_currency": {
+          "id": 2,
+          "name": "EUR"
+        },
+        "quoted_currency": {
+          "id": 1,
+          "name": "USD"
+        },
+        "last_value": {
+          "bid": 1.4317038319441,
+          "ask": 1.44609281517972,
+          "spread": -0.0143889832356201,
+          "creation_time": "2016-11-15T13:50:16.184274Z"
+        }
+      },
+      "status": 2,
+      "type": 1,
+      "start_time": "2016-11-13T14:20:45.371189Z",
+      "start_value": {
+        "bid": 1.05,
+        "ask": 1.0885,
+        "spread": -0.03849999999999998,
+        "creation_time": "2016-11-13T14:18:05.925312Z"
+      },
+      "end_time": "2016-11-13T14:35:47.970464Z",
+      "end_value": {
+        "bid": 1.05,
+        "ask": 1.0885,
+        "spread": -0.03849999999999998,
+        "creation_time": "2016-11-13T14:18:05.925312Z"
+      },
+      "amount": 91.869545245751
+    }
+  ]
+}
+```
+
+## Filtered orders list
+
+### GET /api/orders/?status=1
+
+```
+Headers:
+Authorization: ”Token 50ded0eaddc3e2005d31fcb3a0fcd50339242537”
+```
+
+Response:
+
+```
+Body:
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 10,
+      "user": {
+        "id": 1,
+        "email": "admin@admin.com",
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "currency_pair": {
+        "id": 1,
+        "name": "EUR/USD",
+        "base_currency": {
+          "id": 2,
+          "name": "EUR"
+        },
+        "quoted_currency": {
+          "id": 1,
+          "name": "USD"
+        },
+        "last_value": {
+          "bid": 1.4317038319441,
+          "ask": 1.44609281517972,
+          "spread": -0.0143889832356201,
+          "creation_time": "2016-11-15T13:50:16.184274Z"
+        }
+      },
+      "status": 1,
+      "type": 1,
+      "start_time": "2016-11-16T09:07:32.432107Z",
+      "start_value": {
+        "bid": 1.4317038319441,
+        "ask": 1.44609281517972,
+        "spread": -0.0143889832356201,
+        "creation_time": "2016-11-15T13:50:16.184274Z"
+      },
+      "end_time": null,
+      "end_value": null,
+      "amount": 69.1518545354034
+    }
+  ]
+}
+```
