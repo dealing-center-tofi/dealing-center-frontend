@@ -10,12 +10,15 @@ Parameters:
 ```
 Body:
 {
-	"email": "asd@s.1com",
-	"password": "123",
-	"username": "stas11",
-	"first_name": "as",
-	"last_name": "asd",
-	"account_currency": 2
+    "email": "asd@s.1com",
+    "password": "123",
+    "username": "stas11",
+    "first_name": "as",
+    "second_name": "sa",
+    "last_name": "asd",
+    "birth_date": "1212-12-12",
+    "answer_secret_question": "some answer",
+    "account_currency": 2
 }
 ```
 
@@ -23,13 +26,15 @@ Response:
 
 ```
 Status 201
-Body:
-{
-  "id": 4,
-  "email": "asd@s.11com",
-  "username": "stas111",
+Body:{
+  "id": 2,
+  "email": "asd@s.1com",
+  "username": "stas11",
   "first_name": "as",
-  "last_name": "asd"
+  "second_name": "sa",
+  "last_name": "asd",
+  "birth_date": "1212-12-12",
+  "answer_secret_question": "some answer"
 }
 Headers:
 Token: “50ded0eaddc3e2005d31fcb3a0fcd50339242537”
@@ -50,11 +55,14 @@ Response:
 Status 200
 Body:
 {
-  "id": 4,
-  "email": "asd@s.11com",
-  "username": "stas111",
-  "first_name": "as",
-  "last_name": "asd"
+  "id": 1,
+  "email": "admin@admin.com",
+  "username": "admin",
+  "first_name": "stas111",
+  "second_name": "ass",
+  "last_name": "so",
+  "birth_date": "1222-12-12",
+  "answer_secret_question": "some quest"
 }
 ```
 
