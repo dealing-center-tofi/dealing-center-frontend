@@ -1,0 +1,14 @@
+@import "../scss/variables";
+@import "../../../node_modules/bootstrap/scss/_variables";
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+.event {
+  background: $white;
+  border-radius: $border-radius;
+  padding: 20px 20px;
+  position: relative;
+}
+
+.submit {
+  margin-left: 60px;
+}
