@@ -3,7 +3,7 @@ import { CommonModule }  from '@angular/common';
 
 import { RouterModule } from '@angular/router';
 import { Dashboard } from './dashboard.component.ts';
-import {Widget} from '../layout/widget/widget.directive';
+import { WidgetModule } from '../layout/widget/widget.module';
 
 export const routes = [
   { path: '', component: Dashboard, pathMatch: 'full' }
@@ -11,8 +11,8 @@ export const routes = [
 
 
 @NgModule({
-  imports: [ CommonModule, RouterModule.forChild(routes) ],
-  declarations: [ Dashboard, Widget ]
+  imports: [ CommonModule, RouterModule.forChild(routes), WidgetModule ],
+  declarations: [ Dashboard ]
 })
 export default class DashboardModule {
   static routes = routes;
