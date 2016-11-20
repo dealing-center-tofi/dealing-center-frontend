@@ -10,9 +10,8 @@ Parameters:
 ```
 Body:
 {
-    "email": "asd@s.1com",
+    "email": "assdsd@s.1com",
     "password": "123",
-    "username": "stas11",
     "first_name": "as",
     "second_name": "sa",
     "last_name": "asd",
@@ -26,10 +25,10 @@ Response:
 
 ```
 Status 201
-Body:{
-  "id": 2,
-  "email": "asd@s.1com",
-  "username": "stas11",
+Body:
+{
+  "id": 3,
+  "email": "assdsd@s.1com",
   "first_name": "as",
   "second_name": "sa",
   "last_name": "asd",
@@ -57,7 +56,6 @@ Body:
 {
   "id": 1,
   "email": "admin@admin.com",
-  "username": "admin",
   "first_name": "stas111",
   "second_name": "ass",
   "last_name": "so",
