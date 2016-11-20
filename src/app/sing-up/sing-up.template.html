@@ -12,32 +12,35 @@
             <h3>Create your personal account</h3>
           </header>
           <div class="widget-body">
-            <form class="login-form mt-lg">
+            <form class="login-form mt-lg" #form="ngForm" (ngSubmit)="submitForm(form.value)">
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="Name">
+                <input type="text" class="form-control" placeholder="First Name" name="first_name" ngModel>
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="Surname">
+                <input type="text" class="form-control" placeholder="Second Name" name="second_name" ngModel>
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="Email">
+                <input type="text" class="form-control" placeholder="Last Name" name="last_name" ngModel>
               </div>
               <div class="form-group">
-                <input id="mask-date" data-mask="99-99-9999" type="text" class="form-control"  placeholder="Birthday">
+                <input type="text" class="form-control" placeholder="Email" name="email" ngModel>
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control"  placeholder="Birthday" name="birth_date" ngModel>
               </div>
               <!--TODO: Account Currency-->
               <!--<div class="form-group">-->
                 <!--<input class="form-control" type="text" placeholder="Account Currency">-->
               <!--</div>-->
               <div class="form-group">
-                <input class="form-control" type="password" placeholder="Password">
+                <input class="form-control" type="password" placeholder="Password" name="password" ngModel>
               </div>
               <div class="form-group">
                 <input class="form-control" type="password" placeholder="Confirm Password">
               </div>
               <div class="clearfix">
                 <div class="btn-toolbar pull-xs-right m-t-1">
-                  <button type="button" class="btn btn-secondary btn-sm">Create an Account</button>
+                  <button type="submit" class="btn btn-secondary btn-sm">Create an Account</button>
                   <a class="btn btn-inverse btn-sm" [routerLink]="['/login'] ">Login</a>
                 </div>
               </div>

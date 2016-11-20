@@ -12,37 +12,17 @@
             <h3>Login to your Sing App</h3>
           </header>
           <div class="widget-body">
-            <p class="widget-login-info">
-              Use Facebook, Twitter or your email to sign in.
-            </p>
-            <p class="widget-login-info">
-              Don't have an account? Sign up now!
-            </p>
-            <form class="login-form mt-lg">
+            <form class="login-form mt-lg" #form="ngForm" (ngSubmit)="submitForm(form.value)">
               <div class="form-group">
-                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Username">
+                <input type="text" class="form-control" placeholder="Email" name="email" ngModel>
               </div>
               <div class="form-group">
-                <input class="form-control" id="pswd" type="text" placeholder="Password">
+                <input class="form-control" type="text" placeholder="Password" name="password" ngModel>
               </div>
               <div class="clearfix">
                 <div class="btn-toolbar pull-xs-right m-t-1">
-                  <button type="button" class="btn btn-secondary btn-sm" [routerLink]="['/sing-up']">Create an Account</button>
-                  <a class="btn btn-inverse btn-sm" [routerLink]="['/app', 'dashboard'] ">Login</a>
-                </div>
-              </div>
-              <div class="row m-t-1">
-                <div class="col-md-6 push-md-6">
-                  <div class="clearfix">
-                    <div class="abc-checkbox widget-login-info pull-xs-right">
-                      <input type="checkbox" id="checkbox1" value="1">
-                      <label for="checkbox1">Keep me signed in </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6 pull-md-6">
-                  <a class="mr-n-lg" href="#">Trouble with account?</a>
+                  <button type="submit" class="btn btn-secondary btn-sm">Login</button>
+                  <a class="btn btn-inverse btn-sm" [routerLink]="['/sing-up']">Create an Account</a>
                 </div>
               </div>
             </form>
@@ -51,7 +31,4 @@
       </div>
     </div>
   </main>
-  <footer class="page-footer">
-    2016 &copy; Sing. Admin Dashboard Template.
-  </footer>
 </div>
