@@ -282,7 +282,8 @@ Response:
         "bid": 1.08565,
         "ask": 1.08553,
         "spread": 0.00011999999999989797,
-        "creation_time": "2016-11-12T16:51:37.877316Z"
+        "creation_time": "2016-11-12T16:51:37.877316Z",
+        "currency_pair": 2
       }
     }
   ]
@@ -316,7 +317,8 @@ Response:
     "bid": 1.08565,
     "ask": 1.08553,
     "spread": 0.00011999999999989797,
-    "creation_time": "2016-11-12T16:51:37.877316Z"
+    "creation_time": "2016-11-12T16:51:37.877316Z",
+    "currency_pair": 2
   }
 }
 ```
@@ -347,7 +349,8 @@ Response:
       "bid": 1.08565,
       "ask": 1.08553,
       "spread": 0.00011999999999989797,
-      "creation_time": "2016-11-12T16:51:37.877316Z"
+      "creation_time": "2016-11-12T16:51:37.877316Z",
+      "currency_pair": 1
     }
   ]
 }
@@ -402,7 +405,8 @@ Body:
       "bid": 1.4317038319441,
       "ask": 1.44609281517972,
       "spread": -0.0143889832356201,
-      "creation_time": "2016-11-15T13:50:16.184274Z"
+      "creation_time": "2016-11-15T13:50:16.184274Z",
+      "currency_pair": 2
     }
   },
   "status": 1,
@@ -412,7 +416,8 @@ Body:
     "bid": 1.4317038319441,
     "ask": 1.44609281517972,
     "spread": -0.0143889832356201,
-    "creation_time": "2016-11-15T13:50:16.184274Z"
+    "creation_time": "2016-11-15T13:50:16.184274Z",
+    "currency_pair": 1
   },
   "end_time": null,
   "end_value": null,
@@ -458,7 +463,8 @@ Body:
       "bid": 1.4317038319441,
       "ask": 1.44609281517972,
       "spread": -0.0143889832356201,
-      "creation_time": "2016-11-15T13:50:16.184274Z"
+      "creation_time": "2016-11-15T13:50:16.184274Z",
+      "currency_pair": 2
     }
   },
   "status": 2,
@@ -468,14 +474,16 @@ Body:
     "bid": 1.4317038319441,
     "ask": 1.44609281517972,
     "spread": -0.0143889832356201,
-    "creation_time": "2016-11-15T13:50:16.184274Z"
+    "creation_time": "2016-11-15T13:50:16.184274Z",
+    "currency_pair": 2
   },
   "end_time": "2016-11-16T09:02:01.678146Z",
   "end_value": {
     "bid": 1.4317038319441,
     "ask": 1.44609281517972,
     "spread": -0.0143889832356201,
-    "creation_time": "2016-11-15T13:50:16.184274Z"
+    "creation_time": "2016-11-15T13:50:16.184274Z",
+    "currency_pair": 2
   },
   "amount": 69.1518545354034
 }
@@ -523,7 +531,8 @@ Body:
           "bid": 1.4317038319441,
           "ask": 1.44609281517972,
           "spread": -0.0143889832356201,
-          "creation_time": "2016-11-15T13:50:16.184274Z"
+          "creation_time": "2016-11-15T13:50:16.184274Z",
+          "currency_pair": 2
         }
       },
       "status": 2,
@@ -533,14 +542,16 @@ Body:
         "bid": 1.05,
         "ask": 1.0885,
         "spread": -0.03849999999999998,
-        "creation_time": "2016-11-13T14:18:05.925312Z"
+        "creation_time": "2016-11-13T14:18:05.925312Z",
+        "currency_pair": 2
       },
       "end_time": "2016-11-13T14:35:47.970464Z",
       "end_value": {
         "bid": 1.05,
         "ask": 1.0885,
         "spread": -0.03849999999999998,
-        "creation_time": "2016-11-13T14:18:05.925312Z"
+        "creation_time": "2016-11-13T14:18:05.925312Z",
+        "currency_pair": 2
       },
       "amount": 91.869545245751
     }
@@ -590,7 +601,8 @@ Body:
           "bid": 1.4317038319441,
           "ask": 1.44609281517972,
           "spread": -0.0143889832356201,
-          "creation_time": "2016-11-15T13:50:16.184274Z"
+          "creation_time": "2016-11-15T13:50:16.184274Z",
+          "currency_pair": 2
         }
       },
       "status": 1,
@@ -600,7 +612,8 @@ Body:
         "bid": 1.4317038319441,
         "ask": 1.44609281517972,
         "spread": -0.0143889832356201,
-        "creation_time": "2016-11-15T13:50:16.184274Z"
+        "creation_time": "2016-11-15T13:50:16.184274Z",
+        "currency_pair": 2
       },
       "end_time": null,
       "end_value": null,
@@ -608,4 +621,51 @@ Body:
     }
   ]
 }
+```
+
+
+# Currencies delivery through websockets
+
+[Example.](https://github.com/dealing-center-tofi/dealing-center-backend/blob/master/currencies_delivery/websockets_test/index.js)
+
+## Server events
+
+### authorize
+
+```
+Body: {'token': 'A123asdefcasdtoken123'}
+```
+
+### subscribe
+Subscribe for currencies delivery.
+
+### unsubscribe
+Unsubscribe from currencies delivery.
+
+## Client events
+
+### authorized
+Send after successful `authorize` event.
+
+### new values
+New currency pair values.
+
+```
+Body: 
+[
+  {
+    "bid": 1.4317038319441,
+    "ask": 1.44609281517972,
+    "spread": 0.0143889832356201,
+    "creation_time": "2016-11-15T13:50:16.184274Z",
+    "currency_pair": 2
+  },
+  {
+    "bid": 1.4317038319441,
+    "ask": 1.44609281517972,
+    "spread": 0.043889832356201,
+    "creation_time": "2016-11-15T13:50:16.184274Z",
+    "currency_pair": 1
+  }
+]
 ```
