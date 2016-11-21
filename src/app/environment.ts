@@ -3,9 +3,12 @@
 // rc2 workaround
 import { enableDebugTools, disableDebugTools } from '@angular/platform-browser';
 import { enableProdMode, ApplicationRef } from '@angular/core';
+
+import { CurrencyPairsService } from './dashboard/currency-pairs/currency-pairs.service';
 // Environment Providers
 let PROVIDERS: any[] = [
   // common env directives
+  CurrencyPairsService
 ];
 
 // Angular debug tools in the dev console
