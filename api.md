@@ -360,8 +360,8 @@ Response:
 ### POST /api/orders/
 
 Parameters:
-- currenct_pair_id (number): Currency pair id.
-- type (number): 1 - Long order, 2 - Short order.
+- currency_pair_id (number): Currency pair id.
+- type (number): 1 - Long order (Buy), 2 - Short order (Sell).
 
 ```
 Headers:
