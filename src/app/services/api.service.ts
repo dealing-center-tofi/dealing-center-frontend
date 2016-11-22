@@ -10,6 +10,7 @@ export class ApiService {
 
   private headers;
   private currencyPairsUrl = config.apiUrl + '/api/currency_pairs/';
+  private ordersUrl = config.apiUrl + '/api/orders/';
 
   constructor(private http: Http) {}
   
@@ -24,6 +25,7 @@ export class ApiService {
     });
   }
 
+
   getCurrencyPairs(): Promise<CurrencyPairs> {
     this.setHeaders();
     return this.http.get(this.currencyPairsUrl, {headers: this.headers})
@@ -32,6 +34,14 @@ export class ApiService {
               .catch(this.handleError);
   }
 
+  getOrders(): Promise<Orders> {
+    this.setHeaders();
+    return this.http.get(this.ordersUrl, {headers: this.headers})
+              .toPromise()
+              .then(response => response.json() as Orders)
+              .catch(this.handleError);
+  }
+  
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only
     return Promise.reject(error.message || error);

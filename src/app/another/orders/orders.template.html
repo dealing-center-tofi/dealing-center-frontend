@@ -1,0 +1,8 @@
+Orders:
+<div *ngIf="orders">
+  <ol>
+    <li *ngFor="let order of orders.results">
+      {{ order.currency_pair.name }} Amount: {{ order.amount }}
+    </li>
+  </ol>
+</div>
