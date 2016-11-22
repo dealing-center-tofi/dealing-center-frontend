@@ -19,7 +19,13 @@
           with brand new <strong>Angular <em>2.0</em> Final Release</strong></p>
         <p class="fs-mini">Made by <a href="http://flatlogic.com" target="_blank">Flatlogic</a>.</p>
 
-        <currency-pairs></currency-pairs>
+        <div *ngIf="currencyPairs">
+          <ul>
+            <li *ngFor="let currencyPair of currencyPairs.results">
+              {{ currencyPair.name }}: {{ roundValue(currencyPair.last_value.bid) }}
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
   </div>
