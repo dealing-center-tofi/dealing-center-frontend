@@ -25,9 +25,10 @@
   <div class="col-md-9">
     <section class="event">
       <div class="form-group row">
-        <input class="col-md-2 form-control">
-        <input class="col-md-2 form-control">
-        <button class="submit btn btn-secondary">Add order</button>
+        <input class="col-md-2 form-control" #currencyPairId>
+        <input class="col-md-2 form-control" #amount>
+        <button (click)="createOrder(currencyPairId.value, 1, amount.value)" class="submit btn btn-secondary">Buy</button>
+        <button (click)="createOrder(currencyPairId.value, 2, amount.value)" class="submit btn btn-secondary">Sell</button>
       </div>
     </section>
   </div>

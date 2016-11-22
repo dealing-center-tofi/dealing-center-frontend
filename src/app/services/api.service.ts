@@ -40,6 +40,18 @@ export class ApiService {
               .then(response => response.json() as Orders)
               .catch(this.handleError);
   }
+
+  createOrder(currencyPairId, type, initialAmount) {
+    this.setHeaders();
+    console.log(arguments);
+    return this.http.post(this.ordersUrl, JSON.stringify({
+          "currency_pair_id": currencyPairId, 
+          "type": type, 
+          "initial_amount": initialAmount}), {headers: this.headers})
+            .toPromise()
+            .then(res => res.json())
+            .catch(this.handleError);
+  }
   
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only

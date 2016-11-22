@@ -22,7 +22,13 @@ export class AnotherPage {
 
     this.getOrders();
   }
-
+  
+  createOrder(currencyPairId, type, initialAmount) {
+    if(!currencyPairId && !type && !initialAmount) return;
+    this.apiService.createOrder(+currencyPairId, +type, +initialAmount)
+      .then(order => this.orders.results.push(order));
+  }
+  
   getOrders() {
     this.apiService
       .getOrders()
