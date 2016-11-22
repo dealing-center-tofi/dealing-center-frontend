@@ -3,10 +3,10 @@ import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { CurrencyPairs } from './currency-pairs.ts'
-const config = require('../../../../config/api.conf');
+const config = require('../../../config/api.conf');
 
 @Injectable()
-export class CurrencyPairsService {
+export class ApiService {
 
   private headers;
   private currencyPairsUrl = config.apiUrl + '/api/currency_pairs/';

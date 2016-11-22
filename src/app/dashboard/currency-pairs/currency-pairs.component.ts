@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 
 import { CurrencyPairs } from './currency-pairs.ts'
-import { CurrencyPairsService } from './currency-pairs.service.ts'
+import { ApiService } from '../../services/api.service.ts'
 
 @Component({
   selector: 'currency-pairs',
@@ -15,7 +15,7 @@ export class CurrencyPairs {
   currencyPairs: CurrencyPairs;
 
   constructor(
-    private currencyPairsService: CurrencyPairsService,
+    private apiService: ApiService,
     private router: Router) {}
 
   ngOnInit() {
@@ -27,7 +27,7 @@ export class CurrencyPairs {
   }
 
   getCurrencyPairs() {
-    this.currencyPairsService
+    this.apiService
       .getCurrencyPairs()
       .then( currencyPairs => this.currencyPairs = currencyPairs);
   }

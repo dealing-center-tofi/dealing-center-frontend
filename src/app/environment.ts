@@ -4,11 +4,11 @@
 import { enableDebugTools, disableDebugTools } from '@angular/platform-browser';
 import { enableProdMode, ApplicationRef } from '@angular/core';
 
-import { CurrencyPairsService } from './dashboard/currency-pairs/currency-pairs.service';
+import { ApiService } from './services/api.service.ts';
 // Environment Providers
 let PROVIDERS: any[] = [
   // common env directives
-  CurrencyPairsService
+  ApiService
 ];
 
 // Angular debug tools in the dev console
