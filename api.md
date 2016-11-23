@@ -370,7 +370,7 @@ Body:
 {
 	"currency_pair_id": 1,
 	"type": 1,
-	"initial_amount": 100
+	"amount": 100
 }
 ```
 
