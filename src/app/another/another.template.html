@@ -2,32 +2,21 @@
 
 <div class="row">
   <div class="col-md-12">
-    <section widget class="widget">
-      <header>
-        <div class="widget-controls">
-          <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
-          <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
-          <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
-        </div>
-      </header>
-      <div class="widget-body">
-        <table *ngIf="orders" class="table">
-        <th>Order</th>
-        <th>Time</th>
-        <th>Currency Pair</th>
-        <th>Type</th>
-        <th>Amount</th>
-        <th>Profit</th>
-            <tr *ngFor="let order of orders.results">
-              <td>{{ order.id }}</td>
-              <td>{{ order.start_time | date: 'shortDate'}}</td>
-              <td>{{ order.currency_pair.name }}</td>
-              <td>{{ order.type === 1 ? 'Buy' : 'Sell' }}</td>
-              <td>{{ order.amount }}</td>
-            </tr>
-        </table>
-      </div>
-    </section>
+    <table *ngIf="orders" class="table">
+    <th>Order</th>
+    <th>Time</th>
+    <th>Currency Pair</th>
+    <th>Type</th>
+    <th>Amount</th>
+    <th>Profit</th>
+        <tr *ngFor="let order of orders.results">
+          <td>{{ order.id }}</td>
+          <td>{{ order.start_time | date: 'shortDate'}}</td>
+          <td>{{ order.currency_pair.name }}</td>
+          <td>{{ order.type === 1 ? 'Buy' : 'Sell' }}</td>
+          <td>{{ order.amount }}</td>
+        </tr>
+    </table>
   </div>
   <div class="col-md-9">
     <section class="event">
