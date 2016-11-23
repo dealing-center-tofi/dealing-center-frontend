@@ -13,18 +13,13 @@
           <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
         </div>
       </header>
-      <div class="widget-body">
-        <img class="pull-left mr-sm" src="assets/img/a2.png" alt="Angular 2.0" width="100">
-        <p class="lead">You are looking at a completely new version of Sing App built
-          with brand new <strong>Angular <em>2.0</em> Final Release</strong></p>
-        <p class="fs-mini">Made by <a href="http://flatlogic.com" target="_blank">Flatlogic</a>.</p>
-
-        <div *ngIf="currencyPairs">
-          <ul>
-            <li *ngFor="let currencyPair of currencyPairs.results">
+      <div class="widget-body no-padding">
+        <div class="list-group list-group-lg" *ngIf="currencyPairs">
+          <a class="list-group-item" *ngFor="let currencyPair of currencyPairs.results">
+            <p>
               {{ currencyPair.name }}: {{ roundValue(currencyPair.last_value.bid) }}
-            </li>
-          </ul>
+            </p>
+          </a>
         </div>
       </div>
     </section>

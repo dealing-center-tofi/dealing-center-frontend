@@ -738,6 +738,9 @@ legend {
 
 .list-group-item{
 
+  &:hover {
+    background-color: #f5f5f5;
+  }
   .list-group-lg & {
     padding: 15px 15px;
   }
