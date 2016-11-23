@@ -11,7 +11,7 @@ const config = require('./../../../config/api.conf');
   templateUrl: './dashboard.template.html'
 })
 export class Dashboard {
-  currencyPairs: CurrencyPairs;
+  currencyPairs;
 
   constructor(
     private apiService: ApiService,

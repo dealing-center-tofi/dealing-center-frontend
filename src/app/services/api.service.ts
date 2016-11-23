@@ -12,7 +12,7 @@ export class ApiService {
   private ordersUrl = config.apiUrl + '/api/orders/';
 
   constructor(private http: Http) {}
-  
+
   getToken() {
     return localStorage.getItem('authToken');
   }
@@ -25,19 +25,19 @@ export class ApiService {
   }
 
 
-  getCurrencyPairs(): Promise<CurrencyPairs> {
+  getCurrencyPairs(): Promise<any> {
     this.setHeaders();
     return this.http.get(this.currencyPairsUrl, {headers: this.headers})
               .toPromise()
-              .then(response => response.json() as CurrencyPairs)
+              .then(response => response.json())
               .catch(this.handleError);
   }
 
-  getOrders(): Promise<Orders> {
+  getOrders(): Promise<any> {
     this.setHeaders();
     return this.http.get(this.ordersUrl, {headers: this.headers})
               .toPromise()
-              .then(response => response.json() as Orders)
+              .then(response => response.json())
               .catch(this.handleError);
   }
 
@@ -45,14 +45,14 @@ export class ApiService {
     this.setHeaders();
     console.log(arguments);
     return this.http.post(this.ordersUrl, JSON.stringify({
-          "currency_pair_id": currencyPairId, 
-          "type": type, 
+          "currency_pair_id": currencyPairId,
+          "type": type,
           "initial_amount": initialAmount}), {headers: this.headers})
             .toPromise()
             .then(res => res.json())
             .catch(this.handleError);
   }
-  
+
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only
     return Promise.reject(error.message || error);
