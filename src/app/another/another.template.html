@@ -1,7 +1,7 @@
 <h1 class="page-title">Another Page</h1>
 
 <div class="row">
-  <div class="col-md-3">
+  <div class="col-md-6">
     <section widget class="widget">
       <header>
         <div class="widget-controls">
@@ -11,14 +11,21 @@
         </div>
       </header>
       <div class="widget-body">
-      Orders:
-        <div *ngIf="orders">
-          <ol>
-            <li *ngFor="let order of orders.results">
-              {{ order.currency_pair.name }} Amount: {{ order.amount }}
-            </li>
-          </ol>
-        </div>
+        <table *ngIf="orders" class="table">
+        <th>Order</th>
+        <th>Time</th>
+        <th>Currency Pair</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Profit</th>
+            <tr *ngFor="let order of orders.results">
+              <td>{{ order.id }}</td>
+              <td>{{ order.start_time | date: 'shortDate'}}</td>
+              <td>{{ order.currency_pair.name }}</td>
+              <td>{{ order.type === 1 ? 'Buy' : 'Sell' }}</td>
+              <td>{{ order.amount }}</td>
+            </tr>
+        </table>
       </div>
     </section>
   </div>
