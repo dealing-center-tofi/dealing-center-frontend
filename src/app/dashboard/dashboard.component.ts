@@ -12,6 +12,7 @@ const config = require('./../../../config/api.conf');
 })
 export class Dashboard {
   currencyPairs;
+  selectedPair;
 
   constructor(
     private apiService: ApiService,
@@ -25,6 +26,11 @@ export class Dashboard {
     this.getCurrencyPairs();
   }
 
+   createOrder(type, initialAmount) {
+    if(!this.selectedPair.id && !type && !initialAmount) return;
+    this.apiService.createOrder(this.selectedPair.id, +type, +initialAmount);
+  }
+
   getCurrencyPairs() {
     this.apiService
       .getCurrencyPairs()
@@ -33,6 +39,10 @@ export class Dashboard {
 
   roundValue(value) {
     return value.toFixed(config.rankRound);
+  }
+
+  onSelect(pair) {
+    this.selectedPair = pair;
   }
 
 }

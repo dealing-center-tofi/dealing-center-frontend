@@ -15,7 +15,9 @@
       </header>
       <div class="widget-body no-padding">
         <div class="list-group list-group-lg" *ngIf="currencyPairs">
-          <a class="list-group-item" *ngFor="let currencyPair of currencyPairs.results">
+          <a [routerLinkActive]="['active']" class="list-group-item" *ngFor="let currencyPair of currencyPairs.results" 
+          (click)="onSelect(currencyPair)"
+          [class.active]="currencyPair === selectedPair">
             <p>
               {{ currencyPair.name }}: {{ roundValue(currencyPair.last_value.bid) }}
             </p>
@@ -23,5 +25,14 @@
         </div>
       </div>
     </section>
-  </div>
+    </div>
+    <div class="col-md-9">
+          <section class="event">
+            <div class="form-group row">
+              <input class="col-md-2 form-control" #amount>
+              <button (click)="createOrder(1, amount.value)" class="submit btn btn-secondary">Buy</button>
+              <button (click)="createOrder(2, amount.value)" class="submit btn btn-secondary">Sell</button>
+            </div>
+          </section>
+    </div>
 </div>
