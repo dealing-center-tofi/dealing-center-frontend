@@ -22,7 +22,7 @@ export class Login {
 
     console.log(value);
 
-    this.http.post(config.apiUrl + 'api/auth/login/', value)
+    this.http.post(config.apiUrl + '/api/auth/login/', value)
       .subscribe(
         res => {
         let token = res.headers._headersMap.get('token');
