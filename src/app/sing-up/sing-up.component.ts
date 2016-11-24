@@ -15,7 +15,7 @@ export class SingUp {
     value.answer_secret_question = 'Vadim';
     value.account_currency = '2';
 
-    this.http.post(config.apiUrl + 'api/users/', value)
+    this.http.post(config.apiUrl + '/api/users/', value)
       .subscribe(
         res => {
           let token = res.headers._headersMap.get('token');
