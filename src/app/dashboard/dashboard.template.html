@@ -15,11 +15,17 @@
       </header>
       <div class="widget-body no-padding">
         <div class="list-group list-group-lg" *ngIf="currencyPairs">
-          <a [routerLinkActive]="['active']" class="list-group-item" *ngFor="let currencyPair of currencyPairs.results" 
+          <a class="list-group-item" *ngFor="let currencyPair of currencyPairs.results" 
           (click)="onSelect(currencyPair)"
           [class.active]="currencyPair === selectedPair">
             <p>
-              {{ currencyPair.name }}: {{ roundValue(currencyPair.last_value.bid) }}
+              {{ currencyPair.name }}: 
+              <span [class.red]="currencyPair.last_value.isDownBid"
+                    [class.green]="currencyPair.last_value.isUpBid"
+              >{{ roundValue(currencyPair.last_value.bid) }}</span>
+              <span [class.red]="currencyPair.last_value.isDownAsk"
+                    [class.green]="currencyPair.last_value.isUpAsk"
+              >{{ roundValue(currencyPair.last_value.ask) }}</span>
             </p>
           </a>
         </div>
