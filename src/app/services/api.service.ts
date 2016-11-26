@@ -41,13 +41,13 @@ export class ApiService {
               .catch(this.handleError);
   }
 
-  createOrder(currencyPairId, type, initialAmount) {
+  createOrder(currencyPairId, type, amount) {
     this.setHeaders();
     console.log(arguments);
     return this.http.post(this.ordersUrl, JSON.stringify({
           "currency_pair_id": currencyPairId,
           "type": type,
-          "initial_amount": initialAmount}), {headers: this.headers})
+          "amount": amount}), {headers: this.headers})
             .toPromise()
             .then(res => res.json())
             .catch(this.handleError);

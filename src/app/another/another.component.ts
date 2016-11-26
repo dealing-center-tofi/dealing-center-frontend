@@ -23,9 +23,9 @@ export class AnotherPage {
     this.getOrders();
   }
   
-  createOrder(currencyPairId, type, initialAmount) {
-    if(!currencyPairId && !type && !initialAmount) return;
-    this.apiService.createOrder(+currencyPairId, +type, +initialAmount)
+  createOrder(currencyPairId, type, amount) {
+    if(!currencyPairId && !type && !amount) return;
+    this.apiService.createOrder(+currencyPairId, +type, +amount)
       .then(order => this.orders.results.push(order));
   }
   
