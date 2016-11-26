@@ -10,6 +10,8 @@ export class ApiService {
   private headers;
   private currencyPairsUrl = config.apiUrl + '/api/currency_pairs/';
   private ordersUrl = config.apiUrl + '/api/orders/';
+  private userInfoUrl = config.apiUrl + '/api/users/me/'
+  private accountUrl = config.apiUrl + '/api/account/me/'
 
   constructor(private http: Http) {}
 
@@ -24,6 +26,21 @@ export class ApiService {
     });
   }
 
+  getUserInfo(): Promise<any> {
+    this.setHeaders();
+    return this.http.get(this.userInfoUrl, {headers: this.headers})
+              .toPromise()
+              .then(response => response.json())
+              .catch(this.handleError);
+  }
+
+  getAccount(): Promise<any> {
+   this.setHeaders();
+    return this.http.get(this.accountUrl, {headers: this.headers})
+              .toPromise()
+              .then(response => response.json())
+              .catch(this.handleError);
+  }
 
   getCurrencyPairs(): Promise<any> {
     this.setHeaders();
