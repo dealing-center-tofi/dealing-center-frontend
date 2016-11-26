@@ -370,7 +370,7 @@ Body:
 {
 	"currency_pair_id": 1,
 	"type": 1,
-	"initial_amount": 100
+	"amount": 100
 }
 ```
 
@@ -421,6 +421,10 @@ Body:
   "end_value": null,
   "amount": 69.1518545354034
 }
+Status: 400
+[
+  "Too much costs in orders."
+]
 ```
 
 ## Close order
