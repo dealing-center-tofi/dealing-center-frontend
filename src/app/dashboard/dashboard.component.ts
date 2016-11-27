@@ -18,14 +18,14 @@ export class Dashboard {
   selectedPair;
   token;
 
-  constructor(
-    private webSocketService: WebSocketService,
-    private apiService: ApiService,
-    private router: Router) {}
+  constructor(private webSocketService:WebSocketService,
+              private apiService:ApiService,
+              private router:Router) {
+  }
 
   ngOnInit() {
     this.token = localStorage.getItem('authToken');
-    if(!this.token) {
+    if (!this.token) {
       this.router.navigate(['/login']);
     }
     this.getCurrencyPairs();
@@ -33,33 +33,31 @@ export class Dashboard {
   }
 
   createOrder(type, initialAmount) {
-    if(!this.selectedPair.id && !type && !initialAmount) return;
+    if (!this.selectedPair.id && !type && !initialAmount) return;
     this.apiService.createOrder(this.selectedPair.id, +type, +initialAmount);
   }
 
   getCurrencyPairs() {
     this.apiService
       .getCurrencyPairs()
-      .then( currencyPairs => this.currencyPairs = currencyPairs);
+      .then(currencyPairs => this.currencyPairs = currencyPairs);
   }
 
   roundValue(value) {
     return value.toFixed(config.rankRound);
   }
 
-  onSelect(pair) {
-    this.selectedPair = pair;
-  }
-
   getSocketData() {
-    this.webSocketService.getData('new values').subscribe( msg => {
-      console.log(msg);
-   });
+    this.webSocketService.getData('new values').subscribe(res => {
+      for (let i = 0; i < 6; i++) {
+        this.currencyPairs.results[i].last_value = res[i];
+      }
+    });
   }
 
   copyValues(oldValues, newValues) {
-    if(!oldValues || !newValues) return;
-    for(let i = 0; i < oldValues.length; i++){
+    if (!oldValues || !newValues) return;
+    for (let i = 0; i < oldValues.length; i++) {
       oldValues[i].last_value.isUpBid = this.isBigger(newValues[i].bid, oldValues[i].last_value.bid);
       oldValues[i].last_value.isUpAsk = this.isBigger(newValues[i].ask, oldValues[i].last_value.ask);
       oldValues[i].last_value.isDownBid = this.isSmaller(newValues[i].bid, oldValues[i].last_value.bid);
