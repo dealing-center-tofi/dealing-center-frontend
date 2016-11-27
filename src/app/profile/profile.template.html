@@ -1,31 +1,103 @@
 <h1 class="page-title">Profile</h1>
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-xl-8 offset-xl-2 col-xs-10 offset-xs-1">
+        <div class="col-xl-4 offset-xl-2 col-xs-10 offset-xs-1">
             <div class="info">
                 <ul *ngIf="userInfo && account" class="list-group">
+                    <li class="list-group-item clearfix">
+                        <label class="my-label amount-label">Amount: </label><span class="amount">{{ account.amount }}</span>
+                        <div class="container pull-right">
+                            <div id="make-deposit" class="row"><a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseTransferForm" aria-expanded="false" aria-controls="collapseTransferForm"
+                            (click)="transferType = 1"
+                            >Make a deposit</a></div>
+                            <div class="row"><a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseTransferForm" aria-expanded="false" aria-controls="collapseTransferForm"
+                            (click)="transferType = 2"
+                            >Take out</a></div>
+                        </div>
+                    </li>
                     <li class="list-group-item">
-                    <label class="my-label">Amount: </label>
-                        {{ account.amount }}</li>
-                    <li class="list-group-item">
-                    <label class="my-label">Account currency: </label>
+                        <label class="my-label">Account currency: </label>
                         {{ account.currency.name }}</li>
                     <li class="list-group-item">
-                    <label class="my-label">Email: </label>
+                        <label class="my-label">Email: </label>
                         {{ userInfo.email }}</li>
                     <li class="list-group-item">
-                    <label class="my-label">First Name:</label>
+                        <label class="my-label">First Name:</label>
                         {{ userInfo.first_name }}</li>
                     <li class="list-group-item">
-                    <label class="my-label">Second Name:</label>
+                        <label class="my-label">Second Name:</label>
                         {{ userInfo.second_name }}</li>
                     <li class="list-group-item">
-                    <label class="my-label">Last Name:</label>
+                        <label class="my-label">Last Name:</label>
                         {{ userInfo.last_name }}</li>
                     <li class="list-group-item">
-                    <label class="my-label">Birth date:</label>
+                        <label class="my-label">Birth date:</label>
                         {{ userInfo.birth_date }}</li>
                 </ul>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="transfer">
+                <div class="collapse" id="collapseTransferForm">
+                    <div class="card card-outline-info">
+                        <div class="card-block">
+                            <!-- CREDIT CARD FORM STARTS HERE -->
+                            <div class="panel panel-default credit-card-box">
+
+                                <div class="panel-body">
+                                    <form role="form" id="payment-form" method="POST" action="javascript:void(0);">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="form-group">
+                                                    <label for="amount">Amount</label>
+                                                    <input type="text" class="form-control" name="amount" #amount/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="form-group">
+                                                    <label for="cardNumber">CARD NUMBER</label>
+                                                    <div class="input-group">
+                                                        <input type="tel" class="form-control" name="cardNumber" placeholder="Valid Card Number" autocomplete="cc-number" required autofocus />
+                                                        <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-7 col-md-7">
+                                                <div class="form-group">
+                                                    <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
+                                                    <input type="tel" class="form-control" name="cardExpiry" placeholder="MM / YY" autocomplete="cc-exp" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-5 col-md-5 pull-right">
+                                                <div class="form-group">
+                                                    <label for="cardCVC">CV CODE</label>
+                                                    <input type="tel" class="form-control" name="cardCVC" placeholder="CVC" autocomplete="cc-csc" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <button class="subscribe btn btn-success btn-lg btn-block" type="button"
+                                                (click)="makeTransfer(amount.value)"
+                                                >{{ transferType === 1 ? 'Deposit' : 'Take out' }}</button>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display:none;">
+                                            <div class="col-xs-12">
+                                                <p class="payment-errors"></p>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- CREDIT CARD FORM ENDS HERE -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

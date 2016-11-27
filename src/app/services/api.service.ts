@@ -10,8 +10,9 @@ export class ApiService {
   private headers;
   private currencyPairsUrl = config.apiUrl + '/api/currency_pairs/';
   private ordersUrl = config.apiUrl + '/api/orders/';
-  private userInfoUrl = config.apiUrl + '/api/users/me/'
-  private accountUrl = config.apiUrl + '/api/account/me/'
+  private userInfoUrl = config.apiUrl + '/api/users/me/';
+  private accountUrl = config.apiUrl + '/api/account/me/';
+  private transfersUrl = config.apiUrl + '/api/transfers/';
 
   constructor(private http: Http) {}
 
@@ -60,13 +61,25 @@ export class ApiService {
 
   createOrder(currencyPairId, type, amount) {
     this.setHeaders();
-    console.log(arguments);
     return this.http.post(this.ordersUrl, JSON.stringify({
           "currency_pair_id": currencyPairId,
           "type": type,
           "amount": amount}), {headers: this.headers})
             .toPromise()
             .then(res => res.json())
+            .catch(this.handleError);
+  }
+
+  createTransfer(amount, transferType) {
+    this.setHeaders();
+    return this.http.post(this.transfersUrl, JSON.stringify({
+          "transfer_type": transferType,
+          "amount": amount}), {headers: this.headers})
+            .toPromise()
+            .then(res => {
+              location.reload();
+              return res.json();
+            })
             .catch(this.handleError);
   }
 

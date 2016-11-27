@@ -14,6 +14,7 @@ const config = require('./../../../config/api.conf');
 export class Profile {
   userInfo;
   account;
+  transferType;
 
   constructor(
     private apiService: ApiService,
@@ -25,6 +26,13 @@ export class Profile {
     }
     this.getUserInfo();
     this.getAccount();
+  }
+
+  makeTransfer(amount) {
+    let amountFloat = parseFloat(amount);
+    console.log(this.transferType, amount);
+    if(!this.transferType && !amount) return;
+    this.apiService.createTransfer(amount, this.transferType);
   }
 
   getUserInfo() {
