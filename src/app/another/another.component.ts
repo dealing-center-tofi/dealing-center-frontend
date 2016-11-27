@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ApiService } from '../services/api.service.ts'
-
+import { ApiService } from '../services/api.service'
 
 @Component({
   selector: 'another',
@@ -14,7 +13,7 @@ export class AnotherPage {
 
   constructor(private apiService: ApiService,
               private router: Router) {}
-  
+
   ngOnInit() {
     if(!localStorage.getItem('authToken')) {
       this.router.navigate(['/login']);
@@ -22,13 +21,13 @@ export class AnotherPage {
 
     this.getOrders();
   }
-  
+
   createOrder(currencyPairId, type, amount) {
     if(!currencyPairId && !type && !amount) return;
     this.apiService.createOrder(+currencyPairId, +type, +amount)
       .then(order => this.orders.results.push(order));
   }
-  
+
   getOrders() {
     this.apiService
       .getOrders()

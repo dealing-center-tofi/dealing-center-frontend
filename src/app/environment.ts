@@ -5,13 +5,12 @@ import { enableDebugTools, disableDebugTools } from '@angular/platform-browser';
 import { enableProdMode, ApplicationRef } from '@angular/core';
 
 import { ApiService } from './services/api.service.ts';
-import { CurrencyService } from './services/currency.service.ts';
 import { WebSocketService } from './services/web-socket.service.ts'
 
 // Environment Providers
 let PROVIDERS: any[] = [
   // common env directives
-  ApiService, CurrencyService, WebSocketService
+  ApiService, WebSocketService
 ];
 
 // Angular debug tools in the dev console

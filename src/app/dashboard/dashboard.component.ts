@@ -3,8 +3,8 @@ import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 
-import { ApiService } from '../services/api.service.ts'
-import { CurrencyService } from '../services/currency.service.ts'
+import { ApiService } from '../services/api.service'
+import { WebSocketService } from '../services/web-socket.service'
 
 const config = require('./../../../config/api.conf');
 
@@ -16,14 +16,10 @@ const config = require('./../../../config/api.conf');
 export class Dashboard {
   currencyPairs;
   selectedPair;
-  events = {
-    'authorized': this.onAuthorize
-    'new values': this.onNewValues
-  };
   token;
 
   constructor(
-    private currencyService: CurrencyService,
+    private webSocketService: WebSocketService,
     private apiService: ApiService,
     private router: Router) {}
 
@@ -33,7 +29,7 @@ export class Dashboard {
       this.router.navigate(['/login']);
     }
     this.getCurrencyPairs();
-    this.configurateSocket();
+    this.getSocketData();
   }
 
   createOrder(type, initialAmount) {
@@ -55,10 +51,10 @@ export class Dashboard {
     this.selectedPair = pair;
   }
 
-  configurateSocket() {
-    this.currencyService.messages.subscribe( msg => this.onMessage.apply(this, [msg]));
-    this.currencyService.messages.next(JSON.stringify(['authorize', {'token': this.token}]));
-    this.currencyService.messages.next(JSON.stringify(['subscribe', {}]));
+  getSocketData() {
+    this.webSocketService.getData('new values').subscribe( msg => {
+      console.log(msg);
+   });
   }
 
   copyValues(oldValues, newValues) {
@@ -71,27 +67,13 @@ export class Dashboard {
       oldValues[i].last_value.bid = newValues[i].bid;
       oldValues[i].last_value.ask = newValues[i].ask;
     }
-  }  
-  
+  }
+
   isBigger(a, b) {
     return (a - b) < 0;
   }
 
   isSmaller(a, b) {
     return (a - b) > 0;
-  }
-
-
-  onAuthorize(msg) {
-    console.log('authorized');
-  }
-
-  onNewValues(msg) {
-    if (!this.currencyPairs) return;
-    this.copyValues(this.currencyPairs.results, msg.data[0]);
-  }
-
-  onMessage(msg) {
-    this.events[msg.eventName].apply(this, [msg]);
   }
 }
