@@ -15,6 +15,7 @@ export class Profile {
   userInfo;
   account;
   transferType;
+  isTransfering = 0;
 
   constructor(
     private apiService: ApiService,
@@ -45,5 +46,16 @@ export class Profile {
     this.apiService
       .getAccount()
       .then( account => this.account = account);
+  }
+
+  setClassesProfileInfo() {
+    let classes = {
+      'col-xl-7': this.isTransfering,
+      'offset-xl-0': this.isTransfering,
+      'col-xl-8': !this.isTransfering,
+      'offset-xl-2': !this.isTransfering
+    }
+
+    return classes;
   }
  }

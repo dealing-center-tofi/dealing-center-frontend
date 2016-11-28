@@ -1,7 +1,8 @@
 <h1 class="page-title">Profile</h1>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xl-4 offset-xl-2 col-xs-10 offset-xs-1">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 col-xs-12"
+        [ngClass]="setClassesProfileInfo()">
             <div class="info">
                 <ul *ngIf="userInfo && account" class="list-group">
                     <li class="list-group-item clearfix">
@@ -9,9 +10,11 @@
                         <div class="container pull-right">
                             <div id="make-deposit" class="row"><a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseTransferForm" aria-expanded="false" aria-controls="collapseTransferForm"
                             (click)="transferType = 1"
+                            (click)="isTransfering = !isTransfering"
                             >Make a deposit</a></div>
                             <div class="row"><a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseTransferForm" aria-expanded="false" aria-controls="collapseTransferForm"
                             (click)="transferType = 2"
+                            (click)="isTransfering = !isTransfering"
                             >Take out</a></div>
                         </div>
                     </li>
@@ -36,7 +39,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-xl-4">
+        <div class="col-xl-5 offset-xl-0 col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 col-xs-12">
             <div class="transfer">
                 <div class="collapse" id="collapseTransferForm">
                     <div class="card card-outline-info">
