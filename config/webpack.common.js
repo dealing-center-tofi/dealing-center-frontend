@@ -17,7 +17,7 @@ const ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin')
  */
 const HMR = helpers.hasProcessFlag('hot');
 const METADATA = {
-  title: 'Sing App 3.2.0 with Angular 2.0 Final Release support by Flatlogic',
+  title: 'Dealing center',
   baseUrl: '/',
   isDevServer: helpers.isWebpackDevServer()
 };
