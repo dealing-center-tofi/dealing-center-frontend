@@ -9,7 +9,7 @@ export class ApiService {
 
   private headers;
   private currencyPairsUrl = config.apiUrl + '/api/currency_pairs/';
-  private ordersUrl = config.apiUrl + '/api/orders/';
+  private ordersUrl = config.apiUrl + '/api/orders/?page_size=all';
   private userInfoUrl = config.apiUrl + '/api/users/me/';
   private accountUrl = config.apiUrl + '/api/account/me/';
   private transfersUrl = config.apiUrl + '/api/transfers/';
