@@ -40,13 +40,23 @@ export class OrdersPage {
         sortable: true
       },
       {
+        displayName: 'Status',
+        fieldName: 'status',
+        sortable: true
+      },
+      {
         displayName: 'Amount',
         fieldName: 'amount',
         sortable: true
       },
       {
         displayName: 'Profit',
-        fieldName: 'profit',
+        fieldName: '',
+        sortable: false
+      },
+      {
+        displayName: 'Close',
+        fieldName: '',
         sortable: false
       },
     ];
@@ -72,7 +82,7 @@ export class OrdersPage {
   }
 
   saveOrders(res) {
-    this.orders = res.results;
+    this.orders = res;
     this.orders.forEach(order => {
       order.currency_pair_name = order.currency_pair.name
     });
@@ -83,7 +93,7 @@ export class OrdersPage {
   getOrders() {
     this.apiService
       .getOrders()
-      .then(res => this.saveOrders(res));
+      .then(res => this.saveOrders(res.results));
   }
 
   setSorting(fieldName) {
@@ -99,6 +109,15 @@ export class OrdersPage {
 
   sortOrders() {
     OrderHelper.order(this.orders, this.sortOptions.sortType, this.sortOptions.sortReverse);
+  }
+
+  closeOrder(order) {
+    var self = this;
+    this.apiService.closeOrder(order.id).then(function(res) {
+      let orders = self.orders.filter(function(item){return item.id != order.id});
+      orders.push(res);
+      self.saveOrders(orders);
+    })
   }
 
 }

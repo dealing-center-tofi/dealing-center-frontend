@@ -17,9 +17,13 @@
             <td>{{ order.id }}</td>
             <td>{{ order.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
             <td>{{ order.currency_pair.name }}</td>
-            <td class="order-type-buy" [hidden]="order.type !== 1">Buy</td>
-            <td class="order-type-sell" [hidden]="order.type === 1">Sell</td>
+            <td class="order-type-buy" *ngIf="order.type === 1">Buy</td>
+            <td class="order-type-sell" *ngIf="order.type !== 1">Sell</td>
+            <td *ngIf="order.status === 1">Opened</td>
+            <td *ngIf="order.status !== 1">Closed</td>
             <td>{{ order.amount }}</td>
+            <td>profit</td>
+            <td><a *ngIf="order.status === 1" (click)="closeOrder(order)">Close</a></td>
           </tr>
         </table>
       </div>

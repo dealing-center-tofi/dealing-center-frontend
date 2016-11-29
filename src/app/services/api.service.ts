@@ -9,7 +9,8 @@ export class ApiService {
 
   private headers;
   private currencyPairsUrl = config.apiUrl + '/api/currency_pairs/';
-  private ordersUrl = config.apiUrl + '/api/orders/?page_size=all';
+  private ordersUrl = config.apiUrl + '/api/orders/';
+  private ordersUrlAll = this.ordersUrl + '?page_size=all';
   private userInfoUrl = config.apiUrl + '/api/users/me/';
   private accountUrl = config.apiUrl + '/api/account/me/';
   private transfersUrl = config.apiUrl + '/api/transfers/';
@@ -53,7 +54,7 @@ export class ApiService {
 
   getOrders(): Promise<any> {
     this.setHeaders();
-    return this.http.get(this.ordersUrl, {headers: this.headers})
+    return this.http.get(this.ordersUrlAll, {headers: this.headers})
               .toPromise()
               .then(response => response.json())
               .catch(this.handleError);
@@ -65,6 +66,14 @@ export class ApiService {
           "currency_pair_id": currencyPairId,
           "type": type,
           "amount": amount}), {headers: this.headers})
+            .toPromise()
+            .then(res => res.json())
+            .catch(this.handleError);
+  }
+
+  closeOrder(orderId) {
+    this.setHeaders();
+    return this.http.post(this.ordersUrl + orderId + '/close/', {}, {headers: this.headers})
             .toPromise()
             .then(res => res.json())
             .catch(this.handleError);
