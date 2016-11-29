@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
@@ -15,11 +15,12 @@ export class Profile {
   userInfo;
   account;
   transferType;
-  isTransfering = 0;
+  isTransferFormShown = 0;
 
   constructor(
     private apiService: ApiService,
-    private router: Router) {}
+    private router: Router,
+    private zone: NgZone) {}
 
   ngOnInit() {
     if(!localStorage.getItem('authToken')) {
@@ -27,6 +28,20 @@ export class Profile {
     }
     this.getUserInfo();
     this.getAccount();
+    this.setCollapseListeners();
+  }
+
+  setCollapseListeners() {
+    $('#collapse-deposit-form, #collapse-take-out-form').on('show.bs.collapse', () => { 
+      this.zone.run(() => { 
+        this.isTransferFormShown = 1; 
+      });
+    });   
+    $('#collapse-deposit-form, #collapse-take-out-form').on('hidden.bs.collapse', () => { 
+      this.zone.run(() => {
+        this.isTransferFormShown = 0;
+      });
+    });
   }
 
   makeTransfer(amount) {
@@ -50,10 +65,10 @@ export class Profile {
 
   setClassesProfileInfo() {
     let classes = {
-      'col-xl-7': this.isTransfering,
-      'offset-xl-0': this.isTransfering,
-      'col-xl-8': !this.isTransfering,
-      'offset-xl-2': !this.isTransfering
+      'col-xl-7': this.isTransferFormShown,
+      'offset-xl-0': this.isTransferFormShown,
+      'col-xl-8': !this.isTransferFormShown,
+      'offset-xl-2': !this.isTransferFormShown
     }
 
     return classes;
