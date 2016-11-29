@@ -2,31 +2,28 @@
 
 <div class="row">
   <div class="col-md-3">
-    <section widget class="widget">
+    <section class="currency-pairs">
       <header>
         <h4>
-          Example <span class="fw-semi-bold">Widget</span>
+          Currency pairs
         </h4>
-        <div class="widget-controls">
-          <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
-          <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
-          <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
-        </div>
       </header>
-      <div class="widget-body no-padding">
+      <div class="no-padding">
         <div class="list-group list-group-lg" *ngIf="currencyPairs">
           <a class="list-group-item" *ngFor="let currencyPair of currencyPairs.results"
           (click)="selectedPair = currencyPair"
           [class.active]="currencyPair === selectedPair">
-            <p>
-              {{ currencyPair.name }}:
-              <span [class.red]="currencyPair.last_value.isDownBid"
-                    [class.green]="currencyPair.last_value.isUpBid"
-              >{{ roundValue(currencyPair.last_value.bid) }}</span>
-              <span [class.red]="currencyPair.last_value.isDownAsk"
-                    [class.green]="currencyPair.last_value.isUpAsk"
-              >{{ roundValue(currencyPair.last_value.ask) }}</span>
-            </p>
+            <div class="currency-pair">
+              <div class="currency-pair-name">
+                {{ currencyPair.name }}
+              </div>
+              <div class="currency-pair-value"
+                [class.red]="!currencyPair.isBigger"
+                [class.green]="currencyPair.isBigger"
+              >
+                {{ roundValue(currencyPair.last_value.bid) }} {{ roundValue(currencyPair.last_value.ask) }}
+              </div>
+            </div>
           </a>
         </div>
       </div>
@@ -34,10 +31,10 @@
     </div>
     <div class="col-md-9">
           <section class="event">
-            <div class="form-group row">
+            <div class="form-group row new-order">
               <input class="col-md-2 form-control" #amount>
-              <button (click)="createOrder(1, amount.value)" class="submit btn btn-secondary">Buy</button>
-              <button (click)="createOrder(2, amount.value)" class="submit btn btn-secondary">Sell</button>
+              <button (click)="createOrder(1, amount.value)" class="submit btn btn-secondary btn-success">Buy</button>
+              <button (click)="createOrder(2, amount.value)" class="submit btn btn-secondary btn-warning">Sell</button>
             </div>
           </section>
     </div>

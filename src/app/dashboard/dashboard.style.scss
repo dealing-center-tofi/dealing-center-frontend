@@ -5,3 +5,41 @@
 .green {
     color: green;
 }
+
+.currency-pairs {
+	background-color: #fff;
+}
+
+.currency-pairs > header {
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.currency-pair{
+	font-weight: bold;
+	font-size: 16px;
+	text-align: center;
+}
+
+.btn {
+	margin-left: 10px;
+}
+
+.new-order {
+	background: #fff;
+	padding: 10px;
+	width: initial;
+}
+
+.new-order > input {
+	transition: box-shadow 1s;
+}
+
+.new-order-success {
+	box-shadow: 3px 3px 3px 3px green;
+}
+
+.new-order-errror {
+	box-shadow: 3px 3px 3px 3px red;
+}

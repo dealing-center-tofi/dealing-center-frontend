@@ -40,7 +40,10 @@ export class Dashboard {
   getCurrencyPairs() {
     this.apiService
       .getCurrencyPairs()
-      .then(currencyPairs => this.currencyPairs = currencyPairs);
+      .then(currencyPairs => {
+        this.currencyPairs = currencyPairs;
+        this.selectedPair = currencyPairs.results[0];
+      });
   }
 
   roundValue(value) {
@@ -50,6 +53,7 @@ export class Dashboard {
   getSocketData() {
     this.webSocketService.getData('new values').subscribe(res => {
       for (let i = 0; i < 6; i++) {
+        this.currencyPairs.results[i].isBigger = this.isBigger(res[i].bid, this.currencyPairs.results[i].last_value.bid)
         this.currencyPairs.results[i].last_value = res[i];
       }
     });
@@ -60,18 +64,12 @@ export class Dashboard {
     for (let i = 0; i < oldValues.length; i++) {
       oldValues[i].last_value.isUpBid = this.isBigger(newValues[i].bid, oldValues[i].last_value.bid);
       oldValues[i].last_value.isUpAsk = this.isBigger(newValues[i].ask, oldValues[i].last_value.ask);
-      oldValues[i].last_value.isDownBid = this.isSmaller(newValues[i].bid, oldValues[i].last_value.bid);
-      oldValues[i].last_value.isDownAsk = this.isSmaller(newValues[i].ask, oldValues[i].last_value.ask);
       oldValues[i].last_value.bid = newValues[i].bid;
       oldValues[i].last_value.ask = newValues[i].ask;
     }
   }
 
   isBigger(a, b) {
-    return (a - b) < 0;
-  }
-
-  isSmaller(a, b) {
-    return (a - b) > 0;
+    return a >= b;
   }
 }
