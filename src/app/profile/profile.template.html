@@ -7,7 +7,7 @@
                     <li class="list-group-item clearfix">
                         <label class="my-label amount-label">Amount: </label><span class="amount">{{ account.amount }}</span>
                         <div class="container pull-right">
-                            <div class="row">
+                            <div id="deposit-button" class="row">
                                 <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapse-deposit-form" aria-expanded="false" aria-controls="collapse-deposit-form" [class.disabled]="isTransferFormShown && transferType === 2" (click)="transferType = 1">Make a deposit</a>
                             </div>
                             <div class="row">
