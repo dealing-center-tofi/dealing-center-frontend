@@ -1,0 +1,15 @@
+.show-on-nav-collapsed {
+  display: none !important;
+}
+
+.nav-collapsed .show-on-nav-collapsed {
+  display: block !important;
+}
+
+.hide-on-nav-collapsed {
+  display: block !important;
+}
+
+.nav-collapsed .hide-on-nav-collapsed {
+  display: none !important;
+}
