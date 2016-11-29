@@ -3,26 +3,22 @@
 <div class="row">
   <div class="col-md-12">
     <section widget class="widget">
-      <header>
-        <div class="widget-controls">
-          <a data-widgster="expand" title="Expand" href="#"><i class="glyphicon glyphicon-chevron-up"></i></a>
-          <a data-widgster="collapse" title="Collapse" href="#"><i class="glyphicon glyphicon-chevron-down"></i></a>
-          <a href="#" data-widgster="close"><i class="glyphicon glyphicon-remove"></i></a>
-        </div>
-      </header>
       <div class="widget-body">
         <table *ngIf="orders" class="table">
-          <th>Order</th>
-          <th>Time</th>
-          <th>Currency Pair</th>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Profit</th>
-          <tr *ngFor="let order of orders.results">
+          <th *ngFor="let header of tableHeaders">
+            <a (click)="header.sortable && setSorting(header.fieldName)">
+              {{header.displayName}}
+              <span [hidden]="sortOptions.sortType != header.fieldName || sortOptions.sortReverse" class="fa fa-caret-down"></span>
+              <span [hidden]="sortOptions.sortType != header.fieldName || !sortOptions.sortReverse" class="fa fa-caret-up"></span>
+            </a>
+          </th>
+
+          <tr *ngFor="let order of orders">
             <td>{{ order.id }}</td>
-            <td>{{ order.start_time | date: 'shortDate'}}</td>
+            <td>{{ order.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
             <td>{{ order.currency_pair.name }}</td>
-            <td>{{ order.type === 1 ? 'Buy' : 'Sell' }}</td>
+            <td class="order-type-buy" [hidden]="order.type !== 1">Buy</td>
+            <td class="order-type-sell" [hidden]="order.type === 1">Sell</td>
             <td>{{ order.amount }}</td>
           </tr>
         </table>
