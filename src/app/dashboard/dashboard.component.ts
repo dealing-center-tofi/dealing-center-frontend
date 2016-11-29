@@ -17,6 +17,8 @@ export class Dashboard {
   currencyPairs;
   selectedPair;
   token;
+  hideOrderSuccess = true;
+  hideOrderError = true;
 
   constructor(private webSocketService:WebSocketService,
               private apiService:ApiService,
@@ -32,9 +34,22 @@ export class Dashboard {
     this.getSocketData();
   }
 
-  createOrder(type, initialAmount) {
-    if (!this.selectedPair.id && !type && !initialAmount) return;
-    this.apiService.createOrder(this.selectedPair.id, +type, +initialAmount);
+  createOrder(type, amount) {
+    if (!this.selectedPair.id && !type && !amount) return;
+    var self = this;
+    this.apiService.createOrder(this.selectedPair.id, +type, +amount.value).then(function() {
+      self.hideOrderSuccess = false;
+      setTimeout(function() {
+        self.hideOrderSuccess = true;
+        amount.value = '';
+      }, 2000)
+    })
+    .catch(function() {
+      self.hideOrderError = false;
+      setTimeout(function() {
+        self.hideOrderError = true;
+      }, 2000)
+    });
   }
 
   getCurrencyPairs() {

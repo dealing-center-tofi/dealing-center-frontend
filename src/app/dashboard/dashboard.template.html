@@ -33,8 +33,16 @@
           <section class="event">
             <div class="form-group row new-order">
               <input class="col-md-2 form-control" #amount>
-              <button (click)="createOrder(1, amount.value)" class="submit btn btn-secondary btn-success">Buy</button>
-              <button (click)="createOrder(2, amount.value)" class="submit btn btn-secondary btn-warning">Sell</button>
+              <button (click)="createOrder(1, amount)" class="submit btn btn-secondary btn-success">Buy</button>
+              <button (click)="createOrder(2, amount)" class="submit btn btn-secondary btn-warning">Sell</button>
+              <span>
+                <div class="new-order-message new-order-success" [class.hide-order-success]="hideOrderSuccess">
+                  Order has been created.
+                </div>
+                <div class="new-order-message new-order-error" [class.hide-order-error]="hideOrderError">
+                  Order hasn't been created.
+                </div>
+              </span>
             </div>
           </section>
     </div>

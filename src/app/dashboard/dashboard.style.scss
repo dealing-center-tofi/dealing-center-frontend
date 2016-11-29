@@ -36,10 +36,25 @@
 	transition: box-shadow 1s;
 }
 
-.new-order-success {
-	box-shadow: 3px 3px 3px 3px green;
+.new-order-message {
+	font-weight: bold;
+	position: absolute;
+	right: 10px;
+	font-size: 16px;
 }
 
-.new-order-errror {
-	box-shadow: 3px 3px 3px 3px red;
+.new-order-success {
+	color: green;
+}
+
+.new-order-error {
+	color: red;
+}
+
+.hide-order-success {
+	visibility: hidden;
+}
+
+.hide-order-error {
+	visibility: hidden;
 }
