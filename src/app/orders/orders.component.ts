@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service'
 
 @Component({
-  selector: 'another',
-  templateUrl: './another.template.html',
-  styleUrls: ['./another.style.scss']
+  selector: 'orders',
+  templateUrl: './orders.template.html',
+  styleUrls: ['./orders.style.scss']
 })
-export class AnotherPage {
+export class OrdersPage {
   private orders: any;
 
   constructor(private apiService: ApiService,
