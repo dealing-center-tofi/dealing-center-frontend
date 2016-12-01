@@ -10,7 +10,7 @@
       </header>
       <div class="no-padding">
         <div class="list-group list-group-lg" *ngIf="currencyPairs">
-          <a class="list-group-item" *ngFor="let currencyPair of currencyPairs.results"
+          <a class="list-group-item" *ngFor="let currencyPair of currencyPairs"
           (click)="selectedPair = currencyPair"
           [class.active]="currencyPair === selectedPair">
             <div class="currency-pair">
@@ -21,7 +21,7 @@
                 [class.red]="!currencyPair.isBigger"
                 [class.green]="currencyPair.isBigger"
               >
-                {{ roundValue(currencyPair.last_value.bid) }} {{ roundValue(currencyPair.last_value.ask) }}
+                {{ currencyPair.last_value.bid.toFixed(rankRound) }} {{ currencyPair.last_value.ask.toFixed(rankRound) }}
               </div>
             </div>
           </a>

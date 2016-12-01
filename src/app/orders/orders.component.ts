@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ApiService } from '../services/api.service';
+import { OrdersService } from '../services/orders.service';
 
 import { OrderHelper } from './orderingHelper';
+const config = require('./../../../config/api.conf');
 
 
 @Component({
@@ -15,9 +17,11 @@ export class OrdersPage {
   private orders: any;
   private tableHeaders: any;
   private sortOptions: any;
+  private rankRound = config.rankRound;
 
   constructor(private apiService: ApiService,
-              private router: Router) {
+              private router: Router,
+              private ordersService: OrdersService) {
     this.tableHeaders = [
       {
         displayName: 'Order',
@@ -91,9 +95,7 @@ export class OrdersPage {
   }
 
   getOrders() {
-    this.apiService
-      .getOrders()
-      .then(res => this.saveOrders(res.results));
+    this.ordersService.orders.subscribe(res => this.saveOrders(res));
   }
 
   setSorting(fieldName) {

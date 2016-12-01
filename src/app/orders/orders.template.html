@@ -22,7 +22,9 @@
             <td *ngIf="order.status === 1">Opened</td>
             <td *ngIf="order.status !== 1">Closed</td>
             <td>{{ order.amount }}</td>
-            <td>profit</td>
+            <td [class.red]="order.profit <= 0"
+                [class.green]="order.profit > 0"
+            >{{ order.profit.toFixed(rankRound) }}</td>
             <td><a *ngIf="order.status === 1" (click)="closeOrder(order)">Close</a></td>
           </tr>
         </table>

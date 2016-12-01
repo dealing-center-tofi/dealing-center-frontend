@@ -6,11 +6,13 @@ import { enableProdMode, ApplicationRef } from '@angular/core';
 
 import { ApiService } from './services/api.service.ts';
 import { WebSocketService } from './services/web-socket.service.ts'
+import { CurrencyPairsService } from './services/currency-pairs.service'
+import { OrdersService } from './services/orders.service'
 
 // Environment Providers
 let PROVIDERS: any[] = [
   // common env directives
-  ApiService, WebSocketService
+  ApiService, WebSocketService, CurrencyPairsService, OrdersService
 ];
 
 // Angular debug tools in the dev console

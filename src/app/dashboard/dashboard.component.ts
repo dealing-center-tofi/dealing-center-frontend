@@ -5,13 +5,11 @@ import { Router } from '@angular/router';
 
 import { ApiService } from '../services/api.service';
 import { CurrencyPairsService } from '../services/currency-pairs.service';
-import { WebSocketService } from '../services/web-socket.service';
 
 const config = require('./../../../config/api.conf');
 
 @Component({
   selector: 'dashboard',
-  providers: [CurrencyPairsService],
   templateUrl: './dashboard.template.html',
   styleUrls: ['./dashboard.style.scss']
 })
@@ -21,9 +19,9 @@ export class Dashboard {
   token;
   hideOrderSuccess = true;
   hideOrderError = true;
+  rankRound = config.rankRound;
 
-  constructor(private webSocketService:WebSocketService,
-              private apiService:ApiService,
+  constructor(private apiService:ApiService,
               private router:Router,
               private currencyPairsService: CurrencyPairsService) {
   }
@@ -33,10 +31,7 @@ export class Dashboard {
     if (!this.token) {
       this.router.navigate(['/login']);
     }
-    this.getCurrencyPairs()
-      .then( () => {
-        this.getSocketData.call(this);
-      });
+    this.getCurrencyPairs();
   }
 
   createOrder(type, amount) {
@@ -58,31 +53,6 @@ export class Dashboard {
   }
 
   getCurrencyPairs() {
-    return this.apiService
-      .getCurrencyPairs()
-      .then(currencyPairs => {
-        this.currencyPairs = currencyPairs;
-        this.selectedPair = currencyPairs.results[0];
-      });
-  }
-
-  roundValue(value) {
-    return value.toFixed(config.rankRound);
-  }
-
-  getSocketData() {
-    this.currencyPairsService.currencyPairs.subscribe(res => {
-      let len = (res.length != this.currencyPairs.results.length)? 0: res.length;
-      if (len === 0)
-        return;
-      for (let i = 0; i < len; i++) {
-        this.currencyPairs.results[i].isBigger = this.isBigger(res[i].bid, this.currencyPairs.results[i].last_value.bid)
-        this.currencyPairs.results[i].last_value = res[i];
-      }
-    });
-  }
-
-  isBigger(a, b) {
-    return a >= b;
+    this.currencyPairsService.currencyPairs.subscribe(res => this.currencyPairs = res);
   }
 }
