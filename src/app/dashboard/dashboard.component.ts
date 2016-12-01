@@ -3,10 +3,9 @@ import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 
-import { ApiService } from '../services/api.service';
+import { OrdersService } from '../services/orders.service';
 import { CurrencyPairsService } from '../services/currency-pairs.service';
-
-const config = require('./../../../config/api.conf');
+import { RoundHelper } from '../helpers/roundHelper';
 
 @Component({
   selector: 'dashboard',
@@ -19,9 +18,9 @@ export class Dashboard {
   token;
   hideOrderSuccess = true;
   hideOrderError = true;
-  rankRound = config.rankRound;
+  round = RoundHelper.round;
 
-  constructor(private apiService:ApiService,
+  constructor(private ordersService:OrdersService,
               private router:Router,
               private currencyPairsService: CurrencyPairsService) {
   }
@@ -36,18 +35,16 @@ export class Dashboard {
 
   createOrder(type, amount) {
     if (!this.selectedPair.id && !type && !amount) return;
-    var self = this;
-    this.apiService.createOrder(this.selectedPair.id, +type, +amount.value).then(function() {
-      self.hideOrderSuccess = false;
-      setTimeout(function() {
-        self.hideOrderSuccess = true;
+    this.ordersService.createOrder(this.selectedPair.id, +type, parseFloat(amount.value)).then( () => {
+      this.hideOrderSuccess = false;
+      setTimeout(() => {
+        this.hideOrderSuccess = true;
         amount.value = '';
       }, 2000)
-    })
-    .catch(function() {
-      self.hideOrderError = false;
-      setTimeout(function() {
-        self.hideOrderError = true;
+    }).catch( () => {
+      this.hideOrderError = false;
+      setTimeout(() => {
+        this.hideOrderError = true;
       }, 2000)
     });
   }

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ApiService } from '../services/api.service';
 import { OrdersService } from '../services/orders.service';
-
+import { RoundHelper } from '../helpers/roundHelper';
 import { OrderHelper } from './orderingHelper';
+
 const config = require('./../../../config/api.conf');
 
 
@@ -17,10 +17,9 @@ export class OrdersPage {
   private orders: any;
   private tableHeaders: any;
   private sortOptions: any;
-  private rankRound = config.rankRound;
+  private round = RoundHelper.round;
 
-  constructor(private apiService: ApiService,
-              private router: Router,
+  constructor(private router: Router,
               private ordersService: OrdersService) {
     this.tableHeaders = [
       {
@@ -55,8 +54,8 @@ export class OrdersPage {
       },
       {
         displayName: 'Profit',
-        fieldName: '',
-        sortable: false
+        fieldName: 'profit',
+        sortable: true
       },
       {
         displayName: 'Close',
@@ -79,23 +78,18 @@ export class OrdersPage {
     this.getOrders();
   }
 
-  createOrder(currencyPairId, type, amount) {
-    if(!currencyPairId && !type && !amount) return;
-    this.apiService.createOrder(+currencyPairId, +type, +amount)
-      .then(order => this.orders.push(order));
-  }
-
-  saveOrders(res) {
-    this.orders = res;
+  saveOrders() {
     this.orders.forEach(order => {
       order.currency_pair_name = order.currency_pair.name
     });
-
     this.sortOrders();
   }
 
   getOrders() {
-    this.ordersService.orders.subscribe(res => this.saveOrders(res));
+    this.ordersService.getOrders().subscribe(res => {
+      this.orders = res;
+      this.saveOrders();
+    });
   }
 
   setSorting(fieldName) {
@@ -114,12 +108,9 @@ export class OrdersPage {
   }
 
   closeOrder(order) {
-    var self = this;
-    this.apiService.closeOrder(order.id).then(function(res) {
-      let orders = self.orders.filter(function(item){return item.id != order.id});
-      orders.push(res);
-      self.saveOrders(orders);
-    })
+    this.ordersService.closeOrder(order).then( () => {
+      this.saveOrders();
+    });
   }
 
 }

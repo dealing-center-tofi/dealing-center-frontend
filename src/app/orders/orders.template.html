@@ -24,7 +24,7 @@
             <td>{{ order.amount }}</td>
             <td [class.red]="order.profit <= 0"
                 [class.green]="order.profit > 0"
-            >{{ order.profit.toFixed(rankRound) }}</td>
+            >{{ round(order.profit) }}</td>
             <td><a *ngIf="order.status === 1" (click)="closeOrder(order)">Close</a></td>
           </tr>
         </table>

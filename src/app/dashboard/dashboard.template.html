@@ -21,7 +21,7 @@
                 [class.red]="!currencyPair.isBigger"
                 [class.green]="currencyPair.isBigger"
               >
-                {{ currencyPair.last_value.bid.toFixed(rankRound) }} {{ currencyPair.last_value.ask.toFixed(rankRound) }}
+                {{ round(currencyPair.last_value.bid) }} {{ round(currencyPair.last_value.ask) }}
               </div>
             </div>
           </a>

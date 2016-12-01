@@ -5,9 +5,9 @@ import { enableDebugTools, disableDebugTools } from '@angular/platform-browser';
 import { enableProdMode, ApplicationRef } from '@angular/core';
 
 import { ApiService } from './services/api.service.ts';
-import { WebSocketService } from './services/web-socket.service.ts'
-import { CurrencyPairsService } from './services/currency-pairs.service'
-import { OrdersService } from './services/orders.service'
+import { WebSocketService } from './services/web-socket.service.ts';
+import { CurrencyPairsService } from './services/currency-pairs.service';
+import { OrdersService } from './services/orders.service';
 
 // Environment Providers
 let PROVIDERS: any[] = [

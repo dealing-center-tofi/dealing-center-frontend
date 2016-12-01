@@ -7,7 +7,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 export class OrdersService {
 
   private _orders: BehaviorSubject<Array<Object>> = new BehaviorSubject(Object([]));
-  public orders: Observable<Array<Object>> = this._orders.asObservable();
+  private orders;
   private currencyPairs;
   private account;
 
@@ -25,21 +25,24 @@ export class OrdersService {
       this.getAccount()
     ])
       .then( (res) => {
-        this._orders.next(res[0].results);
-        this.updateCurrencyPairs(res[0].results);
+        this.orders = res[0].results;
+        this._orders.next(this.orders);
+        this.updateCurrencyPairs();
       });
   }
 
-  updateCurrencyPairs(orders) {
+  updateCurrencyPairs() {
     this.currencyPairsService.currencyPairs.subscribe(res => {
       this.currencyPairs = res;
-      orders.forEach((order) => {
+      if (res.length === 0)
+        return;
+      this.orders.forEach((order) => {
         order.currency_pair = res.find((currency) => {
           return currency.id === order.currency_pair.id;
         });
-        order.profit = this.getProfit(order);
+        order.profit = order.end_profit || this.getProfit(order);
       });
-      this._orders.next(orders);
+      this._orders.next(this.orders);
     });
   }
 
@@ -79,5 +82,25 @@ export class OrdersService {
     return this.apiService
       .getAccount()
       .then( account => this.account = account );
+  }
+
+  createOrder(currencyPairId, type, amount) {
+    return this.apiService.createOrder(currencyPairId, type, amount)
+      .then(order => {
+        this.orders.push(order);
+        this._orders.next(this.orders);
+      });
+  }
+
+  closeOrder(order) {
+    return this.apiService.closeOrder(order.id).then( res => {
+      this.orders = this.orders.filter( (item) => {return item.id != order.id} );
+      this.orders.push(res);
+      this._orders.next(this.orders);
+    });
+  }
+
+  getOrders() {
+    return this._orders.asObservable();
   }
 }
