@@ -113,4 +113,11 @@ export class OrdersPage {
     });
   }
 
+  isOpened(order) {
+    return order.status == 1;
+  }
+
+  isBuyType(order) {
+    return order.type == 1;
+  }
 }
