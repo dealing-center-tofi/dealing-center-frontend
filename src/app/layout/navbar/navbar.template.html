@@ -17,14 +17,16 @@
           <i class="fa fa-bars fa-lg hidden-sm-down"></i>
         </a>
       </li>
-      <li>
-        <span class="sidebar-labels label-name">
+      <li class="nav-item">
+        <span class="fa-lg">
           Balance:
           {{ round(amount) }}
+          {{ currency_name }}
         </span>
-        <span>
+        <span class="fa-lg">
           Funds:
           {{ round(funds) }}
+          {{ currency_name }}
         </span>
       </li>
     </ul>

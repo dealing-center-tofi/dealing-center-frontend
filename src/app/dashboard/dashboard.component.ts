@@ -29,8 +29,9 @@ export class Dashboard {
     this.token = localStorage.getItem('authToken');
     if (!this.token) {
       this.router.navigate(['/login']);
+    } else {
+      this.getCurrencyPairs();
     }
-    this.getCurrencyPairs();
   }
 
   createOrder(type, amount) {
@@ -50,6 +51,6 @@ export class Dashboard {
   }
 
   getCurrencyPairs() {
-    this.currencyPairsService.currencyPairs.subscribe(res => this.currencyPairs = res);
+    this.currencyPairsService.getCurrencyPairs().subscribe(res => this.currencyPairs = res);
   }
 }

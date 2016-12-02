@@ -5,18 +5,23 @@ import {BehaviorSubject, Observable} from "rxjs";
 @Injectable()
 export class AccountService {
   private _account = new BehaviorSubject(Object);
-  public account: Observable<Object> = this._account.asObservable();
+  //public account: Observable<Object> = this._account.asObservable();
+  private account;
 
   constructor(private apiService:ApiService) {
-    let token = localStorage.getItem('authToken');
-    if (token != undefined) {
-      this.getAccount();
-    }
+  }
+
+  updateAccount() {
+    this.apiService.getAccount().then( res => {
+      this.account = res;
+      this._account.next(this.account);
+    });
   }
 
   getAccount() {
-    this.apiService.getAccount().then( res => {
-      this._account.next(res);
-    });
+    if (!this.account) {
+      this.updateAccount();
+    }
+    return this._account.asObservable();
   }
 }

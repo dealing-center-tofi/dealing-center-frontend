@@ -7,20 +7,26 @@ import { ApiService } from './api.service';
 @Injectable()
 export class CurrencyPairsService {
   private _currencyPairs: BehaviorSubject<Array<Object>> = new BehaviorSubject(Object([]));
-  public currencyPairs: Observable<Array<Object>> = this._currencyPairs.asObservable();
+  private currencyPairs;
 
   constructor(private webSocketService: WebSocketService,
               private apiService: ApiService) {
-    let token = localStorage.getItem('authToken');
-    if (token != undefined) {
-      let currencies;
-      this.apiService.getCurrencyPairs()
-        .then(currencyPairs => {
-          currencies = currencyPairs.results.sort( (a, b) =>{ return a.id - b.id });
-          this._currencyPairs.next(currencies);
-        })
-        .then(() => this.getWebsocketData.call(this, currencies));
+  }
+
+  getCurrencyPairs() {
+    if (!this.currencyPairs) {
+      this.subscribeOnWebsocket();
     }
+    return this._currencyPairs.asObservable();
+  }
+
+  private subscribeOnWebsocket() {
+    this.apiService.getCurrencyPairs()
+      .then(currencyPairs => {
+        this.currencyPairs = currencyPairs.results.sort( (a, b) =>{ return a.id - b.id });
+        this._currencyPairs.next(this.currencyPairs);
+      })
+      .then(() => this.getWebsocketData.call(this, this.currencyPairs));
   }
 
   getWebsocketData(currencies) {

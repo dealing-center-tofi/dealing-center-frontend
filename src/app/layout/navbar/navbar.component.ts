@@ -17,6 +17,7 @@ export class Navbar implements OnInit {
   round = RoundHelper.round;
   amount;
   funds;
+  currency_name;
 
   constructor(el: ElementRef,
               config: AppConfig,
@@ -24,14 +25,6 @@ export class Navbar implements OnInit {
               private ordersService: OrdersService) {
     this.$el = jQuery(el.nativeElement);
     this.config = config.getConfig();
-
-    this.accountService.account.subscribe( res => {
-      this.amount = res.amount;
-      this.ordersService.getOrders().subscribe( res => {
-        let profit = this.ordersService.getOrdersProfit(res);
-        this.funds = this.amount + (isNaN(profit) ? 0 : profit);
-      });
-    });
   }
 
   toggleSidebar(state): void {
@@ -43,6 +36,16 @@ export class Navbar implements OnInit {
   }
 
   ngOnInit(): void {
+    if (localStorage.getItem('authToken')) {
+      this.accountService.getAccount().subscribe(res => {
+        this.amount = res.amount;
+        this.currency_name = res.currency ? res.currency.name : '';
+        this.ordersService.getOrdersProfit().subscribe(res => {
+          this.funds = this.amount + (typeof(res) === 'number' ? res : 0);
+        });
+      });
+    }
+
     setTimeout(() => {
       let $chatNotification = jQuery('#chat-notification');
       $chatNotification.removeClass('hide').addClass('animated fadeIn')
