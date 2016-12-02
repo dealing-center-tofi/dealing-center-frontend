@@ -1,6 +1,7 @@
 import { Injectable }    from '@angular/core';
 import { CurrencyPairsService } from '../services/currency-pairs.service';
 import { ApiService } from '../services/api.service';
+import { AccountService } from '../services/account.service';
 import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable()
@@ -12,7 +13,8 @@ export class OrdersService {
   private account;
 
   constructor(private currencyPairsService: CurrencyPairsService,
-              private apiService: ApiService) {
+              private apiService: ApiService,
+              private accountService: AccountService) {
     let token = localStorage.getItem('authToken');
     if (token != undefined) {
       this.fillOrders();
@@ -72,6 +74,12 @@ export class OrdersService {
     return amount;
   }
 
+  getOrdersProfit(orders) {
+    return orders.reduce( (sum, order) => {
+      return sum + (order.status === 1) ? parseFloat(order.profit) : 0;
+    }, 0);
+  }
+
   findSubPair(currency1, currency2) {
     return this.currencyPairs.find((item) => {
       return item.name.includes(currency1) && item.name.includes(currency2);
@@ -79,9 +87,7 @@ export class OrdersService {
   }
 
   getAccount() {
-    return this.apiService
-      .getAccount()
-      .then( account => this.account = account );
+    this.accountService.account.subscribe( res => this.account = res);
   }
 
   createOrder(currencyPairId, type, amount) {
@@ -97,6 +103,7 @@ export class OrdersService {
       this.orders = this.orders.filter( (item) => {return item.id != order.id} );
       this.orders.push(res);
       this._orders.next(this.orders);
+      this.accountService.getAccount();
     });
   }
 

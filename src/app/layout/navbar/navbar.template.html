@@ -17,6 +17,16 @@
           <i class="fa fa-bars fa-lg hidden-sm-down"></i>
         </a>
       </li>
+      <li>
+        <span class="sidebar-labels label-name">
+          Balance:
+          {{ round(amount) }}
+        </span>
+        <span>
+          Funds:
+          {{ round(funds) }}
+        </span>
+      </li>
     </ul>
 
     <ul class="nav navbar-nav pull-xs-right" (click)="$event.preventDefault()">
