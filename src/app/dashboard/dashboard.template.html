@@ -1,5 +1,4 @@
 <h1 class="page-title">Home</h1>
-
 <div class="row">
   <div class="col-md-3">
     <section class="currency-pairs">
@@ -11,16 +10,13 @@
       <div class="no-padding">
         <div class="list-group list-group-lg" *ngIf="currencyPairs">
           <a class="list-group-item" *ngFor="let currencyPair of currencyPairs.results"
-          (click)="selectedPair = currencyPair"
-          [class.active]="currencyPair === selectedPair">
+             (click)="selectedPair = currencyPair" [class.active]="currencyPair === selectedPair">
             <div class="currency-pair">
               <div class="currency-pair-name">
                 {{ currencyPair.name }}
               </div>
-              <div class="currency-pair-value"
-                [class.red]="!currencyPair.isBigger"
-                [class.green]="currencyPair.isBigger"
-              >
+              <div class="currency-pair-value" [class.red]="!currencyPair.isBigger"
+                   [class.green]="currencyPair.isBigger">
                 {{ roundValue(currencyPair.last_value.bid) }} {{ roundValue(currencyPair.last_value.ask) }}
               </div>
             </div>
@@ -28,22 +24,44 @@
         </div>
       </div>
     </section>
+  </div>
+  <div class="col-md-9">
+    <div class="new-order">
+      <form #createOrderForm="ngForm" class="form-inline" (ngSubmit)="createOrder(createOrderForm.value)">
+        <div class="form-group">
+          <input type="text" class="form-control" name="amount" [(ngModel)]="amount"
+                 required pattern="(?:\d*\.)?\d+">
+
+        </div>
+        <div class="btn-group">
+          <label class="btn btn-secondary"
+                 [class.active]="orderType === buy.value">
+            <input id="option1" type="radio" name="options" value="Buy" autocomplete="off" required
+                   #buy
+                   [(ngModel)]="orderType"
+                   (click)="toggleButton(buy)">Buy
+          </label>
+          <label class="btn btn-secondary"
+                 [class.active]="orderType === sell.value">
+            <input id="option2" type="radio" name="options" value="Sell" autocomplete="off" required
+                   #sell
+                   [(ngModel)]="orderType"
+                   (click)="toggleButton(sell)">Sell
+          </label>
+        </div>
+        <button type="submit" class="btn btn-success">Create order</button>
+        <!--  <button (click)="createOrder(1, amount)" class="submit btn btn-secondary btn-success">Buy</button>
+            <button (click)="createOrder(2, amount)" class="submit btn btn-secondary btn-warning">Sell</button>
+            -->
+        <div>
+          <div class="new-order-message new-order-success" [class.hide-order-success]="hideOrderSuccess">
+            Order has been created.
+          </div>
+          <div class="new-order-message new-order-error" [class.hide-order-error]="hideOrderError">
+            Order hasn't been created.
+          </div>
+        </div>
+      </form>
     </div>
-    <div class="col-md-9">
-          <section class="event">
-            <div class="form-group row new-order">
-              <input class="col-md-2 form-control" #amount>
-              <button (click)="createOrder(1, amount)" class="submit btn btn-secondary btn-success">Buy</button>
-              <button (click)="createOrder(2, amount)" class="submit btn btn-secondary btn-warning">Sell</button>
-              <span>
-                <div class="new-order-message new-order-success" [class.hide-order-success]="hideOrderSuccess">
-                  Order has been created.
-                </div>
-                <div class="new-order-message new-order-error" [class.hide-order-error]="hideOrderError">
-                  Order hasn't been created.
-                </div>
-              </span>
-            </div>
-          </section>
-    </div>
+  </div>
 </div>

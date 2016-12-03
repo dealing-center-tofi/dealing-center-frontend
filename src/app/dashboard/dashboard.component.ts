@@ -1,29 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewChecked } from '@angular/core';
+import { Validators, NgForm } from '@angular/forms';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
+import { ButtonsModule } from 'ng2-bootstrap/components/buttons';
 
 import { ApiService } from '../services/api.service'
 import { WebSocketService } from '../services/web-socket.service'
 
 const config = require('./../../../config/api.conf');
+declare var jQuery;
 
 @Component({
   selector: 'dashboard',
   templateUrl: './dashboard.template.html',
   styleUrls: ['./dashboard.style.scss']
 })
-export class Dashboard {
+export class Dashboard implements AfterViewChecked {
+  createOrderForm: NgForm;
   currencyPairs;
   selectedPair;
+  orderType;
+  radioModel = "Middle";
   token;
   hideOrderSuccess = true;
   hideOrderError = true;
+  @ViewChild('createOrderForm') currentForm: NgForm;
 
-  constructor(private webSocketService:WebSocketService,
-              private apiService:ApiService,
-              private router:Router) {
+  constructor(private webSocketService: WebSocketService,
+              private apiService: ApiService,
+              private router: Router){
+    //          private formBuilder: FormBuilder) {
+    //this.createOrderForm = formBuilder.group({
+    //  'amount': [null, Validators.compose([Validators.required, Validators.pattern('(?:\d*\.)?\d+]')])],
+    //  'order': [null, Validators.required],
+    //  'gender': [null, Validators.required]
+    //});
+    //this.createOrderForm.valueChanges.subscribe( (form: any) => {
+    //  console.log('form', form);
+    // });
   }
+
+  ngAfterViewChecked() {
+    this.formChanged();
+  }
+
+  toggleButton(element) {
+
+  }
+
+  formChanged() {
+    if (this.currentForm === this.createOrderForm) { return; }
+    this.createOrderForm = this.currentForm;
+    if (this.createOrderForm) {
+      this.createOrderForm.valueChanges
+        .subscribe(data => this.onValueChanged(data));
+    }
+  }
+
+  onValueChanged(data?: any) {
+    if (!this.createOrderForm) { return; }
+    const form = this.createOrderForm.form;
+    console.log(form.status);
+    }
 
   ngOnInit() {
     this.token = localStorage.getItem('authToken');

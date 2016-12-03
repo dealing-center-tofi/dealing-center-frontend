@@ -3,6 +3,8 @@
 // rc2 workaround
 import { enableDebugTools, disableDebugTools } from '@angular/platform-browser';
 import { enableProdMode, ApplicationRef } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+
 
 import { ApiService } from './services/api.service.ts';
 import { WebSocketService } from './services/web-socket.service.ts'
@@ -10,7 +12,7 @@ import { WebSocketService } from './services/web-socket.service.ts'
 // Environment Providers
 let PROVIDERS: any[] = [
   // common env directives
-  ApiService, WebSocketService
+  ApiService, WebSocketService, FormBuilder
 ];
 
 // Angular debug tools in the dev console

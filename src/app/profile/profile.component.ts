@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service.ts'
 const config = require('./../../../config/api.conf');
 
+declare var jQuery;
+
 @Component({
   selector: 'profile',
   templateUrl: './profile.template.html',
@@ -32,12 +34,12 @@ export class Profile {
   }
 
   setCollapseListeners() {
-    $('#collapse-deposit-form, #collapse-take-out-form').on('show.bs.collapse', () => { 
-      this.zone.run(() => { 
-        this.isTransferFormShown = 1; 
+    jQuery('#collapse-deposit-form, #collapse-take-out-form').on('show.bs.collapse', () => {
+      this.zone.run(() => {
+        this.isTransferFormShown = 1;
       });
-    });   
-    $('#collapse-deposit-form, #collapse-take-out-form').on('hidden.bs.collapse', () => { 
+    });
+    jQuery('#collapse-deposit-form, #collapse-take-out-form').on('hidden.bs.collapse', () => {
       this.zone.run(() => {
         this.isTransferFormShown = 0;
       });

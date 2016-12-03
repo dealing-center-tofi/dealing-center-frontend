@@ -6,55 +6,61 @@
     color: green;
 }
 
+.btn-group > label {
+    margin-bottom: 0;
+}
+
+input[name="options"] {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0) !important;
+    pointer-events: none !important;
+}
+
 .currency-pairs {
-	background-color: #fff;
+    background-color: #fff;
 }
 
 .currency-pairs > header {
-	text-align: center;
-	padding-top: 10px;
-	padding-bottom: 10px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
-.currency-pair{
-	font-weight: bold;
-	font-size: 16px;
-	text-align: center;
-}
-
-.btn {
-	margin-left: 10px;
+.currency-pair {
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
 }
 
 .new-order {
-	background: #fff;
-	padding: 10px;
-	width: initial;
+    background: #fff;
+    padding: 10px;
+    width: initial;
 }
 
 .new-order > input {
-	transition: box-shadow 1s;
+    transition: box-shadow 1s;
 }
 
 .new-order-message {
-	font-weight: bold;
-	position: absolute;
-	right: 10px;
-	font-size: 16px;
+    font-weight: bold;
+    position: absolute;
+    right: 10px;
+    font-size: 16px;
 }
 
 .new-order-success {
-	color: green;
+    color: green;
 }
 
 .new-order-error {
-	color: red;
+    color: red;
 }
 
 .hide-order-success {
-	visibility: hidden;
+    visibility: hidden;
 }
 
 .hide-order-error {
-	visibility: hidden;
+    visibility: hidden;
 }
