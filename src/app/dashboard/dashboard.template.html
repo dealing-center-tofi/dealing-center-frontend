@@ -27,29 +27,29 @@
   </div>
   <div class="col-md-9">
     <div class="new-order">
-      <form #createOrderForm="ngForm" class="form-inline" (ngSubmit)="createOrder(createOrderForm.value)">
+      <form [formGroup]="createOrderForm" class="form-inline" (ngSubmit)="createOrder(createOrderForm.value)">
         <div class="form-group">
-          <input type="text" class="form-control" name="amount" [(ngModel)]="amount"
-                 required pattern="(?:\d*\.)?\d+">
+          <input type="text" class="form-control" name="amount"
+                 [formControl]="createOrderForm.controls['amount']">
 
         </div>
         <div class="btn-group">
           <label class="btn btn-secondary"
                  [class.active]="orderType === buy.value">
-            <input id="option1" type="radio" name="options" value="Buy" autocomplete="off" required
+            <input id="option1" type="radio" name="order-type" value="Buy" autocomplete="off" required
                    #buy
-                   [(ngModel)]="orderType"
-                   (click)="toggleButton(buy)">Buy
+                   [formControl]="createOrderForm.controls['order-type']">Buy
           </label>
           <label class="btn btn-secondary"
                  [class.active]="orderType === sell.value">
-            <input id="option2" type="radio" name="options" value="Sell" autocomplete="off" required
+            <input id="option2" type="radio" name="order-type" value="Sell" autocomplete="off" required
                    #sell
-                   [(ngModel)]="orderType"
-                   (click)="toggleButton(sell)">Sell
+                   [formControl]="createOrderForm.controls['order-type']">Sell
           </label>
         </div>
-        <button type="submit" class="btn btn-success">Create order</button>
+        <div>order type: {{ createOrderForm['order-type'] }}</div>
+        <button type="submit" class="btn btn-success"
+                [disabled]="!createOrderForm.valid">Create order</button>
         <!--  <button (click)="createOrder(1, amount)" class="submit btn btn-secondary btn-success">Buy</button>
             <button (click)="createOrder(2, amount)" class="submit btn btn-secondary btn-warning">Sell</button>
             -->
