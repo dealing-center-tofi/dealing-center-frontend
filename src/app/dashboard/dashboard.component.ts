@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { OrdersService } from '../services/orders.service';
 import { CurrencyPairsService } from '../services/currency-pairs.service';
 import { RoundHelper } from '../helpers/roundHelper';
+import { ValidateHelper } from '../helpers/validateHelper';
 
 declare var jQuery;
 
@@ -24,7 +25,6 @@ export class Dashboard {
   hideOrderSuccess = true;
   hideOrderError = true;
   round = RoundHelper.round;
-  patternAmount:string = '(?:\\d*\\.)?\\d+';
   formErrors = {
     'amount': '',
   };
@@ -32,7 +32,7 @@ export class Dashboard {
   validationMessages = {
     'amount': {
       'required': 'You must type an amount.',
-      'pattern': 'Type a number.',
+      'validateAmount': 'Type a number.',
     },
   };
 
@@ -41,7 +41,10 @@ export class Dashboard {
               private currencyPairsService:CurrencyPairsService,
               private formBuilder:FormBuilder) {
     this.createOrderForm = formBuilder.group({
-      'amount': [null, Validators.compose([Validators.required, Validators.pattern(this.patternAmount)])],
+      'amount': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.validateAmount
+      ])],
       'order-type': [null, Validators.required],
     });
     this.createOrderForm.valueChanges.subscribe(data => this.onValueChanged(data));
