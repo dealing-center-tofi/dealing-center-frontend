@@ -9,15 +9,18 @@
       </header>
       <div class="no-padding">
         <div class="list-group list-group-lg" *ngIf="currencyPairs">
-          <a class="list-group-item" *ngFor="let currencyPair of currencyPairs.results"
-             (click)="selectedPair = currencyPair" [class.active]="currencyPair === selectedPair">
+          <a class="list-group-item" *ngFor="let currencyPair of currencyPairs"
+          (click)="selectedPair = currencyPair"
+          [class.active]="currencyPair === selectedPair">
             <div class="currency-pair">
               <div class="currency-pair-name">
                 {{ currencyPair.name }}
               </div>
-              <div class="currency-pair-value" [class.red]="!currencyPair.isBigger"
-                   [class.green]="currencyPair.isBigger">
-                {{ roundValue(currencyPair.last_value.bid) }} {{ roundValue(currencyPair.last_value.ask) }}
+              <div class="currency-pair-value"
+                [class.red]="!currencyPair.isBigger"
+                [class.green]="currencyPair.isBigger"
+              >
+                {{ round(currencyPair.last_value.bid) }} {{ round(currencyPair.last_value.ask) }}
               </div>
             </div>
           </a>

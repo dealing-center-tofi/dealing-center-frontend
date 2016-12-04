@@ -10,6 +10,7 @@ export class ApiService {
   private headers;
   private currencyPairsUrl = config.apiUrl + '/api/currency_pairs/';
   private ordersUrl = config.apiUrl + '/api/orders/';
+  private openedOrdersUrl = config.apiUrl + '/api/orders/?status=1';
   private ordersUrlAll = this.ordersUrl + '?page_size=all';
   private userInfoUrl = config.apiUrl + '/api/users/me/';
   private accountUrl = config.apiUrl + '/api/account/me/';
@@ -58,6 +59,14 @@ export class ApiService {
               .toPromise()
               .then(response => response.json())
               .catch(this.handleError);
+  }
+
+  getOpenedOrders(): Promise<any> {
+    this.setHeaders();
+    return this.http.get(this.openedOrdersUrl, {headers: this.headers})
+              .toPromise()
+              .then(response => response.json())
+              .catch(this.handleError)
   }
 
   createOrder(currencyPairId, type, amount) {
