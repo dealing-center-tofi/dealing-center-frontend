@@ -27,37 +27,44 @@
   </div>
   <div class="col-md-9">
     <div class="new-order">
-      <form [formGroup]="createOrderForm" class="form-inline" (ngSubmit)="createOrder(createOrderForm.value)">
-        <div class="form-group">
+      <form [formGroup]="createOrderForm" class="form-inline" (ngSubmit)="createOrder(createOrderForm)">
+        <div class="form-group"
+             [ngClass]="{'has-error':!createOrderForm.controls['amount'].valid && createOrderForm.controls['amount'].touched}">
           <input type="text" class="form-control" name="amount"
                  [formControl]="createOrderForm.controls['amount']">
-
         </div>
         <div class="btn-group">
           <label class="btn btn-secondary"
                  [class.active]="orderType === buy.value">
-            <input id="option1" type="radio" name="order-type" value="Buy" autocomplete="off" required
+            <input id="option1" type="radio" name="order-type" value="1" autocomplete="off" required
                    #buy
                    [formControl]="createOrderForm.controls['order-type']">Buy
           </label>
           <label class="btn btn-secondary"
                  [class.active]="orderType === sell.value">
-            <input id="option2" type="radio" name="order-type" value="Sell" autocomplete="off" required
+            <input id="option2" type="radio" name="order-type" value="2" autocomplete="off" required
                    #sell
                    [formControl]="createOrderForm.controls['order-type']">Sell
           </label>
         </div>
-        <div>order type: {{ createOrderForm['order-type'] }}</div>
         <button type="submit" class="btn btn-success"
-                [disabled]="!createOrderForm.valid">Create order</button>
-        <!--  <button (click)="createOrder(1, amount)" class="submit btn btn-secondary btn-success">Buy</button>
+                [disabled]="!createOrderForm.valid">Create order
+        </button>
+        <div class="form-group">
+          <div *ngIf="formErrors.amount" class="alert alert-danger">
+            {{ formErrors.amount }}
+          </div>
+        </div><!--  <button (click)="createOrder(1, amount)" class="submit btn btn-secondary btn-success">Buy</button>
             <button (click)="createOrder(2, amount)" class="submit btn btn-secondary btn-warning">Sell</button>
             -->
-        <div>
-          <div class="new-order-message new-order-success" [class.hide-order-success]="hideOrderSuccess">
+
+        <div class="form-group">
+          <div class="alert alert-success" *ngIf="!hideOrderSuccess">
             Order has been created.
           </div>
-          <div class="new-order-message new-order-error" [class.hide-order-error]="hideOrderError">
+        </div>
+        <div class="form-group">
+          <div class="alert alert-danger" *ngIf="!hideOrderError">
             Order hasn't been created.
           </div>
         </div>

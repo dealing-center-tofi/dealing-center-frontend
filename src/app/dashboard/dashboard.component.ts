@@ -17,27 +17,57 @@ declare var jQuery;
   styleUrls: ['./dashboard.style.scss']
 })
 export class Dashboard {
-  createOrderForm: FormGroup;
+  createOrderForm:FormGroup;
   currencyPairs;
   selectedPair;
   orderType;
   token;
   hideOrderSuccess = true;
   hideOrderError = true;
+  patternAmount:string = '(?:\\d*\\.)?\\d+';
+  formErrors = {
+    'amount': '',
+  };
 
-  constructor(private webSocketService: WebSocketService,
-              private apiService: ApiService,
-              private router: Router,
-              private formBuilder: FormBuilder) {
+  validationMessages = {
+    'amount': {
+      'required': 'You must type an amount.',
+      'pattern': 'Type a number.',
+    },
+  };
+
+  constructor(private webSocketService:WebSocketService,
+              private apiService:ApiService,
+              private router:Router,
+              private formBuilder:FormBuilder) {
     this.createOrderForm = formBuilder.group({
-      'amount': [null, Validators.compose([Validators.required, Validators.pattern('(?:\d*\.)?\d+')])],
+      'amount': [null, Validators.compose([Validators.required, Validators.pattern(this.patternAmount)])],
       'order-type': [null, Validators.required],
     });
-    this.createOrderForm.valueChanges.subscribe( (form: any) => {
-      this.orderType = form['order-type'];
-      console.log('form', form);
-     });
+    this.createOrderForm.valueChanges.subscribe(data => this.onValueChanged(data));
   }
+
+  onValueChanged(data?:any) {
+    if (!this.createOrderForm) {
+      return;
+    }
+    const form = this.createOrderForm;
+    this.orderType = form.value['order-type'];
+
+    for (const field in this.formErrors) {
+      // clear previous error message (if any)
+      this.formErrors[field] = '';
+      const control = form.get(field);
+
+      if (control && control.dirty && !control.valid) {
+        const messages = this.validationMessages[field];
+        for (const key in control.errors) {
+          this.formErrors[field] += messages[key] + ' ';
+        }
+      }
+    }
+  }
+
 
   ngOnInit() {
     this.token = localStorage.getItem('authToken');
@@ -48,22 +78,25 @@ export class Dashboard {
     this.getSocketData();
   }
 
-  createOrder(type, amount) {
-    if (!this.selectedPair.id && !type && !amount) return;
+  createOrder(form) {
+    let orderType = parseFloat(form.value['order-type']);
+    let amount = parseInt(form.value['amount']);
+    form.reset();
+    if (!this.selectedPair.id && !orderType && !amount) return;
     var self = this;
-    this.apiService.createOrder(this.selectedPair.id, +type, +amount.value).then(function() {
-      self.hideOrderSuccess = false;
-      setTimeout(function() {
-        self.hideOrderSuccess = true;
-        amount.value = '';
-      }, 2000)
-    })
-    .catch(function() {
-      self.hideOrderError = false;
-      setTimeout(function() {
-        self.hideOrderError = true;
-      }, 2000)
-    });
+    this.apiService.createOrder(this.selectedPair.id, orderType, amount)
+      .then(function () {
+        self.hideOrderSuccess = false;
+        setTimeout(function () {
+          self.hideOrderSuccess = true;
+        }, 2000)
+      })
+      .catch(function () {
+        self.hideOrderError = false;
+        setTimeout(function () {
+          self.hideOrderError = true;
+        }, 2000)
+      });
   }
 
   getCurrencyPairs() {

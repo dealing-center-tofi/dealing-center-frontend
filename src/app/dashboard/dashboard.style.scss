@@ -10,6 +10,11 @@
     margin-bottom: 0;
 }
 
+.form-inline .alert {
+  margin-bottom: 0 !important;
+  padding: 0.4rem !important;
+}
+
 input[name="order-type"] {
     position: absolute !important;
     clip: rect(0, 0, 0, 0) !important;
@@ -55,12 +60,4 @@ input[name="order-type"] {
 
 .new-order-error {
     color: red;
-}
-
-.hide-order-success {
-    visibility: hidden;
-}
-
-.hide-order-error {
-    visibility: hidden;
 }
