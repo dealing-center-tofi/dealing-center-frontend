@@ -671,3 +671,75 @@ Body:
   }
 ]
 ```
+
+
+# History
+
+## Fetch History
+
+### GET /api/history/
+
+Parameters:
+
+- currency_pair (number): Currency pair id.
+- period (number):
+```
+1 - 5 minutes period.
+2 - 15 minutes period.
+3 - 30 minutes period.
+4 - 1 hour period.
+5 - 4 hours period.
+6 - 1 day period.
+7 - 1 week period.
+```
+- creation_time_min: Min filtering time, for example: 2016-12-04+09:50:00.
+- creation_time_max: Max filtering time, for example: 2016-12-04+10:10:00.
+
+
+```
+Headers:
+Authorization: ”Token 50ded0eaddc3e2005d31fcb3a0fcd50339242537”
+
+URL EXAMPLE:
+/api/history/?currency_pair=1&period=1&creation_time_min=2016-12-04+09:50:00&creation_time_max=2016-12-04+10:00:00
+```
+
+
+Response example:
+
+```
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "open": 0.372329219173882,
+      "close": 0.389021132187982,
+      "high": 0.393752357198254,
+      "low": 0.369481017221469,
+      "period": 1,
+      "creation_time": "2016-12-04T10:00:00Z",
+      "currency_pair": 1
+    },
+    {
+      "open": 0.395390276938389,
+      "close": 0.372595381758717,
+      "high": 0.395390276938389,
+      "low": 0.369986178742974,
+      "period": 1,
+      "creation_time": "2016-12-04T09:55:00Z",
+      "currency_pair": 1
+    },
+    {
+      "open": 0.411876037721928,
+      "close": 0.396379176895591,
+      "high": 0.414060943331665,
+      "low": 0.396379176895591,
+      "period": 1,
+      "creation_time": "2016-12-04T09:50:00Z",
+      "currency_pair": 1
+    }
+  ]
+}
+```

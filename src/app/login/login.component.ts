@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Router } from '@angular/router';
+import {CurrencyPairsService} from "../services/currency-pairs.service";
 const config = require('./../../../config/api.conf');
 
 @Component({
@@ -10,12 +11,14 @@ const config = require('./../../../config/api.conf');
   encapsulation: ViewEncapsulation.None,
 })
 export class Login {
-  constructor(private http: Http, private router: Router) {
-
+  constructor(private http: Http,
+              private router: Router,
+              private currenciesPairsService: CurrencyPairsService) {
   }
 
   ngOnInit() {
     localStorage.removeItem('authToken');
+    this.currenciesPairsService.unsubscribe();
   }
 
   submitForm(value: any):void{
@@ -27,6 +30,8 @@ export class Login {
         res => {
         let token = res.headers._headersMap.get('token');
         localStorage.setItem('authToken', token);
+
+        this.currenciesPairsService.makeSubscribe();
         this.router.navigate(['/app']);
       }
     );

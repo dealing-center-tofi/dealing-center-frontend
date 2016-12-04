@@ -72,4 +72,9 @@ export class WebSocketService {
         return JSON.parse(res.data)[1];
       });
   }
+
+  unsubscribe() {
+    this.connection.next(JSON.stringify(['unsubscribe', {}]));
+  }
+
 }

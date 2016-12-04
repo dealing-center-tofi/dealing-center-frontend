@@ -15,11 +15,17 @@ export class CurrencyPairsService {
   }
 
   getCurrencyPairs() {
-    if (!this.currencyPairs && !this.alreadySubscribed) {
+    if (!this.currencyPairs) {
+      this.makeSubscribe();
+    }
+    return this._currencyPairs.asObservable();
+  }
+
+  makeSubscribe() {
+    if (!this.alreadySubscribed) {
       this.alreadySubscribed = true;
       this.subscribeOnWebsocket();
     }
-    return this._currencyPairs.asObservable();
   }
 
   private subscribeOnWebsocket() {
@@ -41,5 +47,10 @@ export class CurrencyPairsService {
 
         this._currencyPairs.next(currencies);
       });
+  }
+
+  unsubscribe() {
+    this.alreadySubscribed = false;
+    this.webSocketService.unsubscribe();
   }
 }
