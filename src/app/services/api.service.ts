@@ -8,9 +8,11 @@ const config = require('../../../config/api.conf');
 export class ApiService {
 
   private headers;
+  private currenciesUrl = config.apiUrl + '/api/currencies/';
   private currencyPairsUrl = config.apiUrl + '/api/currency_pairs/';
   private ordersUrl = config.apiUrl + '/api/orders/';
-  private openedOrdersUrl = config.apiUrl + '/api/orders/?status=1';
+  private openedOrdersUrl = config.apiUrl + '/api/orders/?page_size=all&status=1';
+  private closedOrdersUrl = config.apiUrl + '/api/orders/?page_size=all&status=2';
   private ordersUrlAll = this.ordersUrl + '?page_size=all';
   private userInfoUrl = config.apiUrl + '/api/users/me/';
   private accountUrl = config.apiUrl + '/api/account/me/';
@@ -45,6 +47,13 @@ export class ApiService {
               .catch(this.handleError);
   }
 
+  getCurrencies(): Promise<any> {
+    return this.http.get(this.currenciesUrl)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
+
   getCurrencyPairs(): Promise<any> {
     this.setHeaders();
     return this.http.get(this.currencyPairsUrl, {headers: this.headers})
@@ -64,6 +73,14 @@ export class ApiService {
   getOpenedOrders(): Promise<any> {
     this.setHeaders();
     return this.http.get(this.openedOrdersUrl, {headers: this.headers})
+              .toPromise()
+              .then(response => response.json())
+              .catch(this.handleError)
+  }
+
+  getAllClosedOrders(): Promise<any> {
+    this.setHeaders();
+    return this.http.get(this.closedOrdersUrl, {headers: this.headers})
               .toPromise()
               .then(response => response.json())
               .catch(this.handleError)

@@ -30,6 +30,7 @@ export class Login {
         res => {
         let token = res.headers._headersMap.get('token');
         localStorage.setItem('authToken', token);
+
         this.currenciesPairsService.makeSubscribe();
         this.router.navigate(['/app']);
       }

@@ -55,8 +55,8 @@ export class OrdersService {
         order.currency_pair = res.find((currency) => {
           return currency.id === order.currency_pair.id;
         });
-        order.profit = this.getProfit(order);
-        this._openedOrdersProfit += order.profit;
+        order.end_profit = this.getProfit(order);
+        this._openedOrdersProfit += order.end_profit;
       });
       this._orders.next(this.orders);
       this.openedOrdersProfit.next(this._openedOrdersProfit);
