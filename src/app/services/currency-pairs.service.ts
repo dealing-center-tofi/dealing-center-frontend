@@ -8,13 +8,15 @@ import { ApiService } from './api.service';
 export class CurrencyPairsService {
   private _currencyPairs: BehaviorSubject<Array<Object>> = new BehaviorSubject(Object([]));
   private currencyPairs;
+  private alreadySubscribed = false;
 
   constructor(private webSocketService: WebSocketService,
               private apiService: ApiService) {
   }
 
   getCurrencyPairs() {
-    if (!this.currencyPairs) {
+    if (!this.currencyPairs && !this.alreadySubscribed) {
+      this.alreadySubscribed = true;
       this.subscribeOnWebsocket();
     }
     return this._currencyPairs.asObservable();
