@@ -95,7 +95,6 @@ export class ApiService {
           "amount": amount}), {headers: this.headers})
             .toPromise()
             .then(res => {
-              location.reload();
               return res.json();
             })
             .catch(this.handleError);
