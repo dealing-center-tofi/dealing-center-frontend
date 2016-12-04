@@ -1,9 +1,11 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, ViewChild, AfterViewChecked, NgZone } from '@angular/core';
+import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 
 import { ApiService } from '../services/api.service.ts'
+import { ValidateHelper } from '../helpers/validateHelper'
 const config = require('./../../../config/api.conf');
 
 declare var jQuery;
@@ -18,10 +20,83 @@ export class Profile {
   account;
   transferType;
   isTransferFormShown = 0;
+  makeTransferForm:FormGroup;
+  formErrors = {
+    'amount': '',
+    'cardNumber': '',
+    'cardExpiry': '',
+    'cardCVC': '',
+  };
+
+  validationMessages = {
+    'amount': {
+      'required': 'You must type an amount.',
+      'validateAmount': 'Type a number.',
+    },
+    'cardNumber': {
+      'required': 'You must type a card number.',
+      'validateCardNumberLength': 'Invalid length of card number.',
+      'validateCardNumberBeginning': 'Invalid Card Number.',
+      'validateDigits': 'Only digits are allowed.',
+    },
+    'cardExpiry': {
+      'required': 'You must type an expiration date.',
+      'validateExpiryDate': 'Invalid date.',
+    },
+    'cardCVC': {
+      'required': 'You must type a CVC code.',
+      'validateDigits': 'Only digits are allowed.',
+      'validateCardCvvLength': 'Invalid length of CVV.'
+    },
+  };
+
 
   constructor(private apiService:ApiService,
               private router:Router,
-              private zone:NgZone) {
+              private zone:NgZone,
+              private formBuilder:FormBuilder) {
+    this.makeTransferForm = formBuilder.group({
+      'amount': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.validateAmount,
+      ])],
+      'cardNumber': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.validateCardNumberLength,
+        ValidateHelper.validateCardNumberBeginning,
+        ValidateHelper.validateDigits,
+      ])],
+      'cardExpiry': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.validateExpiryDate,
+      ])],
+      'cardCVC': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.validateDigits,
+        ValidateHelper.validateCardCvvLength,
+      ])],
+    });
+    this.makeTransferForm.valueChanges.subscribe(data => this.onValueChanged(data));
+  }
+
+  onValueChanged(data?:any) {
+    if (!this.makeTransferForm) {
+      return;
+    }
+    const form = this.makeTransferForm;
+
+    for (const field in this.formErrors) {
+      // clear previous error message (if any)
+      this.formErrors[field] = '';
+      const control = form.get(field);
+
+      if (control && control.dirty && !control.valid) {
+        const messages = this.validationMessages[field];
+        for (const key in control.errors) {
+          this.formErrors[field] += messages[key] + ' ';
+        }
+      }
+    }
   }
 
   ngOnInit() {
@@ -59,11 +134,11 @@ export class Profile {
     }
   }
 
-  makeTransfer(amount) {
-    let amountFloat = parseFloat(amount);
-    console.log(this.transferType, amount);
+  makeTransfer(form) {
+    let amount = parseFloat(form.value['amount']);
     if (!this.transferType && !amount) return;
-    this.apiService.createTransfer(amount, this.transferType);
+    this.apiService.createTransfer(amount, this.transferType)
+      .then(()=> location.reload());
   }
 
   getUserInfo() {
