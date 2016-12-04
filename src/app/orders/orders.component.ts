@@ -1,26 +1,30 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { OrdersService } from '../services/orders.service';
+import { ApiService } from '../services/api.service';
 import { RoundHelper } from '../helpers/roundHelper';
 import { OrderHelper } from './orderingHelper';
+import { OrderPipe } from './orders.filter';
 
 const config = require('./../../../config/api.conf');
 
-
 @Component({
   selector: 'orders',
+  pipes: [OrderPipe],
   templateUrl: './orders.template.html',
   styleUrls: ['./orders.style.scss']
 })
 export class OrdersPage {
-  private orders: any;
+  private openedOrders: any;
+  private closedOrders: any;
   private tableHeaders: any;
   private sortOptions: any;
+  public orderFilter:any = {buy: true, sell: true};
   private round = RoundHelper.round;
 
   constructor(private router: Router,
-              private ordersService: OrdersService) {
+              private ordersService: OrdersService,
+              private apiService: ApiService) {
     this.tableHeaders = [
       {
         displayName: 'Order',
@@ -54,7 +58,7 @@ export class OrdersPage {
       },
       {
         displayName: 'Profit',
-        fieldName: 'profit',
+        fieldName: 'end_profit',
         sortable: true
       },
       {
@@ -75,21 +79,37 @@ export class OrdersPage {
       this.router.navigate(['/login']);
     } else {
       this.getOrders();
+      this.switchOrderStatus(1);
     }
   }
 
-  saveOrders() {
-    this.orders.forEach(order => {
+  saveOrders(orders) {
+    orders.forEach(order => {
       order.currency_pair_name = order.currency_pair.name
     });
-    this.sortOrders();
   }
 
   getOrders() {
     this.ordersService.getOrders().subscribe(res => {
-      this.orders = res;
-      this.saveOrders();
+      this.openedOrders = res;
+      this.saveOrders(this.openedOrders);
     });
+  }
+
+  applyFilter(type) {
+    let buy = this.orderFilter.buy;
+    let sell = this.orderFilter.sell;
+    if (type === 1) {
+      buy = !buy;
+      sell = buy ? sell : true;
+    } else {
+      sell = !sell;
+      buy = sell ? buy : true;
+    }
+    this.orderFilter = {
+      buy: buy,
+      sell: sell
+    }
   }
 
   setSorting(fieldName) {
@@ -100,17 +120,36 @@ export class OrdersPage {
       this.sortOptions.sortReverse = !this.sortOptions.sortReverse;
     }
 
-    this.sortOrders();
+    this.sortOrders(this.closedOrders || this.openedOrders);
   }
 
-  sortOrders() {
-    OrderHelper.order(this.orders, this.sortOptions.sortType, this.sortOptions.sortReverse);
+  sortOrders(orders) {
+    OrderHelper.order(orders, this.sortOptions.sortType, this.sortOptions.sortReverse);
   }
 
   closeOrder(order) {
     this.ordersService.closeOrder(order).then( () => {
-      this.saveOrders();
+      this.saveOrders(this.openedOrders);
     });
+  }
+
+  switchOrderStatus(status) {
+    if (status === 1) {
+      this.closedOrders = undefined;
+      this.saveOrders(this.openedOrders);
+      this.sortOrders(this.openedOrders);
+    } else {
+      this.getClosedOrders();
+    }
+  }
+
+  getClosedOrders() {
+    this.apiService.getAllClosedOrders()
+        .then(res => {
+          this.closedOrders = res.results;
+          this.saveOrders(this.closedOrders);
+          this.sortOrders(this.closedOrders);
+        });
   }
 
   isOpened(order) {

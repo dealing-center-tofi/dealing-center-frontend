@@ -3,8 +3,30 @@
 <div class="row">
   <div class="col-md-12">
     <section widget class="widget">
+      <div class="btn-toolbar">
+        <div class="btn-group">
+          <button class="btn" (click)="switchOrderStatus(1)" [disabled]="!closedOrders">Opened</button>
+          <button class="btn" (click)="switchOrderStatus(2)" [disabled]="!!closedOrders">History</button>
+        </div>
+      </div>
+      <div class="btn-group">
+        <label class="btn btn-primary" [class.active]="orderFilter.buy">
+          <input type="checkbox"
+                 class="filter-active"
+                 (click)="applyFilter(1)"
+          >
+          Buy
+        </label>
+        <label class="btn btn-primary" [class.active]="orderFilter.sell">
+          <input type="checkbox"
+                 class="filter-active"
+                 (click)="applyFilter(2)"
+          >
+          Sell
+        </label>
+      </div>
       <div class="widget-body">
-        <table *ngIf="orders" class="table">
+        <table *ngIf="closedOrders || openedOrders" class="table">
           <th *ngFor="let header of tableHeaders">
             <a (click)="header.sortable && setSorting(header.fieldName)">
               {{header.displayName}}
@@ -12,8 +34,7 @@
               <span [hidden]="sortOptions.sortType != header.fieldName || !sortOptions.sortReverse" class="fa fa-caret-up"></span>
             </a>
           </th>
-
-          <tr *ngFor="let order of orders">
+          <tr *ngFor="let order of closedOrders || openedOrders | orderPipe : orderFilter">
             <td>{{ order.id }}</td>
             <td>{{ order.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
             <td>{{ order.currency_pair.name }}</td>
@@ -22,9 +43,9 @@
             <td *ngIf="isOpened(order)">Opened</td>
             <td *ngIf="!isOpened(order)">Closed</td>
             <td>{{ order.amount }}</td>
-            <td [class.red]="order.profit <= 0"
-                [class.green]="order.profit > 0"
-            >{{ round(order.profit) }}</td>
+            <td [class.red]="order.end_profit <= 0"
+                [class.green]="order.end_profit > 0"
+            >{{ round(order.end_profit) }}</td>
             <td><a *ngIf="order.status === 1" (click)="closeOrder(order)">Close</a></td>
           </tr>
         </table>

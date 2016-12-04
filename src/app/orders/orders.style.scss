@@ -22,3 +22,9 @@
   color: #2aa198;
   font-weight: bold;
 }
+
+.filter-active {
+  position: absolute !important;
+  clip: rect(0, 0, 0, 0) !important;
+  pointer-events: none !important;
+}
