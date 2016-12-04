@@ -10,16 +10,15 @@
       <div class="no-padding">
         <div class="list-group list-group-lg" *ngIf="currencyPairs">
           <a class="list-group-item" *ngFor="let currencyPair of currencyPairs"
-          (click)="selectedPair = currencyPair"
-          [class.active]="currencyPair === selectedPair">
+             (click)="selectedPair = currencyPair"
+             [class.active]="currencyPair === selectedPair">
             <div class="currency-pair">
               <div class="currency-pair-name">
                 {{ currencyPair.name }}
               </div>
               <div class="currency-pair-value"
-                [class.red]="!currencyPair.isBigger"
-                [class.green]="currencyPair.isBigger"
-              >
+                   [class.red]="!currencyPair.isBigger"
+                   [class.green]="currencyPair.isBigger">
                 {{ round(currencyPair.last_value.bid) }} {{ round(currencyPair.last_value.ask) }}
               </div>
             </div>
@@ -30,7 +29,9 @@
   </div>
   <div class="col-md-9">
     <div class="new-order">
-      <form [formGroup]="createOrderForm" class="form-inline" (ngSubmit)="createOrder(createOrderForm)">
+      <form class="form-inline"
+            [formGroup]="createOrderForm"
+            (ngSubmit)="createOrder(createOrderForm)">
         <div class="form-group"
              [ngClass]="{'has-error':!createOrderForm.controls['amount'].valid && createOrderForm.controls['amount'].touched}">
           <input type="text" class="form-control" name="amount"
@@ -57,10 +58,7 @@
           <div *ngIf="formErrors.amount" class="alert alert-danger">
             {{ formErrors.amount }}
           </div>
-        </div><!--  <button (click)="createOrder(1, amount)" class="submit btn btn-secondary btn-success">Buy</button>
-            <button (click)="createOrder(2, amount)" class="submit btn btn-secondary btn-warning">Sell</button>
-            -->
-
+        </div>
         <div class="form-group">
           <div class="alert alert-success" *ngIf="!hideOrderSuccess">
             Order has been created.

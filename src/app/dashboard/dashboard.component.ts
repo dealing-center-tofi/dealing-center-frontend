@@ -38,8 +38,7 @@ export class Dashboard {
 
   constructor(private ordersService:OrdersService,
               private router:Router,
-              private currencyPairsService: CurrencyPairsService,
-              private router:Router,
+              private currencyPairsService:CurrencyPairsService,
               private formBuilder:FormBuilder) {
     this.createOrderForm = formBuilder.group({
       'amount': [null, Validators.compose([Validators.required, Validators.pattern(this.patternAmount)])],
@@ -85,13 +84,12 @@ export class Dashboard {
     form.reset();
     if (!this.selectedPair.id && !orderType && !amount) return;
     this.ordersService.createOrder(this.selectedPair.id, orderType, amount)
-      .then( () => {
-      this.hideOrderSuccess = false;
-      setTimeout(() => {
-        this.hideOrderSuccess = true;
-        amount.value = '';
-      }, 2000)
-    }).catch( () => {
+      .then(() => {
+        this.hideOrderSuccess = false;
+        setTimeout(() => {
+          this.hideOrderSuccess = true;
+        }, 2000)
+      }).catch(() => {
       this.hideOrderError = false;
       setTimeout(() => {
         this.hideOrderError = true;
