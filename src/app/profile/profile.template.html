@@ -8,10 +8,10 @@
                         <label class="my-label amount-label">Amount: </label><span class="amount">{{ account.amount }}</span>
                         <div class="container pull-right">
                             <div id="deposit-button" class="row">
-                                <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapse-deposit-form" aria-expanded="false" aria-controls="collapse-deposit-form" [class.disabled]="isTransferFormShown && transferType === 2" (click)="transferType = 1">Make a deposit</a>
+                                <button #deposit class="btn btn-primary btn-sm" data-target="#collapse-transfer-form" (click)="collapseTransferForm(1, deposit)">Make a deposit</button>
                             </div>
                             <div class="row">
-                                <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapse-take-out-form" aria-expanded="false" aria-controls="collapse-take-out-form" [class.disabled]="isTransferFormShown && transferType === 1" (click)="transferType = 2">Take out</a>
+                                <button #takeOff class="btn btn-primary btn-sm" data-target="#collapse-transfer-form" (click)="collapseTransferForm(2, takeOff)">Take out</button>
                             </div>
                         </div>
                     </li>
@@ -38,7 +38,7 @@
         </div>
         <div class="col-xl-5 offset-xl-0 col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 col-xs-12">
             <div id="collapse-form">
-                <div id="collapse-deposit-form" class="collapse">
+                <div id="collapse-transfer-form" class="collapse">
                     <div class="card card-outline-info">
                         <div class="card-block">
                             <!-- CREDIT CARD FORM STARTS HERE -->
@@ -80,64 +80,8 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-12">
-                                                <button class="subscribe btn btn-success btn-lg btn-block" type="button" (click)="makeTransfer(amount.value)">Deposit</button>
-                                            </div>
-                                        </div>
-                                        <div class="row" style="display:none;">
-                                            <div class="col-xs-12">
-                                                <p class="payment-errors"></p>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <!-- CREDIT CARD FORM ENDS HERE -->
-                        </div>
-                    </div>
-                </div>
-                <div id="collapse-take-out-form" class="collapse">
-                    <div class="card card-outline-info">
-                        <div class="card-block">
-                            <!-- CREDIT CARD FORM STARTS HERE -->
-                            <div class="panel panel-default credit-card-box">
-                                <div class="panel-body">
-                                    <form role="form" id="payment-form" method="POST" action="javascript:void(0);">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <div class="form-group">
-                                                    <label for="amount">Amount</label>
-                                                    <input type="text" class="form-control" name="amount" #amount/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <div class="form-group">
-                                                    <label for="cardNumber">CARD NUMBER</label>
-                                                    <div class="input-group">
-                                                        <input type="tel" class="form-control" name="cardNumber" placeholder="Valid Card Number" autocomplete="cc-number" required autofocus />
-                                                        <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-7 col-md-7">
-                                                <div class="form-group">
-                                                    <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
-                                                    <input type="tel" class="form-control" name="cardExpiry" placeholder="MM / YY" autocomplete="cc-exp" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-xs-5 col-md-5 pull-right">
-                                                <div class="form-group">
-                                                    <label for="cardCVC">CV CODE</label>
-                                                    <input type="tel" class="form-control" name="cardCVC" placeholder="CVC" autocomplete="cc-csc" required />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <button class="subscribe btn btn-success btn-lg btn-block" type="button" (click)="makeTransfer(amount.value)">Take Out</button>
+                                                <button class="subscribe btn btn-success btn-lg btn-block" type="button" (click)="makeTransfer(amount.value)">
+                                                  {{ transferType === 1 ? 'Deposit' : 'Take out' }}</button>
                                             </div>
                                         </div>
                                         <div class="row" style="display:none;">

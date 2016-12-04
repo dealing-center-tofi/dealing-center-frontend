@@ -11,7 +11,7 @@ declare var jQuery;
 @Component({
   selector: 'profile',
   templateUrl: './profile.template.html',
-  styleUrls: [ './profile.style.scss' ]
+  styleUrls: ['./profile.style.scss']
 })
 export class Profile {
   userInfo;
@@ -19,13 +19,13 @@ export class Profile {
   transferType;
   isTransferFormShown = 0;
 
-  constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private zone: NgZone) {}
+  constructor(private apiService:ApiService,
+              private router:Router,
+              private zone:NgZone) {
+  }
 
   ngOnInit() {
-    if(!localStorage.getItem('authToken')) {
+    if (!localStorage.getItem('authToken')) {
       this.router.navigate(['/login']);
     }
     this.getUserInfo();
@@ -34,35 +34,48 @@ export class Profile {
   }
 
   setCollapseListeners() {
-    jQuery('#collapse-deposit-form, #collapse-take-out-form').on('show.bs.collapse', () => {
+    jQuery('#collapse-transfer-form').on('show.bs.collapse', () => {
       this.zone.run(() => {
         this.isTransferFormShown = 1;
       });
     });
-    jQuery('#collapse-deposit-form, #collapse-take-out-form').on('hidden.bs.collapse', () => {
+    jQuery('#collapse-transfer-form').on('hidden.bs.collapse', () => {
       this.zone.run(() => {
         this.isTransferFormShown = 0;
       });
     });
   }
 
+  collapseTransferForm(type, button) {
+    let target = button.dataset['target'];
+    console.log(type, this.transferType);
+    if (this.isTransferFormShown && this.transferType === type) {
+      jQuery(target).collapse('toggle');
+    } else if (this.isTransferFormShown && this.transferType != type) {
+      this.transferType = type;
+    } else {
+      this.transferType = type;
+      jQuery(target).collapse('toggle');
+    }
+  }
+
   makeTransfer(amount) {
     let amountFloat = parseFloat(amount);
     console.log(this.transferType, amount);
-    if(!this.transferType && !amount) return;
+    if (!this.transferType && !amount) return;
     this.apiService.createTransfer(amount, this.transferType);
   }
 
   getUserInfo() {
     this.apiService
       .getUserInfo()
-      .then( userInfo => this.userInfo = userInfo);
+      .then(userInfo => this.userInfo = userInfo);
   }
 
   getAccount() {
     this.apiService
       .getAccount()
-      .then( account => this.account = account);
+      .then(account => this.account = account);
   }
 
   setClassesProfileInfo() {
@@ -75,4 +88,4 @@ export class Profile {
 
     return classes;
   }
- }
+}
