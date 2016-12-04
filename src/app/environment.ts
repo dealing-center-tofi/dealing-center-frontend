@@ -8,11 +8,16 @@ import { ApiService } from './services/api.service.ts';
 import { WebSocketService } from './services/web-socket.service.ts';
 import { CurrencyPairsService } from './services/currency-pairs.service';
 import { OrdersService } from './services/orders.service';
+import { AccountService} from './services/account.service';
 
 // Environment Providers
 let PROVIDERS: any[] = [
   // common env directives
-  ApiService, WebSocketService, CurrencyPairsService, OrdersService
+  ApiService,
+  WebSocketService,
+  CurrencyPairsService,
+  OrdersService,
+  AccountService
 ];
 
 // Angular debug tools in the dev console

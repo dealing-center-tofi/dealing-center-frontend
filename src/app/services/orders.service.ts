@@ -1,6 +1,7 @@
 import { Injectable }    from '@angular/core';
 import { CurrencyPairsService } from '../services/currency-pairs.service';
 import { ApiService } from '../services/api.service';
+import { AccountService } from '../services/account.service';
 import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable()
@@ -10,18 +11,31 @@ export class OrdersService {
   private orders;
   private currencyPairs;
   private account;
+  private openedOrdersProfit: BehaviorSubject<Object> = new BehaviorSubject(Object);
+  private _openedOrdersProfit;
 
   constructor(private currencyPairsService: CurrencyPairsService,
-              private apiService: ApiService) {
-    let token = localStorage.getItem('authToken');
-    if (token != undefined) {
+              private apiService: ApiService,
+              private accountService: AccountService) {
+  }
+
+  getOrdersProfit() {
+    if (!this.orders) {
       this.fillOrders();
     }
+    return this.openedOrdersProfit.asObservable();
+  }
+
+  getOrders() {
+    if (!this.orders) {
+      this.fillOrders();
+    }
+    return this._orders.asObservable();
   }
 
   fillOrders() {
     Promise.all([
-      this.apiService.getOrders(),
+      this.apiService.getOpenedOrders(),
       this.getAccount()
     ])
       .then( (res) => {
@@ -32,24 +46,27 @@ export class OrdersService {
   }
 
   updateCurrencyPairs() {
-    this.currencyPairsService.currencyPairs.subscribe(res => {
+    this.currencyPairsService.getCurrencyPairs().subscribe(res => {
       this.currencyPairs = res;
       if (res.length === 0)
         return;
+      this._openedOrdersProfit = 0;
       this.orders.forEach((order) => {
         order.currency_pair = res.find((currency) => {
           return currency.id === order.currency_pair.id;
         });
-        order.profit = order.end_profit || this.getProfit(order);
+        order.profit = this.getProfit(order);
+        this._openedOrdersProfit += order.profit;
       });
       this._orders.next(this.orders);
+      this.openedOrdersProfit.next(this._openedOrdersProfit);
     });
   }
 
   getProfit(order) {
     let last_value, amount, debt_amount, rest_currency, user_currency, start_value, currency_pair, sub_pair;
     currency_pair = order.currency_pair;
-    amount = order.amount;
+    amount = parseFloat(order.amount);
     start_value = order.start_value;
     last_value = order.end_value || currency_pair.last_value;
     if (order.type === 1) {
@@ -79,9 +96,7 @@ export class OrdersService {
   }
 
   getAccount() {
-    return this.apiService
-      .getAccount()
-      .then( account => this.account = account );
+    this.accountService.getAccount().subscribe( res => this.account = res);
   }
 
   createOrder(currencyPairId, type, amount) {
@@ -89,18 +104,18 @@ export class OrdersService {
       .then(order => {
         this.orders.push(order);
         this._orders.next(this.orders);
+        this._openedOrdersProfit += this.getProfit(order);
+        this.openedOrdersProfit.next(this._openedOrdersProfit);
       });
   }
 
   closeOrder(order) {
     return this.apiService.closeOrder(order.id).then( res => {
       this.orders = this.orders.filter( (item) => {return item.id != order.id} );
-      this.orders.push(res);
       this._orders.next(this.orders);
+      this._openedOrdersProfit -= this.getProfit(order);
+      this.openedOrdersProfit.next(this._openedOrdersProfit);
+      this.accountService.updateAccount();
     });
-  }
-
-  getOrders() {
-    return this._orders.asObservable();
   }
 }

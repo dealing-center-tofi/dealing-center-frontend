@@ -73,9 +73,9 @@ export class OrdersPage {
   ngOnInit() {
     if(!localStorage.getItem('authToken')) {
       this.router.navigate(['/login']);
+    } else {
+      this.getOrders();
     }
-
-    this.getOrders();
   }
 
   saveOrders() {
