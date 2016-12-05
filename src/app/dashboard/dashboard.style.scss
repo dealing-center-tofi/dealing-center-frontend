@@ -61,3 +61,14 @@ input[name="order-type"] {
 .new-order-error {
     color: red;
 }
+
+.list-group-item.list-group-item-blue {
+    &.active {
+        border: none !important;
+        background-color: #5d8fc2 !important;
+    }
+
+    &:hover {
+        background-color: #5d8fc2 !important;
+    }
+}

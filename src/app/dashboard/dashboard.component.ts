@@ -101,6 +101,9 @@ export class Dashboard {
   }
 
   getCurrencyPairs() {
-    this.currencyPairsService.getCurrencyPairs().subscribe(res => this.currencyPairs = res);
+    this.currencyPairsService.getCurrencyPairs().subscribe(res => {
+      this.currencyPairs = res;
+      this.selectedPair = this.selectedPair || this.currencyPairs[0];
+    });
   }
 }
