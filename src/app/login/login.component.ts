@@ -22,9 +22,6 @@ export class Login {
   }
 
   submitForm(value: any):void{
-
-    console.log(value);
-
     this.http.post(config.apiUrl + '/api/auth/login/', value)
       .subscribe(
         res => {

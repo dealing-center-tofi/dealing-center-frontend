@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 export class ValidateHelper {
@@ -9,8 +9,114 @@ export class ValidateHelper {
   static AMOUNT_REGEXP = /(?:\d*\.)?\d+/;
   static NOT_DIGITS_REGEXP = /\D/;
   static EXPIRY_DATE_REGEXP = /^(0[1-9]|1[0-2])\/(\d{2})$/;
+  static NOT_DIGITS_NOT_WORDS_REGEXP = /[^\w\d]/;
+  static EMAIL_REGEXP_REGEXP = /.+@.+\..+/i;
+  static CAPITAL_LETTER_REGEXP = /[A-Z]/;
+  static LOWER_LETTER_REGEXP = /[a-z]/;
+  static DIGITS_REGEXP = /\d/;
+  static NOT_WORDS_REGEXP = /\W/;
 
+  static checkErrors(form, formErrors, validationMessages) {
+    if (!form) {
+      return;
+    }
 
+    for (const field in formErrors) {
+      // clear previous error message (if any)
+      formErrors[field] = '';
+      const control = form.get(field);
+      if (control && control.dirty && !control.valid) {
+        const messages = validationMessages[field];
+        for (const key in control.errors) {
+          formErrors[field] += messages[key] + ' ';
+        }
+      }
+    }
+  }
+
+  static validateEmail(c:FormControl) {
+    if (!c.value) return;
+
+    return ValidateHelper.EMAIL_REGEXP_REGEXP.test(c.value) ? null : {
+      validateEmail: {
+        valid: false
+      }
+    };
+  }
+
+  static onlyWordsDigits(c:FormControl) {
+    if (!c.value) return;
+
+    return ValidateHelper.NOT_WORDS_REGEXP.test(c.value) ? {
+      onlyWordsDigits: {
+        valid: false
+      }
+    } : null;
+  }
+
+  static needsCapitalLetter(c:FormControl) {
+    if (!c.value) return;
+
+    return ValidateHelper.CAPITAL_LETTER_REGEXP.test(c.value) ? null : {
+      needsCapitalLetter: {
+        valid: false
+      }
+    };
+  }
+
+  static needsLowerlLetter(c:FormControl) {
+    if (!c.value) return;
+
+    return ValidateHelper.LOWER_LETTER_REGEXP.test(c.value) ? null : {
+      needsLowerlLetter: {
+        valid: false
+      }
+    };
+  }
+
+  static needsNumber(c:FormControl) {
+    if (!c.value) return;
+
+    return ValidateHelper.DIGITS_REGEXP.test(c.value) ? null : {
+      needsNumber: {
+        valid: false
+      }
+    };
+  }
+
+  static needsSpecialCharacter(c:FormControl) {
+    if (!c.value) return;
+
+    return ValidateHelper.NOT_DIGITS_NOT_WORDS_REGEXP.test(c.value) ? null : {
+      needsSpecialCharacter: {
+        valid: false
+      }
+    };
+  }
+
+  static areEqual(group:FormGroup) {
+    var valid = true;
+
+    for (name in group.controls) {
+      var val = group.controls[name].value;
+
+      for (name in group.controls) {
+        var val2 = group.controls[name].value;
+        if (val != val2) {
+          valid = false;
+        }
+      }
+
+    }
+
+    if (valid) {
+      return null;
+    }
+
+    return {
+      areEqual: true
+    };
+  }
 
   static validateCardNumberLength(c:FormControl) {
     if (!c.value) return;
