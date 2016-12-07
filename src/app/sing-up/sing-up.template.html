@@ -12,40 +12,111 @@
             <h3>Create your personal account</h3>
           </header>
           <div class="widget-body">
-            <form class="login-form mt-lg" #form="ngForm" (ngSubmit)="submitForm(form.value)">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="First Name" name="first_name" ngModel>
+            <form class="login-form mt-lg"
+                  [formGroup]="signUpForm"
+                  (ngSubmit)="submitForm(signUpForm.value)">
+              <div class="form-group"
+                   [ngClass]="{'has-error':!signUpForm.controls['first_name'].valid && signUpForm.controls['first_name'].touched}">
+                <input type="text" class="form-control" placeholder="First Name" name="first_name"
+                       [formControl]="signUpForm.controls['first_name']">
               </div>
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Second Name" name="second_name" ngModel>
+              <div class="form-group" *ngIf="formErrors.first_name">
+                <div class="alert alert-danger">
+                  {{ formErrors.first_name }}
+                </div>
               </div>
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Last Name" name="last_name" ngModel>
+              <div class="form-group"
+                   [ngClass]="{'has-error':!signUpForm.controls['second_name'].valid && signUpForm.controls['second_name'].touched}">
+                <input type="text" class="form-control" placeholder="Second Name" name="second_name"
+                       [formControl]="signUpForm.controls['second_name']">
               </div>
-              <div class="form-group">
-                <input type="email" class="form-control" placeholder="Email" name="email" ngModel>
+              <div class="form-group" *ngIf="formErrors.second_name">
+                <div class="alert alert-danger">
+                  {{ formErrors.second_name }}
+                </div>
               </div>
-              <div class="form-group">
-                <input type="date" class="form-control" placeholder="Birthday" name="birth_date" ngModel>
+              <div class="form-group"
+                   [ngClass]="{'has-error':!signUpForm.controls['last_name'].valid && signUpForm.controls['last_name'].touched}">
+                <input type="text" class="form-control" placeholder="Last Name" name="last_name"
+                       [formControl]="signUpForm.controls['last_name']">
               </div>
-              <div class="form-group">
-                <select class="form-control" name="account_currency" ngModel>
-                  <option [value]="currency.id" *ngFor="let currency of currencies">{{currency.name}}</option>
-                </select>
+              <div class="form-group" *ngIf="formErrors.last_name">
+                <div class="alert alert-danger">
+                  {{ formErrors.last_name }}
+                </div>
               </div>
-              <div class="form-group">
+              <div class="form-group"
+                   [ngClass]="{'has-error':!signUpForm.controls['email'].valid && signUpForm.controls['email'].touched}">
+                <input type="email" class="form-control" placeholder="Email" name="email"
+                       [formControl]="signUpForm.controls['email']">
+              </div>
+              <div class="form-group" *ngIf="formErrors.email">
+                <div class="alert alert-danger">
+                  {{ formErrors.email }}
+                </div>
+              </div>
+              <div class="form-group"
+                   [ngClass]="{'has-error':!signUpForm.controls['birth_date'].valid && signUpForm.controls['birth_date'].touched}">
+                <input type="date" class="form-control" placeholder="Birthday" name="birth_date"
+                       [formControl]="signUpForm.controls['birth_date']">
+              </div>
+              <div class="form-group" *ngIf="formErrors.birth_date">
+                <div class="alert alert-danger">
+                  {{ formErrors.birth_date }}
+                </div>
+              </div>
+              <div class="form-group"
+                   [ngClass]="{'has-error':!selectedCurrencyId && isAccountCurrencyTouched}">
+                <ng-select placeholder="Account currency"
+                           [items]="currencies"
+                           (selected)="selectedCurrencyId=$event.id"
+                           (click)="isAccountCurrencyTouched=true"
+                ></ng-select>
+              </div>
+              <div class="form-group"
+                   [ngClass]="{'has-error':!signUpForm.controls['answer_secret_question'].valid && signUpForm.controls['answer_secret_question'].touched}">
                 <label>What is your mother's maiden name?</label>
-                <input class="form-control" type="text" placeholder="Secret question" name="answer_secret_question" ngModel>
+                <input class="form-control" type="text" placeholder="Secret question" name="answer_secret_question"
+
+                       [formControl]="signUpForm.controls['answer_secret_question']">
               </div>
-              <div class="form-group">
-                <input class="form-control" type="password" placeholder="Password" name="password" ngModel>
+              <div class="form-group" *ngIf="formErrors.answer_secret_question">
+                <div class="alert alert-danger">
+                  {{ formErrors.answer_secret_question }}
+                </div>
               </div>
-              <div class="form-group">
-                <input class="form-control" type="password" placeholder="Confirm Password">
+              <div class="form-group"
+                   [ngClass]="{'has-error':!signUpForm.controls['passwords'].controls['password'].valid &&
+                   signUpForm.controls['passwords'].controls['password'].touched}">
+                <input class="form-control" type="password" placeholder="Password" name="password"
+                       [formControl]="signUpForm.controls['passwords'].controls['password']">
+              </div>
+              <div class="form-group" *ngIf="formErrorsPasswords.password">
+                <div class="alert alert-danger">
+                  {{ formErrorsPasswords.password }}
+                </div>
+              </div>
+              <div class="form-group"
+                   [ngClass]="{'has-error':!signUpForm.controls['passwords'].controls['confirm_password'].valid &&
+                   signUpForm.controls['passwords'].controls['confirm_password'].touched}">
+                <input class="form-control" type="password" placeholder="Confirm Password" name="confirm_password"
+                       [formControl]="signUpForm.controls['passwords'].controls['confirm_password']">
+              </div>
+              <div class="form-group" *ngIf="formErrorsPasswords.confirm_password">
+                <div class="alert alert-danger">
+                  {{ formErrorsPasswords.confirm_password }}
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="formErrors.passwords">
+                <div class="alert alert-danger">
+                  {{ formErrors.passwords }}
+                </div>
               </div>
               <div class="clearfix">
                 <div class="btn-toolbar pull-xs-right m-t-1">
-                  <button type="submit" class="btn btn-secondary btn-sm">Create an Account</button>
+                  <button type="submit" class="btn btn-secondary btn-sm">Create an Account
+                  </button>
                   <a class="btn btn-inverse btn-sm" [routerLink]="['/login'] ">Login</a>
                 </div>
               </div>

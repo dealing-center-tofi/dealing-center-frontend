@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import 'jasny-bootstrap/docs/assets/js/vendor/holder.js';
-import 'jasny-bootstrap/js/fileinput.js';
-import 'jasny-bootstrap/js/inputmask.js';
+import { SelectModule } from 'ng2-select';
 
 import { SingUp } from './sing-up.component.ts';
 
@@ -20,6 +18,8 @@ export const routes = [
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
+    SelectModule,
     RouterModule.forChild(routes),
   ]
 })
