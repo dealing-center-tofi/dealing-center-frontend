@@ -15,9 +15,117 @@ const config = require('./../../../config/api.conf');
   templateUrl: './sing-up.template.html',
 })
 export class SingUp {
+  signUpForm:FormGroup;
   isAccountCurrencyTouched = false;
   selectedCurrencyId;
-  signUpForm:FormGroup;
+  private currencies = [];
+
+  constructor(private http:Http,
+              private apiService:ApiService,
+              private router:Router,
+              private currencyPairsService:CurrencyPairsService,
+              private formBuilder:FormBuilder) {
+    this.tuneValidation(formBuilder);
+  }
+
+  ngOnInit() {
+    this.apiService.getCurrencies()
+      .then(data => {
+        this.currencies = data.results;
+        this.currencies.map((currency) => currency.text = currency.name);
+      })
+  }
+
+  submitForm(value:any):void {
+    let isFormValid = this.signUpForm.valid && this.selectedCurrencyId;
+    if (isFormValid) {
+      this.setSomeFields(value);
+      this.sendForm(value);
+    } else {
+      this.makeFieldsAsTouched();
+    }
+  }
+
+  private setSomeFields(value) {
+    value.account_currency = this.selectedCurrencyId;
+    value.password = value.passwords.password;
+  };
+
+  private sendForm(value) {
+    this.http.post(config.apiUrl + '/api/users/', value)
+      .subscribe(
+        res => {
+          this.setToken(res);
+
+          this.currencyPairsService.makeSubscribe();
+          this.router.navigate(['/app']);
+        }
+      );
+  };
+
+  private setToken(res) {
+    let token = res.headers._headersMap.get('token');
+    localStorage.setItem('authToken', token);
+  };
+
+  onValueChanged(data?:any) {
+    ValidateHelper.checkErrors(this.signUpForm, this.formErrors, this.validationMessages);
+    ValidateHelper.checkErrors(this.signUpForm.controls['passwords'], this.formErrorsPasswords, this.validationMessages.passwords);
+  }
+
+  private makeFieldsAsTouched() {
+    this.isAccountCurrencyTouched = true;
+    ValidateHelper.makeFieldsAsTouched(this.signUpForm);
+    ValidateHelper.makeFieldsAsTouched(<FormGroup>this.signUpForm.controls['passwords']);
+  }
+
+  private tuneValidation(formBuilder) {
+    this.signUpForm = formBuilder.group({
+      'first_name': [null, Validators.compose([
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(20),
+        ValidateHelper.onlyWordsDigits,
+      ])],
+      'second_name': [null, Validators.compose([
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(20),
+        ValidateHelper.onlyWordsDigits,
+
+      ])],
+      'last_name': [null, Validators.compose([
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(20),
+        ValidateHelper.onlyWordsDigits,
+
+      ])],
+      'email': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.validateEmail,
+      ])],
+      'birth_date': [null, Validators.compose([
+        Validators.required,
+      ])],
+      'answer_secret_question': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.onlyWordsDigits,
+      ])],
+      'passwords': formBuilder.group({
+        password: ['', Validators.compose([
+          Validators.required,
+          Validators.minLength(6),
+          ValidateHelper.needsCapitalLetter,
+          ValidateHelper.needsLowerlLetter,
+          ValidateHelper.needsNumber,
+          ValidateHelper.needsSpecialCharacter,
+        ])],
+        confirm_password: ['', Validators.required]
+      }, {validator: ValidateHelper.areEqual})
+    });
+    this.signUpForm.valueChanges.subscribe(data => this.onValueChanged(data));
+  };
 
   validationMessages = {
     'first_name': {
@@ -78,106 +186,5 @@ export class SingUp {
   formErrorsPasswords = {
     'password': '',
     'confirm_password': '',
-  };
-  private currencies = [];
-
-  constructor(private http:Http,
-              private apiService:ApiService,
-              private router:Router,
-              private currencyPairsService:CurrencyPairsService,
-              private formBuilder:FormBuilder) {
-    this.signUpForm = formBuilder.group({
-      'first_name': [null, Validators.compose([
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(20),
-        ValidateHelper.onlyWordsDigits,
-      ])],
-      'second_name': [null, Validators.compose([
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(20),
-        ValidateHelper.onlyWordsDigits,
-
-      ])],
-      'last_name': [null, Validators.compose([
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(20),
-        ValidateHelper.onlyWordsDigits,
-
-      ])],
-      'email': [null, Validators.compose([
-        Validators.required,
-        ValidateHelper.validateEmail,
-      ])],
-      'birth_date': [null, Validators.compose([
-        Validators.required,
-      ])],
-      'answer_secret_question': [null, Validators.compose([
-        Validators.required,
-        ValidateHelper.onlyWordsDigits,
-      ])],
-      'passwords': formBuilder.group({
-        password: ['', Validators.compose([
-          Validators.required,
-          Validators.minLength(6),
-          ValidateHelper.needsCapitalLetter,
-          ValidateHelper.needsLowerlLetter,
-          ValidateHelper.needsNumber,
-          ValidateHelper.needsSpecialCharacter,
-        ])],
-        confirm_password: ['', Validators.required]
-      }, {validator: ValidateHelper.areEqual})
-    });
-    this.signUpForm.valueChanges.subscribe(data => this.onValueChanged(data));
-  }
-
-  onValueChanged(data?:any) {
-    ValidateHelper.checkErrors(this.signUpForm, this.formErrors, this.validationMessages);
-    ValidateHelper.checkErrors(this.signUpForm.controls['passwords'], this.formErrorsPasswords, this.validationMessages.passwords);
-  }
-
-  ngOnInit() {
-    this.apiService.getCurrencies()
-      .then(data => {
-        this.currencies = data.results;
-        this.currencies.map((currency) => currency.text = currency.name);
-      })
-  }
-
-  submitForm(value:any):void {
-    let isFormValid = this.signUpForm.valid && this.selectedCurrencyId;
-    if (!isFormValid) {
-      this.makeFieldsAsTouched();
-    } else {
-      this.setSomeFields(value);
-
-      this.http.post(config.apiUrl + '/api/users/', value)
-        .subscribe(
-          res => {
-            let token = res.headers._headersMap.get('token');
-            localStorage.setItem('authToken', token);
-
-            this.currencyPairsService.makeSubscribe();
-            this.router.navigate(['/app']);
-          }
-        );
-    }
-  }
-
-  private setSomeFields(value) {
-    value.account_currency = this.selectedCurrencyId;
-    value.password = value.passwords.password;
-  };
-
-  private makeFieldsAsTouched() {
-    this.isAccountCurrencyTouched = true;
-    for (let name in this.signUpForm.controls) {
-      this.signUpForm.controls[name].markAsTouched();
-    }
-    for (let name in this.signUpForm.controls['passwords'].controls) {
-      this.signUpForm.controls['passwords'].controls[name].markAsTouched();
-    }
   };
 }

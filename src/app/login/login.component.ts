@@ -15,6 +15,60 @@ const config = require('./../../../config/api.conf');
 export class Login {
   loginForm:FormGroup;
 
+  constructor(private http:Http,
+              private router:Router,
+              private currenciesPairsService:CurrencyPairsService,
+              private formBuilder:FormBuilder) {
+    this.tuneValidation(formBuilder);
+  }
+
+  ngOnInit() {
+    localStorage.removeItem('authToken');
+    this.currenciesPairsService.unsubscribe();
+  }
+
+  submitForm(value:any):void {
+    if (this.loginForm.valid) {
+      this.sendForm(value);
+    } else {
+      ValidateHelper.makeFieldsAsTouched(this.loginForm);
+    }
+  }
+
+  private sendForm(value) {
+    this.http.post(config.apiUrl + '/api/auth/login/', value)
+      .subscribe(
+        res => {
+          this.setToken(res);
+
+          this.currenciesPairsService.makeSubscribe();
+          this.router.navigate(['/app']);
+        }
+      );
+  };
+
+  private setToken(res) {
+    let token = res.headers._headersMap.get('token');
+    localStorage.setItem('authToken', token);
+  };
+
+  onValueChanged(data?:any) {
+    ValidateHelper.checkErrors(this.loginForm, this.formErrors, this.validationMessages);
+  }
+
+  private tuneValidation(formBuilder) {
+    this.loginForm = formBuilder.group({
+      'email': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.validateEmail,
+      ])],
+      'password': [null, Validators.compose([
+        Validators.required,
+      ])],
+    });
+    this.loginForm.valueChanges.subscribe(data => this.onValueChanged(data));
+  };
+
   formErrors = {
     'email': '',
     'password': '',
@@ -29,46 +83,4 @@ export class Login {
       'required': 'You must type a password.',
     }
   };
-
-  constructor(private http:Http,
-              private router:Router,
-              private currenciesPairsService:CurrencyPairsService,
-              private formBuilder:FormBuilder) {
-    this.loginForm = formBuilder.group({
-      'email': [null, Validators.compose([
-        Validators.required,
-        ValidateHelper.validateEmail,
-      ])],
-      'password': [null, Validators.compose([
-        Validators.required,
-      ])],
-    });
-    this.loginForm.valueChanges.subscribe(data => this.onValueChanged(data));
-  }
-
-  onValueChanged(data?:any) {
-    ValidateHelper.checkErrors(this.loginForm, this.formErrors, this.validationMessages);
-  }
-
-  ngOnInit() {
-    localStorage.removeItem('authToken');
-    this.currenciesPairsService.unsubscribe();
-  }
-
-  submitForm(value:any):void {
-    if (this.loginForm.valid) {
-      this.http.post(config.apiUrl + '/api/auth/login/', value)
-        .subscribe(
-          res => {
-            let token = res.headers._headersMap.get('token');
-            localStorage.setItem('authToken', token);
-
-            this.currenciesPairsService.makeSubscribe();
-            this.router.navigate(['/app']);
-          }
-        );
-    } else {
-      ValidateHelper.makeFieldsAsTouched(this.loginForm);
-    }
-  }
 }

@@ -25,60 +25,25 @@ export class Dashboard {
   hideOrderSuccess = true;
   hideOrderError = true;
   round = RoundHelper.round;
-  formErrors = {
-    'amount': '',
-  };
-
-  validationMessages = {
-    'amount': {
-      'required': 'You must type an amount.',
-      'validateAmount': 'Type a number.',
-    },
-  };
 
   constructor(private ordersService:OrdersService,
               private router:Router,
               private currencyPairsService:CurrencyPairsService,
               private formBuilder:FormBuilder) {
-    this.createOrderForm = formBuilder.group({
-      'amount': [null, Validators.compose([
-        Validators.required,
-        ValidateHelper.validateAmount
-      ])],
-      'order-type': [null, Validators.required],
-    });
-    this.createOrderForm.valueChanges.subscribe(data => this.onValueChanged(data));
+    this.tuneValidation(formBuilder);
   }
 
   onValueChanged(data?:any) {
-    if (!this.createOrderForm) {
-      return;
-    }
-    const form = this.createOrderForm;
-    this.orderType = form.value['order-type'];
-
-    for (const field in this.formErrors) {
-      // clear previous error message (if any)
-      this.formErrors[field] = '';
-      const control = form.get(field);
-
-      if (control && control.dirty && !control.valid) {
-        const messages = this.validationMessages[field];
-        for (const key in control.errors) {
-          this.formErrors[field] += messages[key] + ' ';
-        }
-      }
-    }
+    this.orderType = this.createOrderForm.value['order-type'];
+    ValidateHelper.checkErrors(this.createOrderForm, this.formErrors, this.validationMessages);
   }
-
 
   ngOnInit() {
     this.token = localStorage.getItem('authToken');
     if (!this.token) {
       this.router.navigate(['/login']);
-    } else {
-      this.getCurrencyPairs();
     }
+    this.getCurrencyPairs();
   }
 
   createOrder(form) {
@@ -106,4 +71,26 @@ export class Dashboard {
       this.selectedPair = this.selectedPair || this.currencyPairs[0];
     });
   }
+
+  private tuneValidation(formBuilder) {
+    this.createOrderForm = formBuilder.group({
+      'amount': [null, Validators.compose([
+        Validators.required,
+        ValidateHelper.validateAmount
+      ])],
+      'order-type': [null, Validators.required],
+    });
+    this.createOrderForm.valueChanges.subscribe(data => this.onValueChanged(data));
+  }
+
+  formErrors = {
+    'amount': '',
+  };
+
+  validationMessages = {
+    'amount': {
+      'required': 'You must type an amount.',
+      'validateAmount': 'Type a number.',
+    },
+  };
 }
