@@ -61,6 +61,9 @@
 }
 
 .login-form{
+  .alert{
+    padding: 0.6rem !important;
+  }
   .form-control{
     font-size: $font-size-mini;
     background-color: $gray-lighter;

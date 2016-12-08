@@ -34,6 +34,13 @@ export class ValidateHelper {
     }
   }
 
+  static makeFieldsAsTouched(form:FormGroup) {
+    for (let name in form.controls) {
+      form.controls[name].markAsTouched();
+    }
+  };
+
+
   static validateEmail(c:FormControl) {
     if (!c.value) return;
 
