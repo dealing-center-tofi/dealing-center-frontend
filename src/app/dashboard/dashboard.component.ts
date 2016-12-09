@@ -49,8 +49,8 @@ export class Dashboard {
 
   createOrder(form) {
     if (form.valid) {
-      let orderType = parseFloat(form.value['order-type']);
-      let amount = parseInt(form.value['amount']);
+      let orderType = parseInt(form.value['order-type']);
+      let amount = parseFloat(form.value['amount']);
       form.reset();
       if (!this.selectedPair.id && !orderType && !amount) return;
       this.ordersService.createOrder(this.selectedPair.id, orderType, amount)

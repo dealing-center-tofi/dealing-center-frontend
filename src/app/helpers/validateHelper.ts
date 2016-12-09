@@ -6,7 +6,7 @@ export class ValidateHelper {
   static ALLOWED_LENGTHS_FOR_CVV = [3];
   static MASTERCARD_START_STRINGS = ['51', '52', '53', '54', '55'];
   static VISA_START_STRINGS = ['4'];
-  static AMOUNT_REGEXP = /(?:\d*\.)?\d+/;
+  static AMOUNT_REGEXP = /^(?:\d*\.)?\d+$/;
   static NOT_DIGITS_REGEXP = /\D/;
   static EXPIRY_DATE_REGEXP = /^(0[1-9]|1[0-2])\/(\d{2})$/;
   static NOT_DIGITS_NOT_WORDS_REGEXP = /[^\w\d]/;
