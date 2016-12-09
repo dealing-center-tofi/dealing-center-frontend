@@ -33,7 +33,7 @@ export class SingUp {
       .then(data => {
         this.currencies = data.results;
         this.currencies.map((currency) => currency.text = currency.name);
-      })
+      });
   }
 
   submitForm(value:any):void {
@@ -59,6 +59,21 @@ export class SingUp {
 
           this.currencyPairsService.makeSubscribe();
           this.router.navigate(['/app']);
+        },
+        error => {
+          let errorJSON = error.json();
+          for (let errorField in errorJSON) {
+            let errorMessages = errorJSON[errorField];
+            let control = this.signUpForm.controls[errorField];
+            if (control) {
+              ValidateHelper.makeControlError(control, errorMessages);
+              this.onValueChanged();
+            } else {
+              errorMessages.forEach((message) => {
+                this.serverNonFieldErrorMessage += message;
+              })
+            }
+          }
         }
       );
   };
@@ -187,4 +202,6 @@ export class SingUp {
     'password': '',
     'confirm_password': '',
   };
+
+  serverNonFieldErrorMessage = '';
 }

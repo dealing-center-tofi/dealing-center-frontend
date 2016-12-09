@@ -54,6 +54,11 @@
         <button type="submit" class="btn btn-success"
                 [disabled]="!createOrderForm.valid">Create order
         </button>
+        <div class="form-group" *ngIf="serverNonFieldErrorMessage">
+          <div class="alert alert-danger">
+            {{ serverNonFieldErrorMessage }}
+          </div>
+        </div>
         <div class="form-group">
           <div *ngIf="formErrors.amount" class="alert alert-danger">
             {{ formErrors.amount }}

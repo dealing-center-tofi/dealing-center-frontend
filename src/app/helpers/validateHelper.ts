@@ -16,6 +16,15 @@ export class ValidateHelper {
   static DIGITS_REGEXP = /\d/;
   static NOT_WORDS_REGEXP = /\W/;
 
+  static makeControlError(control, errorMessages) {
+    control.markAsTouched();
+    control.markAsDirty();
+    let newError = {'serverError': errorMessages};
+    control.errors ?
+      control.setErrors(Object.assign(control.errors, newError), true) :
+      control.setErrors(newError, true);
+  };
+
   static checkErrors(form, formErrors, validationMessages) {
     if (!form) {
       return;
@@ -28,7 +37,13 @@ export class ValidateHelper {
       if (control && control.dirty && !control.valid) {
         const messages = validationMessages[field];
         for (const key in control.errors) {
-          formErrors[field] += messages[key] + ' ';
+          if(key === 'serverError') {
+            control.errors['serverError'].forEach((errMessage) => {
+              formErrors[field] += errMessage;
+            })
+          } else {
+            formErrors[field] += messages[key] + ' ';
+          }
         }
       }
     }

@@ -123,6 +123,11 @@
                   </div>
                   <div class="row">
                     <div class="col-xs-12">
+                      <div class="form-group" *ngIf="serverNonFieldErrorMessage">
+                        <div class="alert alert-danger">
+                          {{ serverNonFieldErrorMessage }}
+                        </div>
+                      </div>
                       <button class="subscribe btn btn-success btn-lg btn-block" type="submit"
                               [disabled]="!makeTransferForm.valid">
                         {{ transferType === 1 ? 'Deposit' : 'Take out' }}

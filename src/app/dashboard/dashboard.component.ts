@@ -34,6 +34,7 @@ export class Dashboard {
   }
 
   onValueChanged(data?:any) {
+    this.serverNonFieldErrorMessage = '';
     this.orderType = this.createOrderForm.value['order-type'];
     ValidateHelper.checkErrors(this.createOrderForm, this.formErrors, this.validationMessages);
   }
@@ -57,11 +58,20 @@ export class Dashboard {
         setTimeout(() => {
           this.hideOrderSuccess = true;
         }, 2000)
-      }).catch(() => {
-      this.hideOrderError = false;
-      setTimeout(() => {
-        this.hideOrderError = true;
-      }, 2000)
+      }).catch((error) => {
+      let errorJSON = error.json();
+      for (let errorField in errorJSON) {
+        let errorMessages = errorJSON[errorField];
+        let control = this.createOrderForm.controls[errorField];
+        if (control) {
+          ValidateHelper.makeControlError(control, errorMessages);
+          this.onValueChanged();
+        } else {
+          errorMessages.forEach((message) => {
+            this.serverNonFieldErrorMessage += message;
+          })
+        }
+      }
     });
   }
 
@@ -93,4 +103,6 @@ export class Dashboard {
       'validateAmount': 'Type a number.',
     },
   };
+
+  serverNonFieldErrorMessage = '';
 }
