@@ -123,6 +123,12 @@ module.exports = function(options) {
          * See: https://github.com/s-panferov/awesome-typescript-loader
          * See: https://github.com/TheLarkInn/angular2-template-loader
          */
+
+        //{
+        //  test: /pickadate/,
+        //  loader: 'imports?define=>false'
+        //},
+
         {
           test: /\.ts$/,
           loaders: [

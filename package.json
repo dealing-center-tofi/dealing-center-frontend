@@ -70,6 +70,7 @@
     "ng2-bootstrap": "1.1.5",
     "ng2-select": "^1.1.2",
     "pace": "git://github.com/HubSpot/pace.git#v0.7.7",
+    "pickadate": "^3.5.6",
     "rxjs": "5.0.0-beta.12",
     "widgster": "0.0.3",
     "zone.js": "~0.6.25"

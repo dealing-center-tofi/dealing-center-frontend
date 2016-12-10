@@ -44,6 +44,7 @@ export class Dashboard {
     if (!this.token) {
       this.router.navigate(['/login']);
     }
+    jQuery('.datepicker').pickadate();
     this.getCurrencyPairs();
   }
 
