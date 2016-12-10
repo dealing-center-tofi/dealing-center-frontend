@@ -37,7 +37,7 @@ export class ValidateHelper {
       if (control && control.dirty && !control.valid) {
         const messages = validationMessages[field];
         for (const key in control.errors) {
-          if(key === 'serverError') {
+          if (key === 'serverError') {
             control.errors['serverError'].forEach((errMessage) => {
               formErrors[field] += errMessage;
             })
@@ -195,9 +195,25 @@ export class ValidateHelper {
   }
 
   static validateExpiryDate(c:FormControl) {
+    var getDate = function () {
+      let month = parseInt(resultRegexp[1]);
+      let year = parseInt(resultRegexp[2]) + 2000;
+      let expiryDate = new Date(year, month);
+      return new Date(expiryDate.setDate(expiryDate.getDate() + 1));
+    };
+
     if (!c.value) return;
 
-    return ValidateHelper.EXPIRY_DATE_REGEXP.test(c.value) ? null : {
+    let isValid = false;
+    let resultRegexp = ValidateHelper.EXPIRY_DATE_REGEXP.exec(c.value);
+
+    if (resultRegexp) {
+      var expiryDate = getDate();
+      let nowDate = new Date(Date.now());
+      isValid = expiryDate <= nowDate ? false : true;
+    }
+
+    return isValid ? null : {
       validateExpiryDate: {
         valid: false
       }
