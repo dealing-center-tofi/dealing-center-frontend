@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {Router} from '@angular/router';
 import {OrdersService} from '../services/orders.service';
 import {ApiService} from '../services/api.service';
@@ -14,6 +14,7 @@ const config = require('./../../../config/api.conf');
 
 @Component({
   selector: 'orders',
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './orders.template.html',
   styleUrls: ['./orders.style.scss']
 })
@@ -182,33 +183,28 @@ export class OrdersPage {
 
     this.nvd3Chart.yAxis
       .showMaxMin(false)
-      .tickFormat(d3.format(',f'));
+      .tickFormat(d3.format(',.0'));
 
     this.nvd3Data = [{
       area: true,
       key: 'Search',
-      values: [{
-        series: 0,
-        x: 1,
-        y: 100
-      }, {
-        series: 0,
-        x: 2,
-        y: 200
-      }, {
-        series: 0,
-        x: 3,
-        y: 150
-      },]
+      values: []
     }];
-  }
 
-  getChatData(data): void {
+    let i = 1;
 
-    this.nvd3Data[0].values.push({
-      series: 0,
-      x: data.y,
-      y: data.a
+    this.ordersService.getOrders().subscribe(res => {
+
+      //TODO: res[0] = undefined ?
+      if(res[0]) {
+        let bid = res[0].currency_pair.last_value.bid;
+        this.nvd3Data[0].values.push({
+          series: 0,
+          x: ++i,
+          y: bid
+        });
+        this.nvd3Chart.forceY([bid - 0.001, bid + 0.001]);
+      }
     });
   }
 }
