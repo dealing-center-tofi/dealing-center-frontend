@@ -30,6 +30,7 @@ export class Profile {
   }
 
   onValueChanged(data?:any) {
+    this.serverNonFieldErrorMessage = '';
     ValidateHelper.checkErrors(this.makeTransferForm, this.formErrors, this.validationMessages);
   }
 
