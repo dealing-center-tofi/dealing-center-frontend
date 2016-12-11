@@ -4,7 +4,6 @@ import {OrdersService} from '../services/orders.service';
 import {ApiService} from '../services/api.service';
 import {RoundHelper} from '../helpers/roundHelper';
 import {OrderHelper} from './orderingHelper';
-import {OrderPipe} from './orders.filter';
 
 declare var jQuery: any;
 declare var d3: any;
@@ -15,7 +14,6 @@ const config = require('./../../../config/api.conf');
 
 @Component({
   selector: 'orders',
-  pipes: [OrderPipe],
   templateUrl: './orders.template.html',
   styleUrls: ['./orders.style.scss']
 })
