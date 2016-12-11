@@ -1,6 +1,7 @@
 @import "../scss/variables";
 @import "../../../node_modules/bootstrap/scss/_variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/nvd3/build/nv.d3";
 
 .event {
   background: $white;
@@ -27,4 +28,50 @@
   position: absolute !important;
   clip: rect(0, 0, 0, 0) !important;
   pointer-events: none !important;
+}
+/***********************/
+/*         NvD3        */
+/***********************/
+
+.nvtooltip {
+  padding: $padding-small-vertical $padding-small-horizontal;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  text-align: center;
+
+  p{
+    margin: 0;
+    padding: 0;
+  }
+
+  h3{
+    background: none;
+    border-bottom: 0;
+  }
+}
+
+svg text {
+  font: $font-weight-base $font-size-sm $font-family-base;
+  fill: $text-color;
+}
+
+svg .title {
+  font: $font-weight-bold $font-size-base $font-family-base;
+}
+
+.nvd3.nv-noData {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+}
+
+.nvd3 .nv-axis path.domain {
+  stroke-opacity: 0;
+}
+
+.nv-controlsWrap{
+
+  .nv-legend-symbol{
+    fill: #666 !important;
+    stroke: #666 !important;
+  }
 }

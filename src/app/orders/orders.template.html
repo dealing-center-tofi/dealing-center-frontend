@@ -1,7 +1,7 @@
 <h1 class="page-title">Orders</h1>
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-6">
     <section widget class="widget">
       <div class="btn-toolbar">
         <div class="btn-group">
@@ -51,5 +51,10 @@
         </table>
       </div>
     </section>
+  </div>
+  <div class="col-md-6">
+    <div nvd3-chart [chart]="nvd3Chart" [datum]="nvd3Data">
+      <svg></svg>
+    </div>
   </div>
 </div>

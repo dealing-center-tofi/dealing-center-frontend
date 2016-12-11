@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { OrdersService } from '../services/orders.service';
-import { ApiService } from '../services/api.service';
-import { RoundHelper } from '../helpers/roundHelper';
-import { OrderHelper } from './orderingHelper';
-import { OrderPipe } from './orders.filter';
+import {Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {OrdersService} from '../services/orders.service';
+import {ApiService} from '../services/api.service';
+import {RoundHelper} from '../helpers/roundHelper';
+import {OrderHelper} from './orderingHelper';
+import {OrderPipe} from './orders.filter';
+
+declare var jQuery: any;
+declare var d3: any;
+declare var nv: any;
+
 
 const config = require('./../../../config/api.conf');
 
@@ -19,8 +24,10 @@ export class OrdersPage {
   private closedOrders: any;
   private tableHeaders: any;
   private sortOptions: any;
-  public orderFilter:any = {buy: true, sell: true};
+  public orderFilter: any = {buy: true, sell: true};
   private round = RoundHelper.round;
+  nvd3Chart: any;
+  nvd3Data: any;
 
   constructor(private router: Router,
               private ordersService: OrdersService,
@@ -75,12 +82,14 @@ export class OrdersPage {
   }
 
   ngOnInit() {
-    if(!localStorage.getItem('authToken')) {
+    if (!localStorage.getItem('authToken')) {
       this.router.navigate(['/login']);
     } else {
       this.getOrders();
       this.switchOrderStatus(1);
     }
+
+    this.applyNvd3Data();
   }
 
   saveOrders(orders) {
@@ -128,7 +137,7 @@ export class OrdersPage {
   }
 
   closeOrder(order) {
-    this.ordersService.closeOrder(order).then( () => {
+    this.ordersService.closeOrder(order).then(() => {
       this.saveOrders(this.openedOrders);
     });
   }
@@ -145,11 +154,11 @@ export class OrdersPage {
 
   getClosedOrders() {
     this.apiService.getAllClosedOrders()
-        .then(res => {
-          this.closedOrders = res.results;
-          this.saveOrders(this.closedOrders);
-          this.sortOrders(this.closedOrders);
-        });
+      .then(res => {
+        this.closedOrders = res.results;
+        this.saveOrders(this.closedOrders);
+        this.sortOrders(this.closedOrders);
+      });
   }
 
   isOpened(order) {
@@ -158,5 +167,50 @@ export class OrdersPage {
 
   isBuyType(order) {
     return order.type == 1;
+  }
+
+  applyNvd3Data(): void {
+
+    this.nvd3Chart = nv.models.lineChart()
+      .useInteractiveGuideline(true)
+      .margin({left: 28, bottom: 30, right: 0})
+      .color(['#82DFD6', '#ddd']);
+
+    this.nvd3Chart.xAxis
+      .showMaxMin(false)
+      .tickFormat(function (d): Object {
+        return d3.time.format('%b %d')(new Date(d));
+      });
+
+    this.nvd3Chart.yAxis
+      .showMaxMin(false)
+      .tickFormat(d3.format(',f'));
+
+    this.nvd3Data = [{
+      area: true,
+      key: 'Search',
+      values: [{
+        series: 0,
+        x: 1,
+        y: 100
+      }, {
+        series: 0,
+        x: 2,
+        y: 200
+      }, {
+        series: 0,
+        x: 3,
+        y: 150
+      },]
+    }];
+  }
+
+  getChatData(data): void {
+
+    this.nvd3Data[0].values.push({
+      series: 0,
+      x: data.y,
+      y: data.a
+    });
   }
 }
