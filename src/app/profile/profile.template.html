@@ -10,12 +10,14 @@
             <div class="container pull-right">
               <div id="deposit-button" class="row">
                 <button #deposit class="btn btn-primary btn-sm" data-target="#collapse-transfer-form"
-                        (click)="collapseTransferForm(1, deposit)">Make a deposit
+                        (click)="collapseTransferForm(1, deposit)"
+                        [class.active]="isTransferFormShown && transferType === 1">Make a deposit
                 </button>
               </div>
               <div class="row">
                 <button #takeOff class="btn btn-primary btn-sm" data-target="#collapse-transfer-form"
-                        (click)="collapseTransferForm(2, takeOff)">Take out
+                        (click)="collapseTransferForm(2, takeOff)"
+                        [class.active]="isTransferFormShown && transferType === 2">Take out
                 </button>
               </div>
             </div>
@@ -62,7 +64,7 @@
                       <div class="form-group"
                            [ngClass]="{'has-error':!makeTransferForm.controls['amount'].valid && makeTransferForm.controls['amount'].touched}">
                         <label for="amount">Amount</label>
-                        <input type="text" class="form-control" name="amount" placeholder="Amount" autofocus
+                        <input type="text" class="form-control" name="amount" placeholder="Amount"
                                [formControl]="makeTransferForm.controls['amount']"/>
                       </div>
                       <div class="form-group" *ngIf="formErrors.amount">
@@ -79,7 +81,7 @@
                         <div class="input-group"
                              [ngClass]="{'has-error':!makeTransferForm.controls['cardNumber'].valid && makeTransferForm.controls['cardNumber'].touched}">
                           <input type="tel" class="form-control" name="cardNumber" placeholder="Valid Card Number"
-                                 autocomplete="cc-number" required
+                                 autocomplete="cc-number"
                                  [formControl]="makeTransferForm.controls['cardNumber']"/>
                           <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
                         </div>
@@ -97,7 +99,7 @@
                            [ngClass]="{'has-error':!makeTransferForm.controls['cardExpiry'].valid && makeTransferForm.controls['cardExpiry'].touched}">
                         <label for="cardExpiry">EXPIRATION DATE</label>
                         <input type="tel" class="form-control" name="cardExpiry" placeholder="MM / YY"
-                               autocomplete="cc-exp" required
+                               autocomplete="cc-exp"
                                [formControl]="makeTransferForm.controls['cardExpiry']"/>
                       </div>
                       <div class="form-group" *ngIf="formErrors.cardExpiry">
@@ -111,7 +113,6 @@
                            [ngClass]="{'has-error':!makeTransferForm.controls['cardCVC'].valid && makeTransferForm.controls['cardCVC'].touched}">
                         <label for="cardCVC">CV CODE</label>
                         <input type="tel" class="form-control" name="cardCVC" placeholder="CVC" autocomplete="cc-csc"
-                               required
                                [formControl]="makeTransferForm.controls['cardCVC']"/>
                       </div>
                       <div class="form-group" *ngIf="formErrors.cardCVC">
@@ -123,8 +124,12 @@
                   </div>
                   <div class="row">
                     <div class="col-xs-12">
-                      <button class="subscribe btn btn-success btn-lg btn-block" type="submit"
-                              [disabled]="!makeTransferForm.valid">
+                      <div class="form-group" *ngIf="serverNonFieldErrorMessage">
+                        <div class="alert alert-danger">
+                          {{ serverNonFieldErrorMessage }}
+                        </div>
+                      </div>
+                      <button class="subscribe btn btn-success btn-lg btn-block" type="submit">
                         {{ transferType === 1 ? 'Deposit' : 'Take out' }}
                       </button>
                     </div>

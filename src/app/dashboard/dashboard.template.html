@@ -14,7 +14,7 @@
              [class.active]="currencyPair === selectedPair">
             <div class="currency-pair">
               <div class="currency-pair-name">
-                {{ currencyPair.name }}
+                <h5>{{ currencyPair.name }}</h5>
               </div>
               <div class="currency-pair-value"
                    [class.red]="!currencyPair.isBigger"
@@ -37,23 +37,28 @@
           <input type="text" class="form-control" name="amount"
                  [formControl]="createOrderForm.controls['amount']">
         </div>
-        <div class="btn-group">
+        <div class="btn-group"
+             [ngClass]="{'has-error':!createOrderForm.controls['order-type'].valid && createOrderForm.controls['order-type'].touched}">
           <label class="btn btn-secondary"
                  [class.active]="orderType === buy.value">
-            <input id="option1" type="radio" name="order-type" value="1" autocomplete="off" required
+            <input id="option1" class="form-control" type="radio" name="order-type" value="1" autocomplete="off"
                    #buy
                    [formControl]="createOrderForm.controls['order-type']">Buy
           </label>
           <label class="btn btn-secondary"
                  [class.active]="orderType === sell.value">
-            <input id="option2" type="radio" name="order-type" value="2" autocomplete="off" required
+            <input id="option2" class="form-control" type="radio" name="order-type" value="2" autocomplete="off"
                    #sell
                    [formControl]="createOrderForm.controls['order-type']">Sell
           </label>
         </div>
-        <button type="submit" class="btn btn-success"
-                [disabled]="!createOrderForm.valid">Create order
+        <button type="submit" class="btn btn-success">Create order
         </button>
+        <div class="form-group" *ngIf="serverNonFieldErrorMessage">
+          <div class="alert alert-danger">
+            {{ serverNonFieldErrorMessage }}
+          </div>
+        </div>
         <div class="form-group">
           <div *ngIf="formErrors.amount" class="alert alert-danger">
             {{ formErrors.amount }}

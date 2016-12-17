@@ -43,6 +43,21 @@ export class Login {
 
           this.currenciesPairsService.makeSubscribe();
           this.router.navigate(['/app']);
+        },
+        error => {
+          let errorJSON = error.json();
+          for (let errorField in errorJSON) {
+            let errorMessages = errorJSON[errorField];
+            let control = this.loginForm.controls[errorField];
+            if (control) {
+              ValidateHelper.makeControlError(control, errorMessages);
+              this.onValueChanged();
+            } else {
+              errorMessages.forEach((message) => {
+                this.serverNonFieldErrorMessage += message;
+              })
+            }
+          }
         }
       );
   };
@@ -54,6 +69,7 @@ export class Login {
 
   onValueChanged(data?:any) {
     ValidateHelper.checkErrors(this.loginForm, this.formErrors, this.validationMessages);
+    this.serverNonFieldErrorMessage = '';
   }
 
   private tuneValidation(formBuilder) {
@@ -83,4 +99,6 @@ export class Login {
       'required': 'You must type a password.',
     }
   };
+
+  serverNonFieldErrorMessage = '';
 }

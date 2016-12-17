@@ -278,6 +278,8 @@ module.exports = function(options) {
         d3: 'd3',
         nv: 'nvd3/build/nv.d3.js',
         "window.Tether": "tether",
+        d3: 'd3',
+        nv: 'nvd3/build/nv.d3.js',
         Hammer: 'hammerjs/hammer'
       }),
 

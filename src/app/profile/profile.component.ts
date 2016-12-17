@@ -30,6 +30,7 @@ export class Profile {
   }
 
   onValueChanged(data?:any) {
+    this.serverNonFieldErrorMessage = '';
     ValidateHelper.checkErrors(this.makeTransferForm, this.formErrors, this.validationMessages);
   }
 
@@ -43,10 +44,29 @@ export class Profile {
   }
 
   makeTransfer(form) {
-    let amount = parseFloat(form.value['amount']);
-    if (!this.transferType && !amount) return;
-    this.apiService.createTransfer(amount, this.transferType)
-      .then(()=> location.reload());
+    if (form.valid) {
+      let amount = parseFloat(form.value['amount']);
+      if (!this.transferType && !amount) return;
+      this.apiService.createTransfer(amount, this.transferType)
+        .then(()=> location.reload())
+        .catch((error) => {
+          let errorJSON = error.json();
+          for (let errorField in errorJSON) {
+            let errorMessages = errorJSON[errorField];
+            let control = this.makeTransferForm.controls[errorField];
+            if (control) {
+              ValidateHelper.makeControlError(control, errorMessages);
+              this.onValueChanged();
+            } else {
+              errorMessages.forEach((message) => {
+                this.serverNonFieldErrorMessage += message;
+              })
+            }
+          }
+        });
+    } else {
+      ValidateHelper.makeFieldsAsTouched(form);
+    }
   }
 
   getUserInfo() {
@@ -76,10 +96,14 @@ export class Profile {
 
   collapseTransferForm(type, button) {
     let target = button.dataset['target'];
-    console.log(type, this.transferType);
     if (this.isTransferFormShown && this.transferType === type) {
       jQuery(target).collapse('toggle');
     } else if (this.isTransferFormShown && this.transferType != type) {
+      this.makeTransferForm.reset();
+      this.transferType = type;
+    } else if (!this.isTransferFormShown && this.transferType != type) {
+      jQuery(target).collapse('toggle');
+      this.makeTransferForm.reset();
       this.transferType = type;
     } else {
       this.transferType = type;
@@ -151,4 +175,6 @@ export class Profile {
       'validateCardCvvLength': 'Invalid length of CVV.'
     },
   };
+
+  serverNonFieldErrorMessage = '';
 }

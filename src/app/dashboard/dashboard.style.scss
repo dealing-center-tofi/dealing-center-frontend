@@ -1,13 +1,17 @@
 .red {
-    color: red;
+    color: #dd5826;
 }
 
 .green {
-    color: green;
+    color: #64bd63;
 }
 
 .btn-group > label {
     margin-bottom: 0;
+}
+
+.btn-group.has-error label {
+  border-color: #dd5826 !important;
 }
 
 .form-inline .alert {
@@ -63,12 +67,12 @@ input[name="order-type"] {
 }
 
 .list-group-item.list-group-item-blue {
-    &.active {
+    &.active, &.active:hover {
         border: none !important;
         background-color: #5d8fc2 !important;
     }
 
     &:hover {
-        background-color: #5d8fc2 !important;
+        background-color: #ddd !important;
     }
 }

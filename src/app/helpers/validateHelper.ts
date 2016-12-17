@@ -6,7 +6,7 @@ export class ValidateHelper {
   static ALLOWED_LENGTHS_FOR_CVV = [3];
   static MASTERCARD_START_STRINGS = ['51', '52', '53', '54', '55'];
   static VISA_START_STRINGS = ['4'];
-  static AMOUNT_REGEXP = /(?:\d*\.)?\d+/;
+  static AMOUNT_REGEXP = /^(?:\d*\.)?\d+$/;
   static NOT_DIGITS_REGEXP = /\D/;
   static EXPIRY_DATE_REGEXP = /^(0[1-9]|1[0-2])\/(\d{2})$/;
   static NOT_DIGITS_NOT_WORDS_REGEXP = /[^\w\d]/;
@@ -15,6 +15,15 @@ export class ValidateHelper {
   static LOWER_LETTER_REGEXP = /[a-z]/;
   static DIGITS_REGEXP = /\d/;
   static NOT_WORDS_REGEXP = /\W/;
+
+  static makeControlError(control, errorMessages) {
+    control.markAsTouched();
+    control.markAsDirty();
+    let newError = {'serverError': errorMessages};
+    control.errors ?
+      control.setErrors(Object.assign(control.errors, newError), true) :
+      control.setErrors(newError, true);
+  };
 
   static checkErrors(form, formErrors, validationMessages) {
     if (!form) {
@@ -28,7 +37,13 @@ export class ValidateHelper {
       if (control && control.dirty && !control.valid) {
         const messages = validationMessages[field];
         for (const key in control.errors) {
-          formErrors[field] += messages[key] + ' ';
+          if (key === 'serverError') {
+            control.errors['serverError'].forEach((errMessage) => {
+              formErrors[field] += errMessage;
+            })
+          } else {
+            formErrors[field] += messages[key] + ' ';
+          }
         }
       }
     }
@@ -180,9 +195,25 @@ export class ValidateHelper {
   }
 
   static validateExpiryDate(c:FormControl) {
+    var getDate = function () {
+      let month = parseInt(resultRegexp[1]);
+      let year = parseInt(resultRegexp[2]) + 2000;
+      let expiryDate = new Date(year, month);
+      return new Date(expiryDate.setDate(expiryDate.getDate() + 1));
+    };
+
     if (!c.value) return;
 
-    return ValidateHelper.EXPIRY_DATE_REGEXP.test(c.value) ? null : {
+    let isValid = false;
+    let resultRegexp = ValidateHelper.EXPIRY_DATE_REGEXP.exec(c.value);
+
+    if (resultRegexp) {
+      var expiryDate = getDate();
+      let nowDate = new Date(Date.now());
+      isValid = expiryDate <= nowDate ? false : true;
+    }
+
+    return isValid ? null : {
       validateExpiryDate: {
         valid: false
       }
