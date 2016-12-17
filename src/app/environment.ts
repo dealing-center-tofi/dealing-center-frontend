@@ -11,6 +11,7 @@ import { WebSocketService } from './services/web-socket.service.ts';
 import { CurrencyPairsService } from './services/currency-pairs.service';
 import { OrdersService } from './services/orders.service';
 import { AccountService} from './services/account.service';
+import {HistoryValuesConstsService} from "./services/historyValuesConsts.service";
 
 // Environment Providers
 let PROVIDERS: any[] = [
@@ -20,7 +21,8 @@ let PROVIDERS: any[] = [
   WebSocketService,
   CurrencyPairsService,
   OrdersService,
-  AccountService
+  AccountService,
+  HistoryValuesConstsService
 ];
 
 // Angular debug tools in the dev console
