@@ -118,6 +118,14 @@ export class ApiService {
             .catch(this.handleError);
   }
 
+  getCurrencyPairValuesHistoryFromRawUrl(url) {
+    this.setHeaders();
+    return this.http.get(url, {headers: this.headers})
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError)
+  }
+
   getCurrencyPairValuesHistory(currency_pair, period, page=undefined, dates=undefined) {
     let paramsDict = {currency_pair: currency_pair,
                       period: period,
@@ -136,11 +144,7 @@ export class ApiService {
         .join('&'),
       url = this.historyValuesUrl.concat('?', params);
 
-    this.setHeaders();
-    return this.http.get(url, {headers: this.headers})
-              .toPromise()
-              .then(response => response.json())
-              .catch(this.handleError)
+    return this.getCurrencyPairValuesHistoryFromRawUrl(url);
   }
 
   private handleError(error: any): Promise<any> {

@@ -12,10 +12,10 @@ declare let nv: any;
 })
 export class CandlesTickChart implements OnInit {
   $el: any;
-  private chart: any;
+
   private data = {};
   private chartSettings = new CandlesTickChartSettings();
-  private currentPeriod = this.historyValuesConsts.PERIOD_5_MINUTES;
+  private currentPeriod = this.historyValuesConsts.PERIOD_1_HOUR;
 
   constructor(el: ElementRef,
               private historyValuesConsts: HistoryValuesConstsService,
@@ -27,29 +27,48 @@ export class CandlesTickChart implements OnInit {
     this.apiService.getCurrencyPairValuesHistory(1, this.currentPeriod)
       .then((res) => {
         console.log(res);
-        this.data[this.currentPeriod] = res.results;
-        this.data[this.currentPeriod].forEach(function (value) {
-          value.date = new Date(value.creation_time).getTime();
-        });
-        this.sortData(this.data[this.currentPeriod]);
+        this.data[this.currentPeriod] = res;
+        this.normalizeDate(this.data[this.currentPeriod].results);
+        this.sortData(this.data[this.currentPeriod].results);
         this.initCandlestickChart();
       });
   }
 
   initCandlestickChart(): any {
-    let data = this.data[this.currentPeriod];
+    let data = this.data[this.currentPeriod].results;
 
     this.chartSettings.calculateBounds(data);
     this.chartSettings.setUpDrawingArea();
     this.chartSettings.setUpScales();
     this.chartSettings.setUpAxes();
-
     this.chartSettings.createDataSeries(data);
-
     this.chartSettings.setUpZoomingAndPanning(data);
 
+    this.chartSettings.onLeftBoundReached(() => {
+      if (this.data[this.currentPeriod].next && !this.data[this.currentPeriod].doRequest) {
+        this.data[this.currentPeriod].doRequest = true;
+        this.apiService.getCurrencyPairValuesHistoryFromRawUrl(this.data[this.currentPeriod].next)
+          .then((res) => {
+            this.data[this.currentPeriod].next = res.next;
 
-    let daysShown = 10;
+            res.results.forEach((elem) => {this.data[this.currentPeriod].results.push(elem)});
+            this.normalizeDate(this.data[this.currentPeriod].results);
+
+            let data = this.data[this.currentPeriod].results;
+            this.sortData(data);
+
+            this.chartSettings.calculateBounds(data);
+            this.chartSettings.updateYScaleDomain();
+            this.chartSettings.redrawChart();
+            this.chartSettings.updateZoomFromChart();
+
+            this.data[this.currentPeriod].doRequest = false;
+          });
+      }
+    });
+
+
+    let daysShown = (data.length >= 20 ? 20 : data.length) - 1;
     this.chartSettings.xScale.domain([
       data[data.length - daysShown - 1].date,
       data[data.length - 1].date
@@ -60,6 +79,11 @@ export class CandlesTickChart implements OnInit {
     this.chartSettings.updateZoomFromChart();
   }
 
+  normalizeDate(data) {
+    data.forEach(function (value) {
+      value.date = new Date(value.creation_time).getTime();
+    });
+  }
 
   sortData(data) {
     data.sort(function (a, b) {
@@ -87,8 +111,14 @@ class CandlesTickChartSettings {
   private dataSeries;
   private series;
   private zoom;
-  private yScale;
+  public yScale;
   public xScale;
+
+  private _onLeftBoundReached = [];
+
+  onLeftBoundReached(fn) {
+    this._onLeftBoundReached.push(fn);
+  }
 
   calculateBounds(data) {
     this.minDate = d3.min(data, function (d) { return d.date; });
@@ -128,6 +158,10 @@ class CandlesTickChartSettings {
     // Set scale ranges
     this.xScale.range([0, this.width]);
     this.yScale.range([this.height, 0]);
+  }
+
+  updateYScaleDomain() {
+    this.yScale.domain([this.yMin, this.yMax]).nice();
   }
 
   setUpAxes() {
@@ -261,21 +295,20 @@ class CandlesTickChartSettings {
   }
 
   setUpZoomingAndPanning(data) {
-    let self = this;
-
     this.zoom = d3.behavior.zoom()
       .x(this.xScale)
-      .on('zoom', function() {
-        if (self.xScale.domain()[0] < self.minDate) {
-          self.zoom.translate([self.zoom.translate()[0] - self.xScale(self.minDate) + self.xScale.range()[0], 0]);
-        } else if (self.xScale.domain()[1] > self.maxDate) {
-          self.zoom.translate([self.zoom.translate()[0] - self.xScale(self.maxDate) + self.xScale.range()[1], 0]);
+      .on('zoom', () => {
+        if (this.xScale.domain()[0] < this.minDate) {
+          this.zoom.translate([this.zoom.translate()[0] - this.xScale(this.minDate) + this.xScale.range()[0], 0]);
+          this._onLeftBoundReached.forEach(fn => fn());
+        } else if (this.xScale.domain()[1] > this.maxDate) {
+          this.zoom.translate([this.zoom.translate()[0] - this.xScale(this.maxDate) + this.xScale.range()[1], 0]);
         }
-        self.redrawChart();
+        this.redrawChart();
       });
 
     let overlay = d3.svg.area()
-      .x(function (d) { return self.xScale(d.date); })
+      .x((d) => this.xScale(d.date))
       .y0(0)
       .y1(this.height);
 
@@ -289,16 +322,17 @@ class CandlesTickChartSettings {
   // Helper functions
 
   redrawChart() {
-      this.dataSeries.call(this.series);
-      this.plotChart.select('.x.axis').call(this.xAxis);
+    this.dataSeries.call(this.series);
+    this.plotChart.select('.x.axis').call(this.xAxis);
+    this.plotChart.select('.y.axis').call(this.yAxis);
   }
 
   updateZoomFromChart() {
-      let fullDomain = this.maxDate - this.minDate,
-        currentDomain = this.xScale.domain()[1] - this.xScale.domain()[0];
-      let minScale = currentDomain / fullDomain,
-        maxScale = minScale * 20;
-      this.zoom.x(this.xScale)
-        .scaleExtent([minScale, maxScale]);
+    let fullDomain = this.maxDate - this.minDate,
+      currentDomain = this.xScale.domain()[1] - this.xScale.domain()[0];
+    let minScale = currentDomain / fullDomain,
+      maxScale = minScale * 20;
+    this.zoom.x(this.xScale)
+      .scaleExtent([minScale, maxScale]);
   }
 }
