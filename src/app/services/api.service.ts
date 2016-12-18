@@ -17,6 +17,7 @@ export class ApiService {
   private userInfoUrl = config.apiUrl + '/api/users/me/';
   private accountUrl = config.apiUrl + '/api/account/me/';
   private transfersUrl = config.apiUrl + '/api/transfers/';
+  private historyValuesUrl = config.apiUrl + '/api/history/';
 
   constructor(private http: Http) {}
 
@@ -115,6 +116,35 @@ export class ApiService {
               return res.json();
             })
             .catch(this.handleError);
+  }
+
+  getCurrencyPairValuesHistoryFromRawUrl(url) {
+    this.setHeaders();
+    return this.http.get(url, {headers: this.headers})
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError)
+  }
+
+  getCurrencyPairValuesHistory(currency_pair, period, page=undefined, dates=undefined) {
+    let paramsDict = {currency_pair: currency_pair,
+                      period: period,
+                      creation_time_min: dates ? dates[0] : undefined,
+                      creation_time_max: dates ? dates[1] : undefined,
+                      page: page || undefined,
+                      page_size: 50},
+
+      params = Object.keys(paramsDict)
+        .filter(function (key) {
+          return paramsDict[key] !== undefined
+        })
+        .map(function (key) {
+          return ''.concat(key, '=', paramsDict[key])
+        })
+        .join('&'),
+      url = this.historyValuesUrl.concat('?', params);
+
+    return this.getCurrencyPairValuesHistoryFromRawUrl(url);
   }
 
   private handleError(error: any): Promise<any> {
