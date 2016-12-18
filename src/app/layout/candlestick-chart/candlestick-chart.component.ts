@@ -88,7 +88,6 @@ export class CandlesTickChart implements OnInit {
 
     this.apiService.getCurrencyPairValuesHistory(this.currencyPairId, this.currentPeriod)
       .then((res) => {
-        console.log(res);
         this.data[this.currentPeriod] = res;
         this.normalizeDate(this.data[this.currentPeriod].results);
         this.sortData(this.data[this.currentPeriod].results);
@@ -106,27 +105,15 @@ export class CandlesTickChart implements OnInit {
     this.chartSettings.createDataSeries(data);
     this.chartSettings.setUpZoomingAndPanning(data);
 
-    this.chartSettings.onLeftBoundReached(() => {
-      if (this.data[this.currentPeriod].next && !this.data[this.currentPeriod].doRequest) {
-        this.data[this.currentPeriod].doRequest = true;
-        this.apiService.getCurrencyPairValuesHistoryFromRawUrl(this.data[this.currentPeriod].next)
-          .then((res) => {
-            this.data[this.currentPeriod].next = res.next;
-
-            res.results.forEach((elem) => {this.data[this.currentPeriod].results.push(elem)});
-            this.normalizeDate(this.data[this.currentPeriod].results);
-
-            let data = this.data[this.currentPeriod].results;
-            this.sortData(data);
-
-            this.chartSettings.calculateBounds(data);
-            this.chartSettings.updateYScaleDomain();
-            this.chartSettings.redrawChart();
-            this.chartSettings.updateZoomFromChart();
-
-            this.data[this.currentPeriod].doRequest = false;
-          });
+    this.chartSettings.onZoom(() => {
+      if (this.chartSettings.xScale.domain()[0] < this.data[this.currentPeriod].results[20].date) {
+        this.loadMoreValues();
       }
+    });
+    this.chartSettings.onZoom(() => {
+      this.chartSettings.recalculateYAxis(this.data[this.currentPeriod].results);
+      this.chartSettings.updateYScaleDomain();
+      this.chartSettings.redrawChart();
     });
 
 
@@ -136,9 +123,35 @@ export class CandlesTickChart implements OnInit {
       data[data.length - 1].date
     ]);
 
+    this.chartSettings.recalculateYAxis(data);
+    this.chartSettings.updateYScaleDomain();
+
 
     this.chartSettings.redrawChart();
     this.chartSettings.updateZoomFromChart();
+  }
+
+  loadMoreValues() {
+    if (this.data[this.currentPeriod].next && !this.data[this.currentPeriod].doRequest) {
+      this.data[this.currentPeriod].doRequest = true;
+      this.apiService.getCurrencyPairValuesHistoryFromRawUrl(this.data[this.currentPeriod].next)
+        .then((res) => {
+          this.data[this.currentPeriod].next = res.next;
+
+          res.results.forEach((elem) => {this.data[this.currentPeriod].results.push(elem)});
+          this.normalizeDate(this.data[this.currentPeriod].results);
+
+          let data = this.data[this.currentPeriod].results;
+          this.sortData(data);
+
+          this.chartSettings.calculateBounds(data);
+          this.chartSettings.recalculateYAxis(data);
+          this.chartSettings.updateYScaleDomain();
+          this.chartSettings.redrawChart();
+
+          this.data[this.currentPeriod].doRequest = false;
+        });
+    }
   }
 
   normalizeDate(data) {
@@ -176,16 +189,15 @@ class CandlesTickChartSettings {
   public yScale;
   public xScale;
 
-  private _onLeftBoundReached = [];
+  private _onZoomHandlers = [];
 
-  onLeftBoundReached(fn) {
-    this._onLeftBoundReached.push(fn);
+  onZoom(fn) {
+    this._onZoomHandlers.push(fn);
   }
 
   redrawOnNewData(data) {
     this.calculateBounds(data);
     this.updateXScaleDomain();
-    this.updateYScaleDomain();
     this.updateDataSeries(data);
 
     let daysShown = (data.length >= 20 ? 20 : data.length) - 1;
@@ -193,6 +205,8 @@ class CandlesTickChartSettings {
       data[data.length - daysShown - 1].date,
       data[data.length - 1].date
     ]);
+    this.recalculateYAxis(data);
+    this.updateYScaleDomain();
 
     this.redrawChart();
     this.updateZoomFromChart();
@@ -204,6 +218,28 @@ class CandlesTickChartSettings {
     this.yMin = d3.min(data, function (d) { return d.low; });
     this.yMax = d3.max(data, function (d) { return d.high; });
   };
+
+  recalculateYAxis(data) {
+    let minDomain = this.xScale.domain()[0],
+      maxDomain = this.xScale.domain()[1],
+      difference = maxDomain - minDomain;
+
+    if (maxDomain > this.maxDate) {
+      maxDomain = this.maxDate;
+      minDomain = maxDomain - difference;
+    }
+    if (minDomain < this.minDate) {
+      minDomain = this.minDate;
+      maxDomain = minDomain + difference;
+    }
+
+    let matterData = data.filter((elem) => {
+      return elem.date >= minDomain && elem.date <= maxDomain;
+    });
+
+    this.yMin = d3.min(matterData, function (d) { return d.low; });
+    this.yMax = d3.max(matterData, function (d) { return d.high; });
+  }
 
   setUpDrawingArea() {
     this.margin = {top: 20, right: 20, bottom: 30, left: 55};
@@ -390,9 +426,10 @@ class CandlesTickChartSettings {
     this.zoom = d3.behavior.zoom()
       .x(this.xScale)
       .on('zoom', () => {
+        this._onZoomHandlers.forEach(fn => fn());
+
         if (this.xScale.domain()[0] < this.minDate) {
           this.zoom.translate([this.zoom.translate()[0] - this.xScale(this.minDate) + this.xScale.range()[0], 0]);
-          this._onLeftBoundReached.forEach(fn => fn());
         } else if (this.xScale.domain()[1] > this.maxDate) {
           this.zoom.translate([this.zoom.translate()[0] - this.xScale(this.maxDate) + this.xScale.range()[1], 0]);
         }

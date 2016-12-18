@@ -132,7 +132,7 @@ export class ApiService {
                       creation_time_min: dates ? dates[0] : undefined,
                       creation_time_max: dates ? dates[1] : undefined,
                       page: page || undefined,
-                      page_size: 30},
+                      page_size: 50},
 
       params = Object.keys(paramsDict)
         .filter(function (key) {
