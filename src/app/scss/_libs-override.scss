@@ -50,6 +50,29 @@
   width: 10px;
 }
 
+/**
+ * pickadate
+ */
+.picker-container {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.picker__holder {
+  overflow-y: hidden !important;
+}
+
+.picker__select--year, .picker__select--month {
+  padding: 2px;
+  width: auto;
+  height: auto;
+  background-color: #fff;
+}
+
+.picker__nav--prev, .picker__nav--next {
+  width: 0.5em;
+}
+
 /***********************/
 /*glyphicons-halflings */
 /***********************/

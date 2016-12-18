@@ -8,6 +8,7 @@ import {Router} from "@angular/router";
 import {ValidateHelper} from "../helpers/validateHelper";
 
 const config = require('./../../../config/api.conf');
+declare var jQuery;
 
 @Component({
   selector: 'sing-up',
@@ -34,6 +35,19 @@ export class SingUp {
         this.currencies = data.results;
         this.currencies.map((currency) => currency.text = currency.name);
       });
+    jQuery('.datepicker').pickadate({
+      format: 'mm/dd/yyyy',
+      max: new Date( new Date().setFullYear(new Date(Date.now()).getFullYear() - 18)),
+      editable: false,
+      today: '',
+      clear: 'Clear',
+      close: 'Close',
+      selectMonths: true,
+      selectYears: 100,
+      klass: {
+        picker: 'picker'
+      },
+    });
   }
 
   submitForm(value:any):void {
@@ -84,6 +98,7 @@ export class SingUp {
   };
 
   onValueChanged(data?:any) {
+    console.log('change', this.signUpForm.controls['birth_date']);
     ValidateHelper.checkErrors(this.signUpForm, this.formErrors, this.validationMessages);
     ValidateHelper.checkErrors(this.signUpForm.controls['passwords'], this.formErrorsPasswords, this.validationMessages.passwords);
   }

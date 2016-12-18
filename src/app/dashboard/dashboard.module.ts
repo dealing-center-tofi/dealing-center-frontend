@@ -6,7 +6,9 @@ import { RouterModule } from '@angular/router';
 import { Dashboard } from './dashboard.component.ts';
 import { WidgetModule } from '../layout/widget/widget.module';
 
-import 'pickadate/lib/picker.date'
+//import 'pickadate/lib/picker.date'
+//import 'pickadate/lib/pickadate.js'
+//import 'pickadate/lib/picker.date';
 
 export const routes = [
   {path: '', component: Dashboard, pathMatch: 'full'}

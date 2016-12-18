@@ -124,10 +124,10 @@ module.exports = function(options) {
          * See: https://github.com/TheLarkInn/angular2-template-loader
          */
 
-        //{
-        //  test: /pickadate/,
-        //  loader: 'imports?define=>false'
-        //},
+        {
+          test: /pickadate/,
+          loader: 'imports?define=>false'
+        },
 
         {
           test: /\.ts$/,
