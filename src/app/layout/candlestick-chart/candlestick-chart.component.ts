@@ -8,14 +8,61 @@ declare let nv: any;
 
 @Component({
   selector: '[candlestick-chart]',
-  templateUrl: './candlestick-chart.template.html'
+  templateUrl: './candlestick-chart.template.html',
+  inputs: ['currencyPair']
 })
 export class CandlesTickChart implements OnInit {
   $el: any;
 
+  public currencyPair;
+  private currencyPairId;
+
   private data = {};
   private chartSettings = new CandlesTickChartSettings();
-  private currentPeriod = this.historyValuesConsts.PERIOD_1_HOUR;
+  wasInitialized = false;
+
+  currentPeriod = this.historyValuesConsts.PERIOD_5_MINUTES;
+  periodChoices = [
+    {value: this.historyValuesConsts.PERIOD_5_MINUTES, displayName: '5M'},
+    {value: this.historyValuesConsts.PERIOD_15_MINUTES, displayName: '15M'},
+    {value: this.historyValuesConsts.PERIOD_30_MINUTES, displayName: '30M'},
+    {value: this.historyValuesConsts.PERIOD_1_HOUR, displayName: '1H'},
+    {value: this.historyValuesConsts.PERIOD_4_HOURS, displayName: '4H'},
+    {value: this.historyValuesConsts.PERIOD_1_DAY, displayName: '1D'},
+    {value: this.historyValuesConsts.PERIOD_1_WEEK, displayName: '1W'},
+  ];
+
+  changeCurrentPeriod(period) {
+    this.currentPeriod = period;
+    if (this.data[this.currentPeriod] === undefined) {
+      this.apiService.getCurrencyPairValuesHistory(this.currencyPairId, this.currentPeriod)
+        .then((res) => {
+          this.data[period] = res;
+          this.normalizeDate(this.data[period].results);
+
+          let data = this.data[period].results;
+          this.sortData(data);
+
+          this.chartSettings.redrawOnNewData(data);
+        });
+    } else {
+      this.chartSettings.redrawOnNewData(this.data[period].results)
+    }
+  }
+
+  afterChangeCurrencyPair() {
+    this.data = {};
+    this.apiService.getCurrencyPairValuesHistory(this.currencyPairId, this.currentPeriod)
+      .then((res) => {
+        this.data[this.currentPeriod] = res;
+        this.normalizeDate(this.data[this.currentPeriod].results);
+
+        let data = this.data[this.currentPeriod].results;
+        this.sortData(data);
+
+        this.chartSettings.redrawOnNewData(data);
+      });
+  }
 
   constructor(el: ElementRef,
               private historyValuesConsts: HistoryValuesConstsService,
@@ -24,7 +71,22 @@ export class CandlesTickChart implements OnInit {
   }
 
   ngOnInit(): void {
-    this.apiService.getCurrencyPairValuesHistory(1, this.currentPeriod)
+    this.currencyPair.subscribe((elem) => {
+      if (elem && this.currencyPairId !== elem.id) {
+        this.currencyPairId = elem.id;
+
+        if (!this.wasInitialized)
+          this.firstInit();
+        else
+          this.afterChangeCurrencyPair();
+      }
+    });
+  }
+
+  firstInit() {
+    this.wasInitialized = true;
+
+    this.apiService.getCurrencyPairValuesHistory(this.currencyPairId, this.currentPeriod)
       .then((res) => {
         console.log(res);
         this.data[this.currentPeriod] = res;
@@ -120,6 +182,22 @@ class CandlesTickChartSettings {
     this._onLeftBoundReached.push(fn);
   }
 
+  redrawOnNewData(data) {
+    this.calculateBounds(data);
+    this.updateXScaleDomain();
+    this.updateYScaleDomain();
+    this.updateDataSeries(data);
+
+    let daysShown = (data.length >= 20 ? 20 : data.length) - 1;
+    this.xScale.domain([
+      data[data.length - daysShown - 1].date,
+      data[data.length - 1].date
+    ]);
+
+    this.redrawChart();
+    this.updateZoomFromChart();
+  }
+
   calculateBounds(data) {
     this.minDate = d3.min(data, function (d) { return d.date; });
     this.maxDate = d3.max(data, function (d) { return d.date; });
@@ -160,6 +238,10 @@ class CandlesTickChartSettings {
     this.yScale.range([this.height, 0]);
   }
 
+  updateXScaleDomain() {
+    this.xScale.domain([this.minDate, this.maxDate]);
+  }
+
   updateYScaleDomain() {
     this.yScale.domain([this.yMin, this.yMax]).nice();
   }
@@ -186,13 +268,23 @@ class CandlesTickChartSettings {
 
   createDataSeries(data) {
     this.series = CandlesTickChartSettings.createCandlesTickSeries()
-        .xScale(this.xScale)
-        .yScale(this.yScale);
+      .xScale(this.xScale)
+      .yScale(this.yScale);
 
     this.dataSeries = this.plotArea.append('g')
-        .attr('class', 'series')
-        .datum(data)
-        .call(this.series);
+      .attr('class', 'series')
+      .datum(data)
+      .call(this.series);
+  }
+
+  updateDataSeries(data) {
+    this.series = CandlesTickChartSettings.createCandlesTickSeries()
+      .xScale(this.xScale)
+      .yScale(this.yScale);
+
+    this.dataSeries
+      .datum(data)
+      .call(this.series);
   }
 
   static createCandlesTickSeries() {

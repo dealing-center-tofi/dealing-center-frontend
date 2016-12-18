@@ -55,3 +55,13 @@
     fill: black;
     fill-opacity: 0.2;
 }
+
+.btn-group > label {
+    margin-bottom: 0;
+}
+
+input[name="order-type"] {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0) !important;
+    pointer-events: none !important;
+}

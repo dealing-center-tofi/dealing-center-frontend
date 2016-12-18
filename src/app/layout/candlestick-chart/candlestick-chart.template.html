@@ -1,3 +1,11 @@
+<div class="btn-group">
+  <label *ngFor="let period of periodChoices" class="btn btn-secondary" [class.active]="currentPeriod === period.value">
+    <input class="form-control" type="radio" name="order-type" value="{{period.value}}" autocomplete="off"
+           (click)="changeCurrentPeriod(period.value)">
+    {{period.displayName}}
+  </label>
+</div>
+
 <div class="candlestick-graphic-block">
   <div id="candlestick-chart">
   </div>
