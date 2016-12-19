@@ -8,6 +8,7 @@ import { OrdersService } from '../services/orders.service';
 import { CurrencyPairsService } from '../services/currency-pairs.service';
 import { RoundHelper } from '../helpers/roundHelper';
 import { ValidateHelper } from '../helpers/validateHelper';
+import {BehaviorSubject} from "rxjs/Rx";
 
 declare var jQuery;
 
@@ -19,12 +20,14 @@ declare var jQuery;
 export class Dashboard {
   createOrderForm:FormGroup;
   currencyPairs;
-  selectedPair;
   orderType;
   token;
   hideOrderSuccess = true;
   hideOrderError = true;
   round = RoundHelper.round;
+  private _selectedPair = new BehaviorSubject(Object);
+  public selectedPair;
+  public selectedPairObservable: Observable<Object> = this._selectedPair.asObservable();
 
   constructor(private ordersService:OrdersService,
               private router:Router,
@@ -83,6 +86,7 @@ export class Dashboard {
     this.currencyPairsService.getCurrencyPairs().subscribe(res => {
       this.currencyPairs = res;
       this.selectedPair = this.selectedPair || this.currencyPairs[0];
+      this._selectedPair.next(this.selectedPair);
     });
   }
 

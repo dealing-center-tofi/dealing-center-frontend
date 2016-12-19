@@ -10,7 +10,7 @@
       <div class="no-padding">
         <div class="list-group list-group-lg" *ngIf="currencyPairs">
           <a class="list-group-item list-group-item-blue" *ngFor="let currencyPair of currencyPairs"
-             (click)="selectedPair = currencyPair"
+             (click)="selectedPair = currencyPair;_selectedPair.next(selectedPair)"
              [class.active]="currencyPair === selectedPair">
             <div class="currency-pair">
               <div class="currency-pair-name">
@@ -76,5 +76,8 @@
         </div>
       </form>
     </div>
+
+    <div candlestick-chart [currencyPair]="selectedPairObservable"></div>
+
   </div>
 </div>
