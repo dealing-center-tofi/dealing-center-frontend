@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { Dashboard } from './dashboard.component.ts';
 import { WidgetModule } from '../layout/widget/widget.module';
+import { CandlesTickChart } from "../layout/candlestick-chart/candlestick-chart.component";
 
 //import 'pickadate/lib/picker.date'
 //import 'pickadate/lib/pickadate.js'
@@ -22,7 +23,10 @@ export const routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [Dashboard]
+  declarations: [
+    Dashboard,
+    CandlesTickChart
+  ]
 })
 export default class DashboardModule {
   static routes = routes;

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 
 import { ApiService } from '../services/api.service.ts'
 import { ValidateHelper } from '../helpers/validateHelper'
+import {AccountService} from "../services/account.service";
 const config = require('./../../../config/api.conf');
 
 declare var jQuery;
@@ -23,6 +24,7 @@ export class Profile {
   isTransferFormShown = 0;
 
   constructor(private apiService:ApiService,
+              private accountService:AccountService,
               private router:Router,
               private zone:NgZone,
               private formBuilder:FormBuilder) {
@@ -48,7 +50,11 @@ export class Profile {
       let amount = parseFloat(form.value['amount']);
       if (!this.transferType && !amount) return;
       this.apiService.createTransfer(amount, this.transferType)
-        .then(()=> location.reload())
+        .then(()=> {
+          this.accountService.updateAccount();
+          form.reset();
+          jQuery('#collapse-transfer-form').collapse('toggle');
+        })
         .catch((error) => {
           let errorJSON = error.json();
           for (let errorField in errorJSON) {
@@ -76,9 +82,11 @@ export class Profile {
   }
 
   getAccount() {
-    this.apiService
+    this.accountService
       .getAccount()
-      .then(account => this.account = account);
+      .subscribe(account => {
+        this.account = account;
+      });
   }
 
   setCollapseListeners() {
