@@ -35,9 +35,10 @@ export class SingUp {
         this.currencies = data.results;
         this.currencies.map((currency) => currency.text = currency.name);
       });
+    let self = this;
     jQuery('.datepicker').pickadate({
-      format: 'mm/dd/yyyy',
-      max: new Date( new Date().setFullYear(new Date(Date.now()).getFullYear() - 18)),
+      format: 'yyyy-mm-dd',
+      max: new Date(new Date().setFullYear(new Date(Date.now()).getFullYear() - 18)),
       editable: false,
       today: '',
       clear: 'Clear',
@@ -47,6 +48,9 @@ export class SingUp {
       klass: {
         picker: 'picker'
       },
+      onSet: function (context) {
+        self.signUpForm.controls['birth_date'].setValue(this.get());
+      }
     });
   }
 
@@ -98,7 +102,6 @@ export class SingUp {
   };
 
   onValueChanged(data?:any) {
-    console.log('change', this.signUpForm.controls['birth_date']);
     ValidateHelper.checkErrors(this.signUpForm, this.formErrors, this.validationMessages);
     ValidateHelper.checkErrors(this.signUpForm.controls['passwords'], this.formErrorsPasswords, this.validationMessages.passwords);
   }
