@@ -7,6 +7,7 @@ const config = require('../../../config/api.conf');
 export class WebSocketService {
   private subject: Subject<any>;
   private ws: WebSocket;
+  private isConnected = false;
 
   private connect(url): Subject<any> {
     if (!this.subject) {
@@ -53,22 +54,25 @@ export class WebSocketService {
   }
 
   public emitAuthorize() {
+    this.isConnected = true;
     this.connection.next(JSON.stringify(['authorize', {'token': localStorage.getItem('authToken')}]));
     this.connection.next(JSON.stringify(['subscribe', {}]));
+    this.connection.next(JSON.stringify(['orders_closing_subscribe', {}]));
   }
 
   public connection = this.connect(config.currenciesSocketUrl);
 
   public getData(type: string): Subject<any> {
-
-    this.emitAuthorize();
-
+    if (!this.isConnected)
+      this.emitAuthorize();
     return <Subject<any>>this.connection
       .skipWhile((res) => {
+        console.log('in websocket test',type, res);
         let dataType = JSON.parse(res.data)[0];
         return dataType !== type;
       })
       .map((res) => {
+        console.log('in websocket', type, res.data);
         return JSON.parse(res.data)[1];
       });
   }

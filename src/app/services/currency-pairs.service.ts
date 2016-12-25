@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from "rxjs";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from "rxjs";
 
 import { WebSocketService } from './web-socket.service';
 import { ApiService } from './api.service';
@@ -39,6 +39,7 @@ export class CurrencyPairsService {
 
   getWebsocketData(currencies) {
     this.webSocketService.getData('new values').subscribe(res => {
+        console.log('carency', res);
         res = res.sort( (a, b) => { return a.currency_pair - b.currency_pair });
         for( let i = 0; i < res.length; ++i) {
           currencies[i].isBigger = res[i].bid >= currencies[i].last_value.bid;

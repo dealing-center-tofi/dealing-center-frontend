@@ -1,8 +1,9 @@
 import { Injectable }    from '@angular/core';
+import { BehaviorSubject } from "rxjs";
 import { CurrencyPairsService } from '../services/currency-pairs.service';
 import { ApiService } from '../services/api.service';
 import { AccountService } from '../services/account.service';
-import {BehaviorSubject, Observable} from "rxjs";
+import { WebSocketService } from './web-socket.service';
 
 @Injectable()
 export class OrdersService {
@@ -16,7 +17,8 @@ export class OrdersService {
 
   constructor(private currencyPairsService: CurrencyPairsService,
               private apiService: ApiService,
-              private accountService: AccountService) {
+              private accountService: AccountService,
+              private webSocketService: WebSocketService) {
   }
 
   getOrdersProfit() {
@@ -42,6 +44,7 @@ export class OrdersService {
         this.orders = res[0].results;
         this._orders.next(this.orders);
         this.updateCurrencyPairs();
+        this.getWebsocketData();
       });
   }
 
@@ -60,6 +63,12 @@ export class OrdersService {
       });
       this._orders.next(this.orders);
       this.openedOrdersProfit.next(this._openedOrdersProfit);
+    });
+  }
+
+  getWebsocketData() {
+    this.webSocketService.getData('order closed').subscribe( res => {
+      console.log('order websocket', res);
     });
   }
 
