@@ -18,6 +18,8 @@ export class ApiService {
   private accountUrl = config.apiUrl + '/api/account/me/';
   private transfersUrl = config.apiUrl + '/api/transfers/';
   private historyValuesUrl = config.apiUrl + '/api/history/';
+  private passwordRecoveryUrl = config.apiUrl + '/api/auth/password_recovery/';
+  private passwordRecoveryConfirmUrl = config.apiUrl + '/api/auth/password_recovery_confirm/';
 
   constructor(private http: Http) {}
 
@@ -145,6 +147,18 @@ export class ApiService {
       url = this.historyValuesUrl.concat('?', params);
 
     return this.getCurrencyPairValuesHistoryFromRawUrl(url);
+  }
+
+  recoveryPassword(data) {
+    return this.http.post(this.passwordRecoveryUrl, data, {})
+      .toPromise()
+      .catch(this.handleError)
+  }
+
+  recoveryPasswordConfirm(data) {
+    return this.http.post(this.passwordRecoveryConfirmUrl, data, {})
+      .toPromise()
+      .catch(this.handleError)
   }
 
   private handleError(error: any): Promise<any> {

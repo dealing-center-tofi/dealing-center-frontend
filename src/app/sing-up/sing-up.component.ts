@@ -8,6 +8,7 @@ import {Router} from "@angular/router";
 import {ValidateHelper} from "../helpers/validateHelper";
 
 const config = require('./../../../config/api.conf');
+declare var jQuery;
 
 @Component({
   selector: 'sing-up',
@@ -34,6 +35,23 @@ export class SingUp {
         this.currencies = data.results;
         this.currencies.map((currency) => currency.text = currency.name);
       });
+    let self = this;
+    jQuery('.datepicker').pickadate({
+      format: 'yyyy-mm-dd',
+      max: new Date(new Date().setFullYear(new Date(Date.now()).getFullYear() - 18)),
+      editable: false,
+      today: '',
+      clear: 'Clear',
+      close: 'Close',
+      selectMonths: true,
+      selectYears: 100,
+      klass: {
+        picker: 'picker'
+      },
+      onSet: function (context) {
+        self.signUpForm.controls['birth_date'].setValue(this.get());
+      }
+    });
   }
 
   submitForm(value:any):void {

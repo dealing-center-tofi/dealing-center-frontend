@@ -7,6 +7,8 @@ import { SelectModule } from 'ng2-select';
 
 import { SingUp } from './sing-up.component.ts';
 
+import 'pickadate/lib/picker.date.js'
+
 export const routes = [
   { path: '', component: SingUp, pathMatch: 'full' }
 ];
