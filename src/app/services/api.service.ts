@@ -20,6 +20,7 @@ export class ApiService {
   private historyValuesUrl = config.apiUrl + '/api/history/';
   private passwordRecoveryUrl = config.apiUrl + '/api/auth/password_recovery/';
   private passwordRecoveryConfirmUrl = config.apiUrl + '/api/auth/password_recovery_confirm/';
+  private secretQuestionsUrl = config.apiUrl + '/api/secret-questions/';
 
   constructor(private http: Http) {}
 
@@ -159,6 +160,13 @@ export class ApiService {
     return this.http.post(this.passwordRecoveryConfirmUrl, data, {})
       .toPromise()
       .catch(this.handleError)
+  }
+
+  getSecretQuestions(): Promise<any> {
+    return this.http.get(this.secretQuestionsUrl)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   }
 
   private handleError(error: any): Promise<any> {

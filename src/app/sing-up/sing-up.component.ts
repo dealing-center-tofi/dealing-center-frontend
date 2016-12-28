@@ -18,8 +18,11 @@ declare var jQuery;
 export class SingUp {
   signUpForm:FormGroup;
   isAccountCurrencyTouched = false;
+  isSecretQuestionTouched = false;
   selectedCurrencyId;
+  selectedSecretQuestionId;
   private currencies = [];
+  private secretQuestions = [];
 
   constructor(private http:Http,
               private apiService:ApiService,
@@ -34,6 +37,11 @@ export class SingUp {
       .then(data => {
         this.currencies = data.results;
         this.currencies.map((currency) => currency.text = currency.name);
+      });
+    this.apiService.getSecretQuestions()
+      .then(data => {
+        this.secretQuestions = data.results;
+        this.secretQuestions.map((currency) => currency.text = currency.question_text);
       });
     let self = this;
     jQuery('.datepicker').pickadate({
@@ -55,7 +63,7 @@ export class SingUp {
   }
 
   submitForm(value:any):void {
-    let isFormValid = this.signUpForm.valid && this.selectedCurrencyId;
+    let isFormValid = this.signUpForm.valid && this.selectedCurrencyId && this.selectedSecretQuestionId;
     if (isFormValid) {
       this.setSomeFields(value);
       this.sendForm(value);
@@ -66,6 +74,7 @@ export class SingUp {
 
   private setSomeFields(value) {
     value.account_currency = this.selectedCurrencyId;
+    value.secret_question_id = this.selectedSecretQuestionId;
     value.password = value.passwords.password;
   };
 
@@ -108,6 +117,7 @@ export class SingUp {
 
   private makeFieldsAsTouched() {
     this.isAccountCurrencyTouched = true;
+    this.isSecretQuestionTouched = true;
     ValidateHelper.makeFieldsAsTouched(this.signUpForm);
     ValidateHelper.makeFieldsAsTouched(<FormGroup>this.signUpForm.controls['passwords']);
   }
