@@ -1,4 +1,19 @@
 /***********************/
+/*        Dashboard    */
+/***********************/
+@include media-breakpoint-up(md) {
+  .currency-pairs {
+    margin-right: 20px;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .currency-pairs {
+    margin-bottom: 20px;
+  }
+}
+
+/***********************/
 /*        Layout       */
 /***********************/
 app, .app {
@@ -1182,12 +1197,4 @@ app, .app {
   font-size: 12px;
   line-height: 1.5;
   border-radius: 3px;
-}
-
-.red {
-    color: red;
-}
-
-.green {
-    color: green;
 }

@@ -5,33 +5,34 @@
 }
 
 .chart .axis text {
-    font: 10px sans-serif;
+    font: 12px Arial;
+    fill: #555;
 }
 
 .chart .axis .domain,
 .chart .axis .tick line {
     fill: none;
-    stroke: black;
+    stroke: #555;
 }
 
 .chart .bar path {
-    stroke-width: 1.5;
+    stroke-width: 1;
 }
 
 .chart .bar.up-day path {
-    stroke: green;
+    stroke: grey;
 }
 
 .chart .bar.down-day path {
-    stroke: red;
+    stroke: grey;
 }
 
 .chart .bar.up-day rect {
-    fill: green;
+    fill: #64bd63;
 }
 
 .chart .bar.down-day rect {
-    fill: red;
+    fill: #dd5826;
 }
 
 .chart .overlay {

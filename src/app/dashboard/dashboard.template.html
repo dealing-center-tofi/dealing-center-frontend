@@ -1,5 +1,5 @@
 <h1 class="page-title">Home</h1>
-<div class="row">
+<div class="row no-gutter">
   <div class="col-md-3">
     <section class="currency-pairs">
       <header>
@@ -28,7 +28,7 @@
     </section>
   </div>
   <div class="col-md-9">
-    <div class="new-order">
+    <div class="card card-block card-outline-success new-order">
       <form class="form-inline"
             [formGroup]="createOrderForm"
             (ngSubmit)="createOrder(createOrderForm)">
@@ -72,7 +72,10 @@
       </form>
     </div>
 
-    <div candlestick-chart [currencyPair]="selectedPairObservable"></div>
+    <div class="card card-outline-success chart new-order">
+      <div candlestick-chart [currencyPair]="selectedPairObservable"></div>
+    </div>
 
   </div>
 </div>
+
