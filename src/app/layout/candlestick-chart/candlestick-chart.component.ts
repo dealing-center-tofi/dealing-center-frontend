@@ -244,7 +244,7 @@ class CandlesTickChartSettings {
   setUpDrawingArea() {
     this.margin = {top: 20, right: 20, bottom: 30, left: 55};
     this.width = 660 - this.margin.left - this.margin.right;
-    this.height = 400 - this.margin.top - this.margin.bottom;
+    this.height = 396 - this.margin.top - this.margin.bottom;
 
     this.plotChart = d3.select('#candlestick-chart').classed('chart', true).append('svg')
       .attr('width', this.width + this.margin.left + this.margin.right)

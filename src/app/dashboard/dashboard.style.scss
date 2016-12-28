@@ -42,6 +42,7 @@ input[name="order-type"] {
 }
 
 .new-order {
+    margin-bottom: 20px;
     background: #fff;
     padding: 10px;
     width: initial;
@@ -64,6 +65,10 @@ input[name="order-type"] {
 
 .new-order-error {
     color: red;
+}
+
+.list-group-item {
+  padding: 18px 15px !important;
 }
 
 .list-group-item.list-group-item-blue {

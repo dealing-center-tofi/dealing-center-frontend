@@ -301,6 +301,10 @@ $i: 0;
 // Style Classes
 // ----------------------------
 
+.no-gutter > [class*='col-'] {
+  padding-right:0;
+  padding-left:0;
+}
 
 
 .no-margin {
