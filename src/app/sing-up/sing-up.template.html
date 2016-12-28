@@ -75,9 +75,16 @@
                 ></ng-select>
               </div>
               <div class="form-group"
+                   [ngClass]="{'has-error':!selectedSecretQuestionId && isSecretQuestionTouched}">
+                <ng-select placeholder="Select secret question"
+                           [items]="secretQuestions"
+                           (selected)="selectedSecretQuestionId=$event.id"
+                           (click)="isSecretQuestionTouched=true"
+                ></ng-select>
+              </div>
+              <div class="form-group"
                    [ngClass]="{'has-error':!signUpForm.controls['answer_secret_question'].valid && signUpForm.controls['answer_secret_question'].touched}">
-                <label>What is your mother's maiden name?</label>
-                <input class="form-control" type="text" placeholder="Secret question" name="answer_secret_question"
+                <input class="form-control" type="text" placeholder="Secret question answer" name="answer_secret_question"
                        [formControl]="signUpForm.controls['answer_secret_question']">
               </div>
               <div class="form-group" *ngIf="formErrors.answer_secret_question">

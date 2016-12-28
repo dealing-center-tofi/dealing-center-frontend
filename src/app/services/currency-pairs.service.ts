@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from "rxjs";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from "rxjs";
 
 import { WebSocketService } from './web-socket.service';
 import { ApiService } from './api.service';
@@ -9,6 +9,7 @@ export class CurrencyPairsService {
   private _currencyPairs: BehaviorSubject<Array<Object>> = new BehaviorSubject(Object([]));
   private currencyPairs;
   private alreadySubscribed = false;
+  private subscriber;
 
   constructor(private webSocketService: WebSocketService,
               private apiService: ApiService) {
@@ -38,7 +39,12 @@ export class CurrencyPairsService {
   }
 
   getWebsocketData(currencies) {
-    this.webSocketService.getData('new values').subscribe(res => {
+    let event_name = 'new values';
+    this.subscriber = this.webSocketService.getData(event_name).subscribe((res) => {
+        if (res.event != event_name)
+          return;
+        res = res.res;
+
         res = res.sort( (a, b) => { return a.currency_pair - b.currency_pair });
         for( let i = 0; i < res.length; ++i) {
           currencies[i].isBigger = res[i].bid >= currencies[i].last_value.bid;
@@ -50,7 +56,7 @@ export class CurrencyPairsService {
   }
 
   unsubscribe() {
+    this.subscriber && this.subscriber.unsubscribe();
     this.alreadySubscribed = false;
-    this.webSocketService.unsubscribe();
   }
 }

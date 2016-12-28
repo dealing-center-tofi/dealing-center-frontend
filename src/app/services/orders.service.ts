@@ -1,8 +1,9 @@
 import { Injectable }    from '@angular/core';
+import { BehaviorSubject } from "rxjs";
 import { CurrencyPairsService } from '../services/currency-pairs.service';
 import { ApiService } from '../services/api.service';
 import { AccountService } from '../services/account.service';
-import {BehaviorSubject, Observable} from "rxjs";
+import { WebSocketService } from './web-socket.service';
 
 @Injectable()
 export class OrdersService {
@@ -13,10 +14,12 @@ export class OrdersService {
   private account;
   private openedOrdersProfit: BehaviorSubject<Object> = new BehaviorSubject(Object);
   private _openedOrdersProfit;
+  private subscriber;
 
   constructor(private currencyPairsService: CurrencyPairsService,
               private apiService: ApiService,
-              private accountService: AccountService) {
+              private accountService: AccountService,
+              private webSocketService: WebSocketService) {
   }
 
   getOrdersProfit() {
@@ -34,6 +37,9 @@ export class OrdersService {
   }
 
   fillOrders() {
+    if (!this.orders) {
+      this.orders = true;
+    }
     Promise.all([
       this.apiService.getOpenedOrders(),
       this.getAccount()
@@ -42,11 +48,12 @@ export class OrdersService {
         this.orders = res[0].results;
         this._orders.next(this.orders);
         this.updateCurrencyPairs();
+        this.getWebsocketData();
       });
   }
 
   updateCurrencyPairs() {
-    this.currencyPairsService.getCurrencyPairs().subscribe(res => {
+    this.subscriber = this.currencyPairsService.getCurrencyPairs().subscribe(res => {
       this.currencyPairs = res;
       if (res.length === 0)
         return;
@@ -61,6 +68,20 @@ export class OrdersService {
       this._orders.next(this.orders);
       this.openedOrdersProfit.next(this._openedOrdersProfit);
     });
+  }
+
+  getWebsocketData() {
+    let event_name = 'order closed';
+    this.webSocketService.getData(event_name).subscribe( (res) => {
+      if (res.event != event_name)
+        return;
+      res = res.res;
+      this.deleteOrderFromList(res);
+    });
+  }
+
+  unsubscribe() {
+    this.subscriber && this.subscriber.unsubscribe();
   }
 
   getProfit(order) {
@@ -109,13 +130,17 @@ export class OrdersService {
       });
   }
 
+  deleteOrderFromList(order) {
+    this.orders = this.orders.filter( (item) => {return item.id != order.id} );
+    this._orders.next(this.orders);
+    this._openedOrdersProfit -= this.getProfit(order);
+    this.openedOrdersProfit.next(this._openedOrdersProfit);
+    this.accountService.updateAccount();
+  }
+
   closeOrder(order) {
     return this.apiService.closeOrder(order.id).then( res => {
-      this.orders = this.orders.filter( (item) => {return item.id != order.id} );
-      this._orders.next(this.orders);
-      this._openedOrdersProfit -= this.getProfit(order);
-      this.openedOrdersProfit.next(this._openedOrdersProfit);
-      this.accountService.updateAccount();
+      this.deleteOrderFromList(order);
     });
   }
 }
