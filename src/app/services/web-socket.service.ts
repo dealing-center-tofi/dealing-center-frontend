@@ -7,6 +7,8 @@ const config = require('../../../config/api.conf');
 export class WebSocketService {
   private subject: Subject<any>;
   private ws: WebSocket;
+  private isConnected = false;
+  private types:Set = new Set([]);
 
   private connect(url): Subject<any> {
     if (!this.subject) {
@@ -25,7 +27,7 @@ export class WebSocketService {
       this.ws.onclose = obs.complete.bind(obs);
 
       return this.ws.close.bind(this.ws);
-    });
+    }).share();
 
     let observer = {
       next: (data: Object) => {
@@ -53,27 +55,34 @@ export class WebSocketService {
   }
 
   public emitAuthorize() {
+    this.isConnected = true;
     this.connection.next(JSON.stringify(['authorize', {'token': localStorage.getItem('authToken')}]));
     this.connection.next(JSON.stringify(['subscribe', {}]));
+    this.connection.next(JSON.stringify(['orders_closing_subscribe', {}]));
   }
 
   public connection = this.connect(config.currenciesSocketUrl);
 
   public getData(type: string): Subject<any> {
+    if (!this.isConnected)
+      this.emitAuthorize();
 
-    this.emitAuthorize();
-
+    this.types.add(type);
     return <Subject<any>>this.connection
       .skipWhile((res) => {
         let dataType = JSON.parse(res.data)[0];
-        return dataType !== type;
+        return !this.types.has(dataType);
+      }).filter((res) => {
+        return true;
       })
       .map((res) => {
-        return JSON.parse(res.data)[1];
+        let dataType = JSON.parse(res.data)[0];
+        return {event: dataType, res: JSON.parse(res.data)[1]};
       });
   }
 
   unsubscribe() {
+    this.isConnected = false;
     this.connection.next(JSON.stringify(['unsubscribe', {}]));
   }
 
