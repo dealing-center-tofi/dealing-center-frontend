@@ -2,6 +2,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 
 export class ValidateHelper {
+  static MAX_LENGTH_FOR_AMOUNT = 18;
   static ALLOWED_LENGTHS_FOR_CREDIT_CARD = [13, 16];
   static ALLOWED_LENGTHS_FOR_CVV = [3];
   static MASTERCARD_START_STRINGS = ['51', '52', '53', '54', '55'];

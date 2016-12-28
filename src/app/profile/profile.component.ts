@@ -134,6 +134,7 @@ export class Profile {
     this.makeTransferForm = formBuilder.group({
       'amount': [null, Validators.compose([
         Validators.required,
+        Validators.maxLength(ValidateHelper.MAX_LENGTH_FOR_AMOUNT),
         ValidateHelper.validateAmount,
       ])],
       'cardNumber': [null, Validators.compose([
@@ -165,6 +166,7 @@ export class Profile {
   validationMessages = {
     'amount': {
       'required': 'You must type an amount.',
+      'maxlength': 'Amount is too big.',
       'validateAmount': 'Type a number.',
     },
     'cardNumber': {

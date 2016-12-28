@@ -23,11 +23,10 @@ export class Dashboard {
   orderType;
   token;
   hideOrderSuccess = true;
-  hideOrderError = true;
   round = RoundHelper.round;
   private _selectedPair = new BehaviorSubject(Object);
   public selectedPair;
-  public selectedPairObservable: Observable<Object> = this._selectedPair.asObservable();
+  public selectedPairObservable:Observable<Object> = this._selectedPair.asObservable();
 
   constructor(private ordersService:OrdersService,
               private router:Router,
@@ -95,6 +94,7 @@ export class Dashboard {
     this.createOrderForm = formBuilder.group({
       'amount': [null, Validators.compose([
         Validators.required,
+        Validators.maxLength(ValidateHelper.MAX_LENGTH_FOR_AMOUNT),
         ValidateHelper.validateAmount
       ])],
       'order-type': [null, Validators.required],
@@ -109,6 +109,7 @@ export class Dashboard {
   validationMessages = {
     'amount': {
       'required': 'You must type an amount.',
+      'maxlength': 'Amount is too big.',
       'validateAmount': 'Type a number.',
     },
   };
