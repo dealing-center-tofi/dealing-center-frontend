@@ -8,6 +8,7 @@ export class WebSocketService {
   private subject: Subject<any>;
   private ws: WebSocket;
   private isConnected = false;
+  private types:Set = new Set([]);
 
   private connect(url): Subject<any> {
     if (!this.subject) {
@@ -26,7 +27,7 @@ export class WebSocketService {
       this.ws.onclose = obs.complete.bind(obs);
 
       return this.ws.close.bind(this.ws);
-    });
+    }).share();
 
     let observer = {
       next: (data: Object) => {
@@ -65,19 +66,27 @@ export class WebSocketService {
   public getData(type: string): Subject<any> {
     if (!this.isConnected)
       this.emitAuthorize();
+
+    this.types.add(type);
+    console.log('start', type);
+
     return <Subject<any>>this.connection
       .skipWhile((res) => {
-        console.log('in websocket test',type, res);
         let dataType = JSON.parse(res.data)[0];
-        return dataType !== type;
+        console.log(this.types);
+        return !this.types.has(dataType);
+      }).filter((res) => {
+        console.log(res);
+        return true;
       })
       .map((res) => {
-        console.log('in websocket', type, res.data);
-        return JSON.parse(res.data)[1];
+        let dataType = JSON.parse(res.data)[0];
+        return {event: dataType, res: JSON.parse(res.data)[1]};
       });
   }
 
   unsubscribe() {
+    this.isConnected = false;
     this.connection.next(JSON.stringify(['unsubscribe', {}]));
   }
 

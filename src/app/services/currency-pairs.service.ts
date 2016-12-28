@@ -38,7 +38,12 @@ export class CurrencyPairsService {
   }
 
   getWebsocketData(currencies) {
-    this.webSocketService.getData('new values').subscribe(res => {
+    let event_name = 'new values';
+    this.webSocketService.getData(event_name).subscribe((res) => {
+        if (res.event != event_name)
+          return;
+        res = res.res;
+
         console.log('carency', res);
         res = res.sort( (a, b) => { return a.currency_pair - b.currency_pair });
         for( let i = 0; i < res.length; ++i) {

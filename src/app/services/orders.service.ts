@@ -36,6 +36,9 @@ export class OrdersService {
   }
 
   fillOrders() {
+    if (!this.orders) {
+      this.orders = true;
+    }
     Promise.all([
       this.apiService.getOpenedOrders(),
       this.getAccount()
@@ -67,7 +70,12 @@ export class OrdersService {
   }
 
   getWebsocketData() {
-    this.webSocketService.getData('order closed').subscribe( res => {
+    let event_name = 'order closed';
+    this.webSocketService.getData(event_name).subscribe( (res) => {
+      if (res.event != event_name)
+        return;
+      res = res.res;
+
       console.log('order websocket', res);
     });
   }
