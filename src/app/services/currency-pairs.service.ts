@@ -45,7 +45,6 @@ export class CurrencyPairsService {
           return;
         res = res.res;
 
-        console.log('carency websocket', res);
         res = res.sort( (a, b) => { return a.currency_pair - b.currency_pair });
         for( let i = 0; i < res.length; ++i) {
           currencies[i].isBigger = res[i].bid >= currencies[i].last_value.bid;

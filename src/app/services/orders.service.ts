@@ -77,7 +77,6 @@ export class OrdersService {
         return;
       res = res.res;
       this.deleteOrderFromList(res);
-      console.log('order websocket', res);
     });
   }
 
