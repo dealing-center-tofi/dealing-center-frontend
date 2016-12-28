@@ -9,6 +9,7 @@ export class CurrencyPairsService {
   private _currencyPairs: BehaviorSubject<Array<Object>> = new BehaviorSubject(Object([]));
   private currencyPairs;
   private alreadySubscribed = false;
+  private subscriber;
 
   constructor(private webSocketService: WebSocketService,
               private apiService: ApiService) {
@@ -39,12 +40,12 @@ export class CurrencyPairsService {
 
   getWebsocketData(currencies) {
     let event_name = 'new values';
-    this.webSocketService.getData(event_name).subscribe((res) => {
+    this.subscriber = this.webSocketService.getData(event_name).subscribe((res) => {
         if (res.event != event_name)
           return;
         res = res.res;
 
-        console.log('carency', res);
+        console.log('carency websocket', res);
         res = res.sort( (a, b) => { return a.currency_pair - b.currency_pair });
         for( let i = 0; i < res.length; ++i) {
           currencies[i].isBigger = res[i].bid >= currencies[i].last_value.bid;
@@ -56,7 +57,7 @@ export class CurrencyPairsService {
   }
 
   unsubscribe() {
+    this.subscriber && this.subscriber.unsubscribe();
     this.alreadySubscribed = false;
-    this.webSocketService.unsubscribe();
   }
 }

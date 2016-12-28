@@ -2,7 +2,9 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import {CurrencyPairsService} from "../services/currency-pairs.service";
+import { CurrencyPairsService } from "../services/currency-pairs.service";
+import { OrdersService } from "../services/orders.service";
+import { WebSocketService } from "../services/web-socket.service";
 import {ValidateHelper} from "../helpers/validateHelper";
 const config = require('./../../../config/api.conf');
 
@@ -18,6 +20,8 @@ export class Login {
   constructor(private http:Http,
               private router:Router,
               private currenciesPairsService:CurrencyPairsService,
+              private orderService: OrdersService,
+              private webSocketService: WebSocketService,
               private formBuilder:FormBuilder) {
     this.tuneValidation(formBuilder);
   }
@@ -25,6 +29,8 @@ export class Login {
   ngOnInit() {
     localStorage.removeItem('authToken');
     this.currenciesPairsService.unsubscribe();
+    this.orderService.unsubscribe();
+    this.webSocketService.unsubscribe();
   }
 
   submitForm(value:any):void {

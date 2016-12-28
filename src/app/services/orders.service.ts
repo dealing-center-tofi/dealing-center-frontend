@@ -14,6 +14,7 @@ export class OrdersService {
   private account;
   private openedOrdersProfit: BehaviorSubject<Object> = new BehaviorSubject(Object);
   private _openedOrdersProfit;
+  private subscriber;
 
   constructor(private currencyPairsService: CurrencyPairsService,
               private apiService: ApiService,
@@ -52,7 +53,7 @@ export class OrdersService {
   }
 
   updateCurrencyPairs() {
-    this.currencyPairsService.getCurrencyPairs().subscribe(res => {
+    this.subscriber = this.currencyPairsService.getCurrencyPairs().subscribe(res => {
       this.currencyPairs = res;
       if (res.length === 0)
         return;
@@ -75,9 +76,13 @@ export class OrdersService {
       if (res.event != event_name)
         return;
       res = res.res;
-
+      this.deleteOrderFromList(res);
       console.log('order websocket', res);
     });
+  }
+
+  unsubscribe() {
+    this.subscriber && this.subscriber.unsubscribe();
   }
 
   getProfit(order) {
@@ -126,13 +131,17 @@ export class OrdersService {
       });
   }
 
+  deleteOrderFromList(order) {
+    this.orders = this.orders.filter( (item) => {return item.id != order.id} );
+    this._orders.next(this.orders);
+    this._openedOrdersProfit -= this.getProfit(order);
+    this.openedOrdersProfit.next(this._openedOrdersProfit);
+    this.accountService.updateAccount();
+  }
+
   closeOrder(order) {
     return this.apiService.closeOrder(order.id).then( res => {
-      this.orders = this.orders.filter( (item) => {return item.id != order.id} );
-      this._orders.next(this.orders);
-      this._openedOrdersProfit -= this.getProfit(order);
-      this.openedOrdersProfit.next(this._openedOrdersProfit);
-      this.accountService.updateAccount();
+      this.deleteOrderFromList(order);
     });
   }
 }

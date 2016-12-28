@@ -68,15 +68,11 @@ export class WebSocketService {
       this.emitAuthorize();
 
     this.types.add(type);
-    console.log('start', type);
-
     return <Subject<any>>this.connection
       .skipWhile((res) => {
         let dataType = JSON.parse(res.data)[0];
-        console.log(this.types);
         return !this.types.has(dataType);
       }).filter((res) => {
-        console.log(res);
         return true;
       })
       .map((res) => {
