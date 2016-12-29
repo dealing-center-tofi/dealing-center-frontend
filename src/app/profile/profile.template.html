@@ -8,16 +8,16 @@
           <li class="list-group-item clearfix">
             <label class="my-label amount-label">Amount: </label><span class="amount">{{ account.amount }}</span>
             <div class="container pull-right">
-              <div id="deposit-button" class="row">
-                <button #deposit class="btn btn-primary btn-sm" data-target="#collapse-transfer-form"
-                        (click)="collapseTransferForm(1, deposit)"
-                        [class.active]="isTransferFormShown && transferType === 1">Make a deposit
+              <div id="refill-button" class="row">
+                <button #refill class="btn btn-primary btn-sm" data-target="#collapse-transfer-form"
+                        (click)="collapseTransferForm(1, refill)"
+                        [class.active]="isTransferFormShown && transferType === 1">Refill
                 </button>
               </div>
               <div class="row">
-                <button #takeOff class="btn btn-primary btn-sm" data-target="#collapse-transfer-form"
-                        (click)="collapseTransferForm(2, takeOff)"
-                        [class.active]="isTransferFormShown && transferType === 2">Take out
+                <button #withdraw class="btn btn-primary btn-sm" data-target="#collapse-transfer-form"
+                        (click)="collapseTransferForm(2, withdraw)"
+                        [class.active]="isTransferFormShown && transferType === 2">Withdraw
                 </button>
               </div>
             </div>
@@ -130,7 +130,7 @@
                         </div>
                       </div>
                       <button class="subscribe btn btn-success btn-lg btn-block" type="submit">
-                        {{ transferType === 1 ? 'Deposit' : 'Take out' }}
+                        {{ transferType === 1 ? 'Refill' : 'Withdraw' }}
                       </button>
                     </div>
                   </div>
@@ -140,6 +140,35 @@
             <!-- CREDIT CARD FORM ENDS HERE -->
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <h1 class="title-transfers">Transfers History</h1>
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 col-xs-12">
+      <div class="transfers">
+        <table class="table">
+          <thead class="thead-inverse">
+          <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+            [class.table-success]="transfer.transfer_type === 1"
+            *ngFor="let transfer of transfers; let i=index">
+            <th scope="row">{{i+1}}</th>
+            <td>{{ transfer.transfer_date | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+            <td>{{ transfer.amount }}</td>
+            <td>
+              {{ transfer.transfer_type === 1 ? 'Refill' : 'Withdrawal' }}
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

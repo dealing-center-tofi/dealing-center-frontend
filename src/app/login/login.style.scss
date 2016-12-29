@@ -1,9 +1,18 @@
 @import "../../../node_modules/bootstrap/scss/variables";
 @import "../scss/variables";
+/***********************************/
+/**             INFORMATION       **/
+/***********************************/
+.jumbotron {
+  background-color: #fff !important;
+}
 
 /***********************************/
 /**             LOGIN             **/
 /***********************************/
+button, a {
+  margin-bottom: 8px;
+}
 
 .login-page{
   background-color: $gray-semi-lighter;
