@@ -18,6 +18,7 @@ export class ApiService {
   private accountUrl = config.apiUrl + '/api/account/me/';
   private transfersUrl = config.apiUrl + '/api/transfers/';
   private historyValuesUrl = config.apiUrl + '/api/history/';
+  private currencyPairValues = config.apiUrl + '/api/currency_pair_values/';
   private passwordRecoveryUrl = config.apiUrl + '/api/auth/password_recovery/';
   private passwordRecoveryConfirmUrl = config.apiUrl + '/api/auth/password_recovery_confirm/';
   private secretQuestionsUrl = config.apiUrl + '/api/secret-questions/';
@@ -121,6 +122,14 @@ export class ApiService {
             .catch(this.handleError);
   }
 
+  getCurrencyPairValues(id) {
+    this.setHeaders();
+    return this.http.get(this.currencyPairValues + '?currency_pair='+id, {headers: this.headers})
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError)
+  }
+
   getCurrencyPairValuesHistoryFromRawUrl(url) {
     this.setHeaders();
     return this.http.get(url, {headers: this.headers})
@@ -148,25 +157,6 @@ export class ApiService {
       url = this.historyValuesUrl.concat('?', params);
 
     return this.getCurrencyPairValuesHistoryFromRawUrl(url);
-  }
-
-  recoveryPassword(data) {
-    return this.http.post(this.passwordRecoveryUrl, data, {})
-      .toPromise()
-      .catch(this.handleError)
-  }
-
-  recoveryPasswordConfirm(data) {
-    return this.http.post(this.passwordRecoveryConfirmUrl, data, {})
-      .toPromise()
-      .catch(this.handleError)
-  }
-
-  getSecretQuestions(): Promise<any> {
-    return this.http.get(this.secretQuestionsUrl)
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);
   }
 
   private handleError(error: any): Promise<any> {

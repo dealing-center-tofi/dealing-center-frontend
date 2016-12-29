@@ -26,7 +26,7 @@
         </label>
       </div>
       <div class="widget-body">
-        <table *ngIf="closedOrders || openedOrders" class="table">
+        <table *ngIf="closedOrders || openedOrders" class="table orders">
           <th *ngFor="let header of tableHeaders">
             <a (click)="header.sortable && setSorting(header.fieldName)">
               {{header.displayName}}
@@ -34,7 +34,7 @@
               <span [hidden]="sortOptions.sortType != header.fieldName || !sortOptions.sortReverse" class="fa fa-caret-up"></span>
             </a>
           </th>
-          <tr *ngFor="let order of closedOrders || openedOrders | orderPipe : orderFilter">
+          <tr [class.active]="order.id == curIdOrder" *ngFor="let order of closedOrders || openedOrders | orderPipe : orderFilter" (click)="changeCurOrder(order)">
             <td>{{ order.id }}</td>
             <td>{{ order.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
             <td>{{ order.currency_pair.name }}</td>

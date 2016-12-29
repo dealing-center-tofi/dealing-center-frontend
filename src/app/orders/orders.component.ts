@@ -5,9 +5,9 @@ import {ApiService} from '../services/api.service';
 import {RoundHelper} from '../helpers/roundHelper';
 import {OrderHelper} from './orderingHelper';
 
-declare var jQuery: any;
-declare var d3: any;
-declare var nv: any;
+declare var jQuery:any;
+declare var d3:any;
+declare var nv:any;
 
 
 const config = require('./../../../config/api.conf');
@@ -27,10 +27,13 @@ export class OrdersPage {
   private round = RoundHelper.round;
   nvd3Chart: any;
   nvd3Data: any;
+  curIdOrder;
 
-  constructor(private router: Router,
-              private ordersService: OrdersService,
-              private apiService: ApiService) {
+  i = 0;
+
+  constructor(private router:Router,
+              private ordersService:OrdersService,
+              private apiService:ApiService) {
     this.tableHeaders = [
       {
         displayName: 'Order',
@@ -78,6 +81,8 @@ export class OrdersPage {
       sortType: 'id',
       sortReverse: true,
     };
+
+    this.applyNvd3Data();
   }
 
   ngOnInit() {
@@ -88,7 +93,14 @@ export class OrdersPage {
       this.switchOrderStatus(1);
     }
 
-    this.applyNvd3Data();
+    this.setFirstOrder();
+  }
+
+  setFirstOrder() {
+    this.apiService.getOpenedOrders()
+      .then((res) => {
+        this.changeCurOrder(res.results[0]);
+      })
   }
 
   saveOrders(orders) {
@@ -168,6 +180,74 @@ export class OrdersPage {
     return order.type == 1;
   }
 
+  changeCurOrder(order) {
+    this.i = 0;
+    this.curIdOrder = order.id;
+
+    let bids = [], asks = [];
+
+    this.apiService.getCurrencyPairValues(order.currency_pair.id)
+      .then((res) => {
+
+        this.nvd3Data[0].values = [];
+        this.nvd3Data[1].values = [];
+
+        res.results.map((order) => {
+          bids.push(order.bid);
+          asks.push(order.ask);
+
+          this.nvd3Data[0].values.push({
+            series: 0,
+            x: ++this.i,
+            y: order.bid
+          });
+          this.nvd3Data[1].values.push({
+            series: 0,
+            x: this.i,
+            y: order.ask
+          });
+        });
+
+        console.log(bids);
+        console.log(asks);
+
+        // this.nvd3Data[0].values.reverse();
+        // this.nvd3Data[1].values.reverse();
+
+        this.i = 10;
+      });
+
+      this.ordersService.getOrders().subscribe(res => {
+
+      //TODO: res[0] = undefined ?
+      if (res[0] && this.curIdOrder) {
+        let bid = res.filter(el => el.id == this.curIdOrder)[0].currency_pair.last_value.bid;
+        let ask = res.filter(el => el.id == this.curIdOrder)[0].currency_pair.last_value.ask;
+
+        this.nvd3Data[0].values.splice(0,1);
+        this.nvd3Data[1].values.splice(0,1);
+
+        this.nvd3Data[0].values.push({
+          series: 0,
+          x: ++this.i,
+          y: bid
+        });
+        this.nvd3Data[1].values.push({
+          series: 0,
+          x: this.i,
+          y: ask
+        });
+
+        if (bid > ask) {
+          this.nvd3Chart.forceY([bid - 0.01, ask + 0.01]);
+        } else {
+          this.nvd3Chart.forceY([ask - 0.01, bid + 0.01]);
+        }
+      }
+    });
+
+  }
+
   applyNvd3Data(): void {
 
     this.nvd3Chart = nv.models.lineChart()
@@ -185,26 +265,16 @@ export class OrdersPage {
       .showMaxMin(false)
       .tickFormat(d3.format(',.0'));
 
-    this.nvd3Data = [{
-      area: true,
-      key: 'Search',
-      values: []
-    }];
-
-    let i = 1;
-
-    this.ordersService.getOrders().subscribe(res => {
-
-      //TODO: res[0] = undefined ?
-      if(res[0]) {
-        let bid = res[0].currency_pair.last_value.bid;
-        this.nvd3Data[0].values.push({
-          series: 0,
-          x: ++i,
-          y: bid
-        });
-        this.nvd3Chart.forceY([bid - 0.001, bid + 0.001]);
+    this.nvd3Data = [
+      {
+        area: true,
+        key: 'bid',
+        values: []
+      }, {
+        area: true,
+        key: 'ask',
+        values: []
       }
-    });
+    ];
   }
 }

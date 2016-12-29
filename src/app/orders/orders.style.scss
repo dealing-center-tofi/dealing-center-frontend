@@ -3,6 +3,10 @@
 @import "../../../node_modules/bootstrap/scss/mixins";
 @import "../../../node_modules/nvd3/build/nv.d3";
 
+.orders tr {
+  cursor: pointer;
+}
+
 .event {
   background: $white;
   border-radius: $border-radius;
@@ -74,4 +78,8 @@ svg .title {
     fill: #666 !important;
     stroke: #666 !important;
   }
+}
+
+.active {
+  background-color: rgba(65,117,171, 0.3);
 }
