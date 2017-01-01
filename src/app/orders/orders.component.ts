@@ -239,7 +239,7 @@ export class OrdersPage {
 
     this.nvd3Chart = nv.models.lineChart()
       .useInteractiveGuideline(true)
-      .margin({left: 28, bottom: 30, right: 0})
+      .margin({left: 38, bottom: 30, right: 0})
       .color(['#82DFD6', '#ddd']);
 
     this.nvd3Chart.xAxis
@@ -250,7 +250,7 @@ export class OrdersPage {
 
     this.nvd3Chart.yAxis
       .showMaxMin(false)
-      .tickFormat(d3.format(',.0'));
+      .tickFormat(d3.format('.3f'));
 
     this.nvd3Data = [
       {
