@@ -19,14 +19,14 @@ const config = require('./../../../config/api.conf');
   styleUrls: ['./orders.style.scss']
 })
 export class OrdersPage {
-  private openedOrders: any;
-  private closedOrders: any;
-  private tableHeaders: any;
-  private sortOptions: any;
-  public orderFilter: any = {buy: true, sell: true};
+  private openedOrders:any;
+  private closedOrders:any;
+  private tableHeaders:any;
+  private sortOptions:any;
+  public orderFilter:any = {buy: true, sell: true};
   private round = RoundHelper.round;
-  nvd3Chart: any;
-  nvd3Data: any;
+  nvd3Chart:any;
+  nvd3Data:any;
   curIdOrder;
 
   i = 0;
@@ -81,8 +81,6 @@ export class OrdersPage {
       sortType: 'id',
       sortReverse: true,
     };
-
-    this.applyNvd3Data();
   }
 
   ngOnInit() {
@@ -93,6 +91,7 @@ export class OrdersPage {
       this.switchOrderStatus(1);
     }
 
+    this.applyNvd3Data();
     this.setFirstOrder();
   }
 
@@ -192,63 +191,51 @@ export class OrdersPage {
         this.nvd3Data[0].values = [];
         this.nvd3Data[1].values = [];
 
+        res.results = res.results.reverse();
+
         res.results.map((order) => {
-          bids.push(order.bid);
-          asks.push(order.ask);
-
-          this.nvd3Data[0].values.push({
-            series: 0,
-            x: ++this.i,
-            y: order.bid
-          });
-          this.nvd3Data[1].values.push({
-            series: 0,
-            x: this.i,
-            y: order.ask
-          });
+          this.pushNewValueNvd3Data(order);
         });
+      })
+      .then(() => {
 
-        console.log(bids);
-        console.log(asks);
+        this.ordersService.getOrders().subscribe(res => {
 
-        // this.nvd3Data[0].values.reverse();
-        // this.nvd3Data[1].values.reverse();
+          //TODO: res[0] = undefined ?
+          if (res[0] && this.curIdOrder) {
+            let order = res.filter(el => el.id == this.curIdOrder)[0].currency_pair.last_value;
+            let bid = order.bid;
+            let ask = order.ask;
 
-        this.i = 10;
+            this.nvd3Data[0].values.splice(0, 1);
+            this.nvd3Data[1].values.splice(0, 1);
+
+            this.pushNewValueNvd3Data(order);
+          }
+        });
       });
-
-      this.ordersService.getOrders().subscribe(res => {
-
-      //TODO: res[0] = undefined ?
-      if (res[0] && this.curIdOrder) {
-        let bid = res.filter(el => el.id == this.curIdOrder)[0].currency_pair.last_value.bid;
-        let ask = res.filter(el => el.id == this.curIdOrder)[0].currency_pair.last_value.ask;
-
-        this.nvd3Data[0].values.splice(0,1);
-        this.nvd3Data[1].values.splice(0,1);
-
-        this.nvd3Data[0].values.push({
-          series: 0,
-          x: ++this.i,
-          y: bid
-        });
-        this.nvd3Data[1].values.push({
-          series: 0,
-          x: this.i,
-          y: ask
-        });
-
-        if (bid > ask) {
-          this.nvd3Chart.forceY([bid - 0.01, ask + 0.01]);
-        } else {
-          this.nvd3Chart.forceY([ask - 0.01, bid + 0.01]);
-        }
-      }
-    });
-
   }
 
-  applyNvd3Data(): void {
+  pushNewValueNvd3Data(order) {
+    this.nvd3Data[0].values.push({
+      series: 0,
+      x: new Date(order.creation_time),
+      y: order.bid
+    });
+    this.nvd3Data[1].values.push({
+      series: 0,
+      x: new Date(order.creation_time),
+      y: order.ask
+    });
+
+    if (order.bid > order.ask) {
+      this.nvd3Chart.forceY([order.bid - 0.01, order.ask + 0.01]);
+    } else {
+      this.nvd3Chart.forceY([order.ask - 0.01, order.bid + 0.01]);
+    }
+  }
+
+  applyNvd3Data():void {
 
     this.nvd3Chart = nv.models.lineChart()
       .useInteractiveGuideline(true)
@@ -257,8 +244,8 @@ export class OrdersPage {
 
     this.nvd3Chart.xAxis
       .showMaxMin(false)
-      .tickFormat(function (d): Object {
-        return d3.time.format('%b %d')(new Date(d));
+      .tickFormat(function (d):Object {
+        return d3.time.format("%M:%S")(new Date(d));
       });
 
     this.nvd3Chart.yAxis
