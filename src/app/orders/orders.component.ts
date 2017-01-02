@@ -246,7 +246,7 @@ export class OrdersPage {
     this.nvd3Chart = nv.models.lineChart()
       .useInteractiveGuideline(true)
       .margin({left: 38, bottom: 30, right: 0})
-      .color(['#82DFD6', '#ddd']);
+      .color(['#dd5826', '#64bd63']);
 
     this.nvd3Chart.xAxis
       .showMaxMin(false)

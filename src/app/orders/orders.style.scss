@@ -83,3 +83,7 @@ svg .title {
 .active {
   background-color: rgba(65,117,171, 0.3);
 }
+
+g.nv-group {
+  fill-opacity: 0 !important;
+}
