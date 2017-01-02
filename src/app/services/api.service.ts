@@ -159,6 +159,25 @@ export class ApiService {
     return this.getCurrencyPairValuesHistoryFromRawUrl(url);
   }
 
+  recoveryPassword(data) {
+    return this.http.post(this.passwordRecoveryUrl, data, {})
+      .toPromise()
+      .catch(this.handleError)
+  }
+
+  recoveryPasswordConfirm(data) {
+    return this.http.post(this.passwordRecoveryConfirmUrl, data, {})
+      .toPromise()
+      .catch(this.handleError)
+  }
+
+  getSecretQuestions(): Promise<any> {
+    return this.http.get(this.secretQuestionsUrl)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
+
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only
     return Promise.reject(error.message || error);
