@@ -17,6 +17,7 @@ export class ApiService {
   private userInfoUrl = config.apiUrl + '/api/users/me/';
   private accountUrl = config.apiUrl + '/api/account/me/';
   private transfersUrl = config.apiUrl + '/api/transfers/';
+  private transfersUrlAll = this.transfersUrl + '?page_size=all';
   private historyValuesUrl = config.apiUrl + '/api/history/';
   private currencyPairValues = config.apiUrl + '/api/currency_pair_values/';
   private passwordRecoveryUrl = config.apiUrl + '/api/auth/password_recovery/';
@@ -120,6 +121,16 @@ export class ApiService {
               return res.json();
             })
             .catch(this.handleError);
+  }
+
+  getTransfers() {
+    this.setHeaders();
+    return this.http.get(this.transfersUrlAll, {headers: this.headers})
+      .toPromise()
+      .then(res => {
+        return res.json().results;
+      })
+      .catch(this.handleError);
   }
 
   getCurrencyPairValues(id) {

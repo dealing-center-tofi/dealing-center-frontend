@@ -20,6 +20,7 @@ export class Profile {
   makeTransferForm:FormGroup;
   userInfo;
   account;
+  transfers;
   transferType;
   isTransferFormShown = 0;
 
@@ -42,6 +43,7 @@ export class Profile {
     }
     this.getUserInfo();
     this.getAccount();
+    this.getTransferts();
     this.setCollapseListeners();
   }
 
@@ -87,6 +89,12 @@ export class Profile {
       .subscribe(account => {
         this.account = account;
       });
+  }
+
+  getTransferts() {
+    this.apiService
+      .getTransfers()
+      .then(transfers => this.transfers = transfers);
   }
 
   setCollapseListeners() {
