@@ -207,8 +207,10 @@ export class OrdersPage {
             let bid = order.bid;
             let ask = order.ask;
 
-            this.nvd3Data[0].values.splice(0, 1);
-            this.nvd3Data[1].values.splice(0, 1);
+            if (this.nvd3Data[0].values.length > 20)
+              this.nvd3Data[0].values.splice(0, 1);
+            if (this.nvd3Data[1].values.length > 20)
+              this.nvd3Data[1].values.splice(0, 1);
 
             this.pushNewValueNvd3Data(order);
           }
@@ -228,11 +230,15 @@ export class OrdersPage {
       y: order.ask
     });
 
-    if (order.bid > order.ask) {
-      this.nvd3Chart.forceY([order.bid - 0.01, order.ask + 0.01]);
-    } else {
-      this.nvd3Chart.forceY([order.ask - 0.01, order.bid + 0.01]);
-    }
+    this.rescaleChartAxisY();
+  }
+
+  rescaleChartAxisY() {
+    let yMin = d3.min(this.nvd3Data[0].values, function (d) { return d.y; }),
+      yMax = d3.max(this.nvd3Data[1].values, function (d) { return d.y; }),
+      diff = yMax - yMin;
+    this.nvd3Chart.forceY([yMin - diff * 0.05,
+                           yMax + diff * 0.05]);
   }
 
   applyNvd3Data():void {
@@ -250,7 +256,7 @@ export class OrdersPage {
 
     this.nvd3Chart.yAxis
       .showMaxMin(false)
-      .tickFormat(d3.format('.3f'));
+      .tickFormat(d3.format('.4f'));
 
     this.nvd3Data = [
       {
