@@ -1,5 +1,5 @@
 .btn-group > label {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .btn-group.has-error label {
@@ -12,51 +12,51 @@
 }
 
 input[name="order-type"] {
-    position: absolute !important;
-    clip: rect(0, 0, 0, 0) !important;
-    pointer-events: none !important;
+  position: absolute !important;
+  clip: rect(0, 0, 0, 0) !important;
+  pointer-events: none !important;
 }
 
 .currency-pairs {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .currency-pairs > header {
-    text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .currency-pair {
-    font-weight: bold;
-    font-size: 16px;
-    text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
 }
 
 .new-order {
-    margin-bottom: 20px;
-    background: #fff;
-    padding: 10px;
-    width: initial;
+  margin-bottom: 20px;
+  background: #fff;
+  padding: 10px;
+  width: initial;
 }
 
 .new-order > input {
-    transition: box-shadow 1s;
+  transition: box-shadow 1s;
 }
 
 .new-order-message {
-    font-weight: bold;
-    position: absolute;
-    right: 10px;
-    font-size: 16px;
+  font-weight: bold;
+  position: absolute;
+  right: 10px;
+  font-size: 16px;
 }
 
 .new-order-success {
-    color: green;
+  color: green;
 }
 
 .new-order-error {
-    color: red;
+  color: red;
 }
 
 .list-group-item {
@@ -64,12 +64,13 @@ input[name="order-type"] {
 }
 
 .list-group-item.list-group-item-blue {
-    &.active, &.active:hover {
-        border: none !important;
-        background-color: #ccc !important;
-    }
+  border: 1px solid #eee;
+  &.active {
+    color: #343434;
+    background-color: #ccc !important;
+  }
 
-    &:hover {
-        background-color: #ddd !important;
-    }
+  &:hover {
+    background-color: #ddd !important;
+  }
 }

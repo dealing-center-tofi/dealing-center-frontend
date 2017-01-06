@@ -8,8 +8,8 @@
         </h4>
       </header>
       <div class="no-padding">
-        <div class="list-group list-group-lg" *ngIf="currencyPairs">
-          <a class="list-group-item list-group-item-blue" *ngFor="let currencyPair of currencyPairs"
+        <ul class="list-group list-group-lg" *ngIf="currencyPairs">
+          <li class="list-group-item list-group-item-blue" *ngFor="let currencyPair of currencyPairs"
              (click)="selectedPair = currencyPair;_selectedPair.next(selectedPair)"
              [class.active]="currencyPair === selectedPair">
             <div class="currency-pair">
@@ -22,8 +22,8 @@
                 {{ round(currencyPair.last_value.bid) }} {{ round(currencyPair.last_value.ask) }}
               </div>
             </div>
-          </a>
-        </div>
+          </li>
+        </ul>
       </div>
     </section>
   </div>
