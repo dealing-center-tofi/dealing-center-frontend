@@ -34,7 +34,7 @@
               <span [hidden]="sortOptions.sortType != header.fieldName || !sortOptions.sortReverse" class="fa fa-caret-up"></span>
             </a>
           </th>
-          <tr [class.active]="order.id == curIdOrder" *ngFor="let order of closedOrders || openedOrders | orderPipe : orderFilter" (click)="changeCurOrder(order)">
+          <tr [class.active]="order.id == curIdOrder" *ngFor="let order of closedOrders || openedOrders | orderPipe : orderFilter" (click)="onChangeCurOrder(order, $event)">
             <td>{{ order.id }}</td>
             <td>{{ order.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
             <td>{{ order.currency_pair.name }}</td>

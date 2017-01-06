@@ -149,6 +149,7 @@ export class OrdersPage {
   closeOrder(order) {
     this.ordersService.closeOrder(order).then(() => {
       this.saveOrders(this.openedOrders);
+      this.setFirstOrder();
     });
   }
 
@@ -179,6 +180,13 @@ export class OrdersPage {
     return order.type == 1;
   }
 
+  onChangeCurOrder(order, event) {
+    if (event.target.localName === 'a') {
+      return;
+    }
+    this.changeCurOrder(order);
+  }
+
   changeCurOrder(order) {
     this.i = 0;
     this.curIdOrder = order.id;
@@ -202,7 +210,7 @@ export class OrdersPage {
         this.ordersService.getOrders().subscribe(res => {
 
           //TODO: res[0] = undefined ?
-          if (res[0] && this.curIdOrder) {
+          if (res[0] && this.curIdOrder && this.isIncludesOrderWithId(res, this.curIdOrder)) {
             let order = res.filter(el => el.id == this.curIdOrder)[0].currency_pair.last_value;
             let bid = order.bid;
             let ask = order.ask;
@@ -216,6 +224,12 @@ export class OrdersPage {
           }
         });
       });
+  }
+
+  isIncludesOrderWithId(arr, id) {
+    return arr.some((elem)=> {
+      elem.id === id;
+    })
   }
 
   pushNewValueNvd3Data(order) {
@@ -234,11 +248,15 @@ export class OrdersPage {
   }
 
   rescaleChartAxisY() {
-    let yMin = d3.min(this.nvd3Data[0].values, function (d) { return d.y; }),
-      yMax = d3.max(this.nvd3Data[1].values, function (d) { return d.y; }),
+    let yMin = d3.min(this.nvd3Data[0].values, function (d) {
+        return d.y;
+      }),
+      yMax = d3.max(this.nvd3Data[1].values, function (d) {
+        return d.y;
+      }),
       diff = yMax - yMin;
     this.nvd3Chart.forceY([yMin - diff * 0.05,
-                           yMax + diff * 0.05]);
+      yMax + diff * 0.05]);
   }
 
   applyNvd3Data():void {
