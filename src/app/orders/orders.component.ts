@@ -98,7 +98,8 @@ export class OrdersPage {
   setFirstOrder() {
     this.apiService.getOpenedOrders()
       .then((res) => {
-        this.changeCurOrder(res.results[0]);
+        res = res.results[0];
+        res && this.changeCurOrder(res);
       })
   }
 
