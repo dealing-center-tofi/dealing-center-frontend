@@ -46,7 +46,7 @@
             <td [class.red]="order.end_profit <= 0"
                 [class.green]="order.end_profit > 0"
             >{{ round(order.end_profit) }}</td>
-            <td><a *ngIf="order.status === 1" (click)="closeOrder(order)">Close</a></td>
+            <td><a class="btn btn-success btn-sm" *ngIf="order.status === 1" (click)="closeOrder(order)">Close</a></td>
           </tr>
         </table>
       </div>
