@@ -229,7 +229,7 @@ export class OrdersPage {
 
   isIncludesOrderWithId(arr, id) {
     return arr.some((elem)=> {
-      elem.id === id;
+      return elem.id === id;
     })
   }
 
