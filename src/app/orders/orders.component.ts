@@ -234,7 +234,6 @@ export class OrdersPage {
             return;
 
           let currencyPairValue = res.filter(el => el.id == this.curCurrencyPairId)[0].last_value;
-          console.log(currencyPairValue.bid, currencyPairValue.ask);
 
           if (this.nvd3Data[0].values.length > 20)
             this.nvd3Data[0].values.splice(0, 1);
