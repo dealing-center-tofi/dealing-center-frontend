@@ -83,6 +83,7 @@ export class Login {
       'email': [null, Validators.compose([
         Validators.required,
         ValidateHelper.validateEmail,
+        Validators.maxLength(ValidateHelper.MAX_LENGTH_FOR_EMAIL),
       ])],
       'password': [null, Validators.compose([
         Validators.required,
@@ -100,6 +101,7 @@ export class Login {
     'email': {
       'required': 'You must type an email.',
       'validateEmail': 'Invalid email.',
+      'maxlength': 'Email is too long.',
     },
     'password': {
       'required': 'You must type a password.',

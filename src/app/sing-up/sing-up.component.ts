@@ -147,6 +147,7 @@ export class SingUp {
       'email': [null, Validators.compose([
         Validators.required,
         ValidateHelper.validateEmail,
+        Validators.maxLength(ValidateHelper.MAX_LENGTH_FOR_EMAIL),
       ])],
       'birth_date': [null, Validators.compose([
         Validators.required,
@@ -154,11 +155,13 @@ export class SingUp {
       'answer_secret_question': [null, Validators.compose([
         Validators.required,
         ValidateHelper.onlyWordsDigits,
+        Validators.maxLength(ValidateHelper.MAX_LENGTH_FOR_ANSWER_SECRET_QUESTION),
       ])],
       'passwords': formBuilder.group({
         password: ['', Validators.compose([
           Validators.required,
           Validators.minLength(6),
+          Validators.maxLength(ValidateHelper.MAX_LENGTH_FOR_PASS),
           ValidateHelper.needsCapitalLetter,
           ValidateHelper.needsLowerlLetter,
           ValidateHelper.needsNumber,
@@ -192,6 +195,7 @@ export class SingUp {
     'email': {
       'required': 'You must type an email.',
       'validateEmail': 'Invalid email.',
+      'maxlength': 'Email is too long.',
     },
     'birth_date': {
       'required': 'You must type a birth date.',
@@ -199,11 +203,13 @@ export class SingUp {
     'answer_secret_question': {
       'required': 'You must type an answer.',
       'onlyWordsDigits': 'Only words and digits are allowed.',
+      'maxlength': 'Answer is too long.',
     },
     'passwords': {
       'password': {
         'required': 'You must type a password.',
         'minlength': 'Password is too short.',
+        'maxlength': 'Password is too long.',
         'needsCapitalLetter': 'Password must contain capital letters.',
         'needsLowerlLetter': 'Password must contain lower letters.',
         'needsNumber': 'Password must contain digits.',
