@@ -150,7 +150,9 @@ export class OrdersPage {
   closeOrder(order) {
     this.ordersService.closeOrder(order).then(() => {
       this.saveOrders(this.openedOrders);
-      this.setFirstOrder();
+      if (order.id === this.curIdOrder) {
+        this.setFirstOrder();
+      }
       if (this.openedOrders.length === 0) {
         this.nvd3Data[0].values = [];
         this.nvd3Data[1].values = [];
