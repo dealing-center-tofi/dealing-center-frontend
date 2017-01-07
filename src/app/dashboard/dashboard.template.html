@@ -39,13 +39,13 @@
         </div>
         <div class="btn-group"
              [ngClass]="{'has-error':!createOrderForm.controls['order-type'].valid && createOrderForm.controls['order-type'].touched}">
-          <label class="btn btn-secondary"
+          <label class="btn btn-info"
                  [class.active]="orderType === buy.value">
             <input id="option1" class="form-control" type="radio" name="order-type" value="1" autocomplete="off"
                    #buy
                    [formControl]="createOrderForm.controls['order-type']">Buy
           </label>
-          <label class="btn btn-secondary"
+          <label class="btn btn-warning"
                  [class.active]="orderType === sell.value">
             <input id="option2" class="form-control" type="radio" name="order-type" value="2" autocomplete="off"
                    #sell
