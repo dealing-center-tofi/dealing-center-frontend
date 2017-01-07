@@ -54,6 +54,7 @@ export class Profile {
       this.apiService.createTransfer(amount, this.transferType)
         .then(()=> {
           this.accountService.updateAccount();
+          this.getTransferts();
           form.reset();
           jQuery('#collapse-transfer-form').collapse('toggle');
         })
