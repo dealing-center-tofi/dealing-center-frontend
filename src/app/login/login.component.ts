@@ -48,7 +48,8 @@ export class Login {
           this.setToken(res);
 
           this.currenciesPairsService.makeSubscribe();
-          this.router.navigate(['/app']);
+          window.location.href = '/app';
+          //this.router.navigate(['/app']);
         },
         error => {
           let errorJSON = error.json();
