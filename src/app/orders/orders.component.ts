@@ -4,6 +4,7 @@ import {OrdersService} from '../services/orders.service';
 import {ApiService} from '../services/api.service';
 import {RoundHelper} from '../helpers/roundHelper';
 import {OrderHelper} from './orderingHelper';
+import {CurrencyPairsService} from "../services/currency-pairs.service";
 
 declare var jQuery:any;
 declare var d3:any;
@@ -28,11 +29,12 @@ export class OrdersPage {
   nvd3Chart:any;
   nvd3Data:any;
   curIdOrder;
-
-  i = 0;
+  curCurrencyPairId;
+  lastCurrencyPairsSubscription;
 
   constructor(private router:Router,
               private ordersService:OrdersService,
+              private currencyPairsService: CurrencyPairsService,
               private apiService:ApiService) {
     this.tableHeaders = [
       {
@@ -91,8 +93,18 @@ export class OrdersPage {
       this.switchOrderStatus(1);
     }
 
+    if (this.lastCurrencyPairsSubscription) {
+      this.lastCurrencyPairsSubscription.unsubscribe();
+    }
+
     this.applyNvd3Data();
     this.setFirstOrder();
+  }
+
+  ngOnDestroy() {
+    if (this.lastCurrencyPairsSubscription) {
+      this.lastCurrencyPairsSubscription.unsubscribe();
+    }
   }
 
   setFirstOrder() {
@@ -195,12 +207,14 @@ export class OrdersPage {
   }
 
   changeCurOrder(order) {
-    this.i = 0;
     this.curIdOrder = order.id;
 
-    let bids = [], asks = [];
+    if (this.curCurrencyPairId === order.currency_pair.id)
+      return;
 
-    this.apiService.getCurrencyPairValues(order.currency_pair.id)
+    this.curCurrencyPairId = order.currency_pair.id;
+
+    this.apiService.getCurrencyPairValues(this.curCurrencyPairId)
       .then((res) => {
 
         this.nvd3Data[0].values = [];
@@ -211,44 +225,37 @@ export class OrdersPage {
         res.results.map((order) => {
           this.pushNewValueNvd3Data(order);
         });
-      })
-      .then(() => {
 
-        this.ordersService.getOrders().subscribe(res => {
+        if (this.lastCurrencyPairsSubscription) {
+          this.lastCurrencyPairsSubscription.unsubscribe();
+        }
+        this.lastCurrencyPairsSubscription = this.currencyPairsService.getCurrencyPairs().subscribe(res => {
+          if (res.length == 0)
+            return;
 
-          //TODO: res[0] = undefined ?
-          if (res[0] && this.curIdOrder && this.isIncludesOrderWithId(res, this.curIdOrder)) {
-            let order = res.filter(el => el.id == this.curIdOrder)[0].currency_pair.last_value;
-            let bid = order.bid;
-            let ask = order.ask;
+          let currencyPairValue = res.filter(el => el.id == this.curCurrencyPairId)[0].last_value;
+          console.log(currencyPairValue.bid, currencyPairValue.ask);
 
-            if (this.nvd3Data[0].values.length > 20)
-              this.nvd3Data[0].values.splice(0, 1);
-            if (this.nvd3Data[1].values.length > 20)
-              this.nvd3Data[1].values.splice(0, 1);
+          if (this.nvd3Data[0].values.length > 20)
+            this.nvd3Data[0].values.splice(0, 1);
+          if (this.nvd3Data[1].values.length > 20)
+            this.nvd3Data[1].values.splice(0, 1);
 
-            this.pushNewValueNvd3Data(order);
-          }
+          this.pushNewValueNvd3Data(currencyPairValue);
         });
       });
   }
 
-  isIncludesOrderWithId(arr, id) {
-    return arr.some((elem)=> {
-      return elem.id === id;
-    })
-  }
-
-  pushNewValueNvd3Data(order) {
+  pushNewValueNvd3Data(currencyPairValue) {
     this.nvd3Data[0].values.push({
       series: 0,
-      x: new Date(order.creation_time),
-      y: order.bid
+      x: new Date(currencyPairValue.creation_time),
+      y: currencyPairValue.bid
     });
     this.nvd3Data[1].values.push({
       series: 0,
-      x: new Date(order.creation_time),
-      y: order.ask
+      x: new Date(currencyPairValue.creation_time),
+      y: currencyPairValue.ask
     });
 
     this.rescaleChartAxisY();
