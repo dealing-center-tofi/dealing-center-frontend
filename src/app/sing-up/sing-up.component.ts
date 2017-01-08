@@ -85,7 +85,8 @@ export class SingUp {
           this.setToken(res);
 
           this.currencyPairsService.makeSubscribe();
-          this.router.navigate(['/app']);
+          window.location.href = '/app';
+          //this.router.navigate(['/app']);
         },
         error => {
           let errorJSON = error.json();
