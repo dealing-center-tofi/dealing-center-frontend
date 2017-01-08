@@ -5,8 +5,8 @@
     <section widget class="widget">
       <div class="btn-toolbar">
         <div class="btn-group">
-          <button class="btn" (click)="switchOrderStatus(1)" [disabled]="!closedOrders">Opened</button>
-          <button class="btn" (click)="switchOrderStatus(2)" [disabled]="!!closedOrders">History</button>
+          <button class="btn" (click)="switchOrderStatus(1)" [disabled]="isOpenedPage">Opened</button>
+          <button class="btn" (click)="switchOrderStatus(2)" [disabled]="!isOpenedPage">History</button>
           <label class="btn btn-info" [class.active]="orderFilter.buy">
             <input type="checkbox"
                    class="filter-active"
@@ -36,7 +36,7 @@
               </a>
             </th>
             <tr [class.active]="order.id == curIdOrder"
-                *ngFor="let order of closedOrders || openedOrders | orderPipe : orderFilter"
+                *ngFor="let order of (isOpenedPage || (!isOpenedPage && !closedOrders) ? openedOrders : closedOrders) | orderPipe : orderFilter"
                 (click)="onChangeCurOrder(order, $event)">
               <td>{{ order.id }}</td>
               <td>{{ order.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
@@ -58,7 +58,7 @@
       </div>
     </section>
   </div>
-  <div class="col-xs-12 col-xl-6 chart-container">
+  <div class="col-xs-12 col-xl-6 chart-container" [hidden]="!((openedOrders && openedOrders.length && isOpenedPage) || (closedOrders && closedOrders.length && !isOpenedPage))">
     <div nvd3-chart [chart]="nvd3Chart" [datum]="nvd3Data">
       <svg></svg>
     </div>

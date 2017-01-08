@@ -31,6 +31,7 @@ export class OrdersPage {
   curIdOrder;
   curCurrencyPairId;
   lastCurrencyPairsSubscription;
+  isOpenedPage = true;
 
   constructor(private router:Router,
               private ordersService:OrdersService,
@@ -98,7 +99,6 @@ export class OrdersPage {
     }
 
     this.applyNvd3Data();
-    this.setFirstOrder();
   }
 
   ngOnDestroy() {
@@ -108,11 +108,11 @@ export class OrdersPage {
   }
 
   setFirstOrder() {
-    this.apiService.getOpenedOrders()
-      .then((res) => {
-        res = res.results[0];
-        res && this.changeCurOrder(res);
-      })
+    if (this.isOpenedPage && this.openedOrders) {
+      this.changeCurOrder(this.openedOrders[0]);
+    } else if (!this.isOpenedPage && this.closedOrders) {
+      this.changeCurOrder(this.closedOrders[0]);
+    }
   }
 
   saveOrders(orders) {
@@ -125,6 +125,9 @@ export class OrdersPage {
     this.ordersService.getOrders().subscribe(res => {
       this.openedOrders = res;
       this.saveOrders(this.openedOrders);
+
+      if (!this.curIdOrder)
+        this.setFirstOrder();
     });
   }
 
@@ -152,11 +155,13 @@ export class OrdersPage {
       this.sortOptions.sortReverse = !this.sortOptions.sortReverse;
     }
 
-    this.sortOrders(this.closedOrders || this.openedOrders);
+    this.sortOrders(this.closedOrders);
+    this.sortOrders(this.openedOrders);
   }
 
   sortOrders(orders) {
-    OrderHelper.order(orders, this.sortOptions.sortType, this.sortOptions.sortReverse);
+    if (orders)
+      OrderHelper.order(orders, this.sortOptions.sortType, this.sortOptions.sortReverse);
   }
 
   closeOrder(order) {
@@ -174,18 +179,22 @@ export class OrdersPage {
 
   switchOrderStatus(status) {
     if (status === 1) {
-      this.closedOrders = undefined;
+      this.isOpenedPage = true;
       this.saveOrders(this.openedOrders);
       this.sortOrders(this.openedOrders);
+      this.setFirstOrder();
     } else {
+      this.isOpenedPage = false;
       this.getClosedOrders();
     }
   }
 
   getClosedOrders() {
+    this.closedOrders = [];
     this.apiService.getAllClosedOrders()
       .then(res => {
         this.closedOrders = res.results;
+        this.setFirstOrder();
         this.saveOrders(this.closedOrders);
         this.sortOrders(this.closedOrders);
       });
@@ -207,6 +216,8 @@ export class OrdersPage {
   }
 
   changeCurOrder(order) {
+    if (!order)
+      return;
     this.curIdOrder = order.id;
 
     if (this.curCurrencyPairId === order.currency_pair.id)
